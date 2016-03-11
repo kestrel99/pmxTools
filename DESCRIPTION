@@ -1,0 +1,11 @@
+Package: occamsPmx
+Type: Package
+Title: Occams Pharmacometric Tools for Modeling & Simulation
+Version: 0.1.0
+Authors@R: person("Justin", "Wilkins", email = "justin.wilkins@occams.eu", role = c("aut", "cre"))
+Description: Pharmacometric tools for common data analytical tasks, parametric
+    simulation from NONMEM output, parsing and plotting of PsN output, etc.
+License: GPL2
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Imports: MASS, XML
