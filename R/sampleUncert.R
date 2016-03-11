@@ -36,5 +36,5 @@ sampleUncert <- function(nmRun, n) {
   mu   <- as.numeric(c(thetas, siList, omList))
   vcov <- readNMcov(nmRun)
 
-  mvrnorm(n=n, mu, Sigma=vcov)
+  as.data.frame(mvrnorm(n=n, mu, Sigma=vcov))
 }
