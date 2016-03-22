@@ -2,6 +2,7 @@
 #'
 #' @param nmRun Root filename for the NONMEM run (e.g. "run315").
 #' @param n Number of samples required.
+#' @param seed Random seed.
 #'
 #' @return A data frame containing \code{n} samples from the multivariate normal distribution, using
 #' NONMEM typical parameter estimates the NONMEM variance-covariance matrix (from the *.cov file). This
@@ -9,9 +10,11 @@
 #' for simulation under model uncertainty.
 #'
 #' @examples
-#'  nmMatrix <- sampleUncert("run315", 5000)
+#'  nmMatrix <- sampleUncert("run315", 5000, seed=740727)
 
-sampleUncert <- function(nmRun, n) {
+sampleUncert <- function(nmRun, n, seed) {
+
+  set.seed(seed)
 
   nmOutput <- readNM(nmRun)
 

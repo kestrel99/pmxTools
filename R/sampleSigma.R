@@ -2,6 +2,7 @@
 #'
 #' @param nmRun Root filename for the NONMEM run (e.g. "run315").
 #' @param n Number of samples required.
+#' @param seed Random seed.
 #'
 #' @return A data frame containing \code{n} samples from the multivariate normal distribution, using
 #' the estimated NONMEM SIGMA variance-covariance matrix. This provides \code{n} sets of EPSILON estimates
@@ -9,9 +10,11 @@
 #'
 #'
 #' @examples
-#'  sigDist <- sampleSigma("run315", 5000)
+#'  sigDist <- sampleSigma("run315", 5000, seed=740727)
 
-sampleSigma <- function(nmRun, n) {
+sampleSigma <- function(nmRun, n, seed) {
+
+  set.seed(seed)
 
   nmOutput <- readNM(nmRun)
 
