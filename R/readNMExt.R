@@ -1,6 +1,6 @@
 #' Read NONMEM output into a list.
 #'
-#' \code{readNMExt} returns a summary of a given NONMEM run, including termination messages,
+#' \code{readNMext} returns a summary of a given NONMEM run, including termination messages,
 #' parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
 #' files must be available.
 #'
@@ -16,10 +16,10 @@
 #'   a list of lists containing standard errors for the SIGMA matrix.
 #'
 #' @examples
-#' readNMExt("run315")
-#' readNMExt("run315", ".nmlst")
+#' readNMext("run315")
+#' readNMext("run315", ".nmlst")
 
-readNMExt <- function(fileName, fileExt = ".lst") {
+readNMext <- function(fileName, fileExt = ".lst") {
   fileName <- paste(fileName, fileExt, sep = "")
   nmFile <-
     scan(fileName,
