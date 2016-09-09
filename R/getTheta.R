@@ -52,5 +52,27 @@ getTheta <- function(x, output="est", sigdig=6, sep="-") {
     names(out) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
   }
 
+  if(output=="all") {
+    out <- list()
+    
+    out$Theta <- signif(as.numeric(x$nonmem$problem$estimation$theta[1,]), sigdig)
+    names(out$Theta) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    
+    out$ThetaSE <- signif(as.numeric(x$nonmem$problem$estimation$thetase[1,]), sigdig)
+    names(out$ThetaSE) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    
+    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
+    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    out$ThetaRSE <- signif(abs(se/est*100), sigdig)
+    names(out$ThetaRSE) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    
+    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
+    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    outup <- signif(est + 1.96*se, sigdig)
+    outlo <- signif(est - 1.96*se, sigdig)
+    out$Theta95CI <- paste(outlo, outup, sep=sep)
+    names(out$Theta95CI) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+  }
+  
   out
 }
