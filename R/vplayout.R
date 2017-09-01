@@ -5,7 +5,7 @@
 #'
 #' @return A layout for the viewport.
 #'
-#' @seealso \code{\link{grid::grid.newpage}}, \code{\link{grid::viewport}}, \code{\link{grid::pushViewport}}, \code{\link{print}}.
+#' @seealso \code{\link[grid]{grid.newpage}}, \code{\link[grid]{viewport}}, \code{\link[grid]{pushViewport}}, \code{\link{print}}.
 #'
 #' @examples
 #' library(ggplot2)
@@ -19,6 +19,7 @@
 #' print(plot1, vp = vplayout(1, 1))
 #' print(plot2, vp = vplayout(1, 2))
 #'
+#' @import grid
 #' @export
 
 vplayout <- function(x, y) {

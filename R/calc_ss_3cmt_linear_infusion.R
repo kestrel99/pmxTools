@@ -17,8 +17,8 @@
 #' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
 #'
 #' @examples
-#' Ctrough <- calc_ss_3cmt_linear_infusion(tad = 11.75, CL = 2.5, V1 = 20, V2 = 50, V3 = 100, Q2 = 0.5, Q3 = 0.05,
-#'     dose = 1000, tinf=1, tau=24)
+#' Ctrough <- calc_ss_3cmt_linear_infusion(tad = 11.75, CL = 2.5, V1 = 20, V2 = 50,
+#'     V3 = 100, Q2 = 0.5, Q3 = 0.05, dose = 1000, tinf=1, tau=24)
 #'
 #' @export
 

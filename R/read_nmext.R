@@ -21,6 +21,7 @@
 #' read_nmext("run315", ".nmlst")
 #' }
 #'
+#' @import utils
 #' @export
 
 read_nmext <- function(fileName, fileExt = ".lst") {
@@ -45,7 +46,7 @@ read_nmext <- function(fileName, fileExt = ".lst") {
     }
   extFileName <-
     paste(sub("\\.\\w*$", "", fileName), ".ext", sep = "")
-  if (!is.readable.file(extFileName)) {
+  if (!file.exists(extFileName)) {
     stop(paste(
       "Could not find the raw results file (",
       extFileName,

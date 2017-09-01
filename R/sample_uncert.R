@@ -41,7 +41,7 @@ sample_uncert <- function(nmRun, n, seed) {
   }
 
   mu   <- as.numeric(c(thetas, siList, omList))
-  vcov <- read_NMcov(nmRun)
+  vcov <- read_nmcov(nmRun)
 
   as.data.frame(MASS::mvrnorm(n=n, mu, Sigma=vcov))
 }

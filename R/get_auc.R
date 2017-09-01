@@ -16,6 +16,7 @@
 #'  AUCs <- get_auc(myAUCdata)
 #' }
 #'
+#' @import stats
 #' @export
 
 get_auc <- function (data, time = "TIME", id = "ID", dv = "DV")

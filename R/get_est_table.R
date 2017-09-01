@@ -104,7 +104,7 @@ get_est_table <- function(x, thetaLabels=c(), omegaLabels=c(),
 
   shrCol <- c(rep("-", times=length(theta)),
               shrEta,
-              as.numeric(get_Shrinkage(x, output="epsilon")))
+              as.numeric(get_shrinkage(x, output="epsilon")))
 
   out <- data.frame(Parameter = labCol,
                     Estimate  = estCol,

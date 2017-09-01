@@ -31,6 +31,6 @@ print(plot2, vp = vplayout(1, 2))
 
 }
 \seealso{
-\code{\link{grid::grid.newpage}}, \code{\link{grid::viewport}}, \code{\link{grid::pushViewport}}, \code{\link{print}}.
+\code{\link[grid]{grid.newpage}}, \code{\link[grid]{viewport}}, \code{\link[grid]{pushViewport}}, \code{\link{print}}.
 }
 

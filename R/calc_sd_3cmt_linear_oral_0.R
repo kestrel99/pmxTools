@@ -1,27 +1,27 @@
-#' Calculate C(t) for a 3-compartment linear model at steady state with IV bolus dosing
+#' Calculate C(t) for a 3-compartment linear model after a single dose, with zero-order absorption
 #'
-#' @param tad Time after last dose (h)
+#' @param t Time after dose (h)
 #' @param CL Clearance (L/h)
 #' @param V1 Central volume of distribution (L)
 #' @param V2 First peripheral volume of distribution (L)
 #' @param V3 Second peripheral volume of distribution (L)
 #' @param Q2 Intercompartmental clearance between V1 and V2 (L/h)
 #' @param Q3 Intercompartmental clearance between V2 and V3 (L/h)
+#' @param dur Duration of zero-order absorption (h)
 #' @param dose Dose
-#' @param tau Dosing interval (h)
 #'
-#' @return Concentration of drug at requested time (\code{tad}) at steady state, given provided set of parameters and variables.
+#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
 #'
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
 #' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
 #'
 #' @examples
-#' Ctrough <- calc_ss_3cmt_linear_bolus(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
-#'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tau=24)
+#' Ctrough <- calc_sd_3cmt_linear_oral_0(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100)
 #'
 #' @export
 
-calc_ss_3cmt_linear_bolus <- function(tad, CL, V1, V2, V3, Q2, Q3, dose, tau) {
+calc_sd_3cmt_linear_oral_0 <- function(t, CL, V1, V2, V3, Q2, Q3, dur, dose) {
 
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -52,17 +52,21 @@ calc_ss_3cmt_linear_bolus <- function(tad, CL, V1, V2, V3, Q2, Q3, dose, tau) {
   ### gamma
   gamma <- -(cos(phi + ((4 * pi)/3)) * r2 - (a2/3))
 
-  ### macroconstants - 1.3.1 p. 39
+  ### macroconstants - 1.3.4 p. 47
 
   A <- (1/V1) * ((k21 - alpha)/(alpha - beta)) * ((k31 - alpha)/(alpha - gamma))
   B <- (1/V1) * ((k21 - beta)/(beta - alpha)) * ((k31 - beta)/(beta - gamma))
   C <- (1/V1) * ((k21 - gamma)/(gamma - beta)) * ((k31 - gamma)/(gamma - alpha))
 
-  ### C(t) after single dose - eq 1.61 p. 40
+  ### C(t) after single dose - eq 1.81 p. 48
 
-  Ct <- dose * ((A * (exp(-alpha * tad) / (1 - exp(-alpha * tau)))) +
-                (B * (exp(-beta * tad) / (1 - exp(-beta * tau)))) +
-                (C * (exp(-gamma * tad) / (1 - exp(-gamma * tau)))))
+  Ct <- (dose / dur) * ((A/alpha) * (1 - exp(-alpha * dur)) * exp(-alpha * (t - dur)) +
+                                   (B/beta) * (1 - exp(-beta * dur)) * exp(-beta * (t - dur)) +
+                                   (C/gamma) * (1 - exp(-gamma * dur)) * exp(-gamma * (t - dur)))
+
+  Ct[t < dur] <- (dose / dur) * ((A/alpha) * (1 - exp(-alpha * t[t < dur])) +
+                                   (B/beta) * (1 - exp(-beta * t[t < dur])) +
+                                   (C/gamma) * (1 - exp(-gamma * t[t < dur])))
 
   Ct
 }

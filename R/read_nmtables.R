@@ -18,6 +18,7 @@
 #' tables <- read_nmtables(315)
 #' }
 #'
+#' @import utils
 #' @export
 
 read_nmtables <-
@@ -50,7 +51,7 @@ read_nmtables <-
 
     for(i in 1:length(tabFiles)) {
       filename <- tabFiles[i]
-      if(!is.readable.file(filename)) {
+      if(!file.exists(filename)) {
         next
       } else {
         cat(paste("    Reading",filename,"\n"))
