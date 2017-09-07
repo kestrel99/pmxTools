@@ -1,4 +1,4 @@
 library(testthat)
-library(occamsPmx)
+library(pmxTools)
 
-test_check("occamsPmx")
+test_check("pmxTools")

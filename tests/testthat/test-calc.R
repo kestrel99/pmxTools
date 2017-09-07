@@ -1,5 +1,5 @@
 library(testthat)
-library(occamsPmx)
+library(pmxTools)
 
 context("Closed-form solutions")
 
