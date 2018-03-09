@@ -27,6 +27,8 @@
 
 read_scm <- function(dir, startPhase="forward") {
 
+  Drop <- PVal <- NULL  # appease CRAN
+  
   is.NullOb <- function(x) is.null(x) | all(sapply(x, is.null))
 
   rmNullObs <- function(x) {

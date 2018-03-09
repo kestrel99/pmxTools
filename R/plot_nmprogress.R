@@ -202,7 +202,7 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
 
   pdata <- reshape(extData, idvar = "ITERATION", direction="long", varying = list(names(extData)[2:(length(extData))]))
   pdata$Parameter <- rep(names(extData)[2:(length(extData))], each=nrow(extData))
-  pdata <- subset(pdata, ITERATION >=0)
+  pdata <- pdata[pdata$ITERATION >=0,]
   pdata$Parameter <- ordered(pdata$Parameter, unique(pdata$Parameter))
   
   a1 <- split(pdata, pdata$Parameter)
@@ -214,13 +214,13 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
   pdata <- a3
   
   if(metric!="perc") {
-  ggplot(pdata, aes(ITERATION, THETA1)) +
+  ggplot(pdata, aes_string("ITERATION", "THETA1")) +
     geom_line(col=lineCol) +
     facet_wrap(~ Parameter, scales = "free_y") +
       scale_x_continuous("Iteration") +
       scale_y_continuous("Estimated value")
   } else {
-    ggplot(pdata, aes(ITERATION, percDelta)) +
+    ggplot(pdata, aes_string("ITERATION", "percDelta")) +
       geom_abline(slope=0, intercept=0, linetype=2, col=idlineCol) +
       geom_line(col=lineCol) +
       facet_wrap(~ Parameter, scales = "free_y")  +
