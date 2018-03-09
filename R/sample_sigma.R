@@ -8,7 +8,8 @@
 #' the estimated NONMEM SIGMA variance-covariance matrix. This provides \code{n} sets of EPSILON estimates
 #' suitable for simulation of new datasets.
 #'
-#'
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  sigDist <- sample_sigma("run315", 5000, seed=740727)

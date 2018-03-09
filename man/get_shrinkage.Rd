@@ -32,4 +32,6 @@ Extract shrinkage estimates from a NONMEM output object.
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

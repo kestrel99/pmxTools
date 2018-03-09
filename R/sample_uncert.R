@@ -8,7 +8,9 @@
 #' NONMEM typical parameter estimates the NONMEM variance-covariance matrix (from the *.cov file). This
 #' provides \code{n} sets of parameter estimates sampled from the uncertainty distribution, suitable
 #' for simulation under model uncertainty.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  nmMatrix <- sample_uncert("run315", 5000, seed=740727)

@@ -3,7 +3,9 @@
 #' @param fileName A NONMEM XML output file (e.g. "run315.xml").
 #'
 #' @return A list of lists corresponding to the NONMEM output object.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #' nmOutput <- read_nm("run315.xml")

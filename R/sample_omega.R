@@ -8,7 +8,8 @@
 #' the estimated NONMEM OMEGA variance-covariance matrix. This provides \code{n} sets of ETA estimates
 #' suitable for simulation of new patients.
 #'
-#'
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  omDist <- sample_omega("run315", 5000, seed=740727)

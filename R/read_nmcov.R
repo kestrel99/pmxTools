@@ -7,7 +7,8 @@
 #'
 #' @return A symmetrical variance-covariance matrix covering all model parameters.
 #'
-#'
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #' nmVcov <- read_nmcov("run315")
@@ -17,7 +18,7 @@
 
 read_nmcov <- function(fileName) {
   if(file.exists(paste(fileName, ".cov", sep=""))) {
-    as.matrix(read.table(paste(fileName, ".cov", sep=""), skip=1, head=T, row.names=1))
+    as.matrix(read.table(paste(fileName, ".cov", sep=""), skip=1, header=T, row.names=1))
   } else {
     stop(paste("File ", paste(fileName, ".cov", sep=""), " not found.", sep=""))
   }

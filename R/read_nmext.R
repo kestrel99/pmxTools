@@ -1,6 +1,6 @@
 #' Read NONMEM output into a list.
 #'
-#' \code{read_NMext} returns a summary of a given NONMEM run, including termination messages,
+#' \code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
 #' parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
 #' files must be available.
 #'
@@ -14,7 +14,9 @@
 #'   the SIGMA matrix, 'seThetas', a vector of standard errors for THETAs, 'seOmega',
 #'   a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
 #'   a list of lists containing standard errors for the SIGMA matrix.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #' read_nmext("run315")

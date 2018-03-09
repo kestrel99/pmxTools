@@ -8,6 +8,7 @@
 #'
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
 #'
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
 #' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
 #'

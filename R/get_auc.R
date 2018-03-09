@@ -9,6 +9,7 @@
 #'
 #' Based on the \code{AUC} function originally written by Leonid Gibiansky in package MIfuns 5.1, from Metrum Institute.
 #'
+#' @author Leonid Gibiansky, \email{lgibiansky@@quantpharm.com}
 #' @references \url{https://code.google.com/archive/p/mifuns/}
 #'
 #' @examples

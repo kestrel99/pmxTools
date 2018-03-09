@@ -16,7 +16,8 @@
 #' scm <- read_scm("E:/DrugX/ModelDevelopment/scm310")
 #' myRTF <- table_rtf(scm$forwardSummary)
 #' }
-#'
+#' 
+#' @author John Johnson, \email{johndjohnson@@gmail.com}
 #' @references \url{http://www.r-bloggers.com/another-solution-to-the-r-to-word-table-problem/}
 #'
 #' @export

@@ -32,4 +32,6 @@ scm <- readSCM("E:/DrugX/ModelDevelopment/scm310")
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

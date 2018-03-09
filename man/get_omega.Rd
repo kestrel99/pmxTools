@@ -18,15 +18,6 @@ get_omega(x, output = "est", sigdig = 6, sep = "-")
 }
 \value{
 A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
-
-\code{est} returns the estimated OMEGA variance-covariance matrix.
-\code{se} returns the standard errors for the estimated OMEGA variance-covariance matrix.
-\code{rse} returns the relative standard errors for the estimated OMEGA variance-covariance matrix (se/est*100).
-\code{cor} returns the correlation matrix matrix.
-\code{cse} returns the standard errors for the correlation matrix.
-\code{95ci} returns the asymptotic 95\% confidence intervals for the elements of the OMEGA variance-covariance
-matrix (est +/- 1.96*se).
-\code{all} returns all available OMEGA matrices.
 }
 \description{
 Extract variability parameter estimates from a NONMEM output object.
@@ -39,4 +30,15 @@ Extract variability parameter estimates from a NONMEM output object.
 }
 
 }
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
 
+\code{est} returns the estimated OMEGA variance-covariance matrix.
+\code{se} returns the standard errors for the estimated OMEGA variance-covariance matrix.
+\code{rse} returns the relative standard errors for the estimated OMEGA variance-covariance matrix (se/est*100).
+\code{cor} returns the correlation matrix matrix.
+\code{cse} returns the standard errors for the correlation matrix.
+\code{95ci} returns the asymptotic 95\% confidence intervals for the elements of the OMEGA variance-covariance
+matrix (est +/- 1.96*se).
+\code{all} returns all available OMEGA matrices.
+}

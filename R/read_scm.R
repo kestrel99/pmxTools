@@ -15,7 +15,9 @@
 #'   \item{backward}{all models evaluated during the backward elimination step of covariate
 #'   model building}
 #'   \item{backwardSummary}{the covariate relationships eliminated at each backward step}
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #' scm <- readSCM("E:/DrugX/ModelDevelopment/scm310")

@@ -28,4 +28,6 @@ Sample from the multivariate normal distribution to generate new sets of paramet
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

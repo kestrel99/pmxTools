@@ -36,4 +36,6 @@ myRTF <- table_rtf(scm$forwardSummary)
 \references{
 \url{http://www.r-bloggers.com/another-solution-to-the-r-to-word-table-problem/}
 }
-
+\author{
+John Johnson, \email{johndjohnson@gmail.com}
+}

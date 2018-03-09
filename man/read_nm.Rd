@@ -21,4 +21,6 @@ nmOutput <- read_nm("run315.xml")
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

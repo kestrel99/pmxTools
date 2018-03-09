@@ -21,7 +21,7 @@ A list of lists, containing 'Termination' (summary of NONMEM's termination
   a list of lists containing standard errors for the SIGMA matrix.
 }
 \description{
-\code{read_NMext} returns a summary of a given NONMEM run, including termination messages,
+\code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
 parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
 files must be available.
 }
@@ -32,4 +32,6 @@ read_nmext("run315", ".nmlst")
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

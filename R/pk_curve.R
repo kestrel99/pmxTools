@@ -10,6 +10,9 @@
 #' @param ss Assume steady state concentration (default \code{FALSE}).
 #'
 #' @return A data frame containing times (\code{t}) and concentrations (\code{cp}).
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @export
 #'
 #' @examples

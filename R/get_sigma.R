@@ -16,7 +16,9 @@
 #' \code{95ci} returns the asymptotic 95\% confidence intervals for the elements of the SIGMA variance-covariance
 #' matrix (est +/- 1.96*se).
 #' \code{all} returns all available SIGMA matrices.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  nmOutput <- read_nm("run315.xml")

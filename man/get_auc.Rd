@@ -32,4 +32,6 @@ Calculate the area under the curve (AUC) for each subject over the time interval
 \references{
 \url{https://code.google.com/archive/p/mifuns/}
 }
-
+\author{
+Leonid Gibiansky, \email{lgibiansky@quantpharm.com}
+}

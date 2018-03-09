@@ -27,4 +27,6 @@ Sample from the multivariate normal distribution using the SIGMA variance-covari
 }
 
 }
-
+\author{
+Justin Wilkins, \email{justin.wilkins@occams.com}
+}

@@ -11,7 +11,9 @@
 #' \code{eta} returns a vector of ETA shrinkages, as reported by NONMEM.
 #' \code{epsilon} returns EPSILON shrinkage, as reported by NONMEM.
 #' \code{all} returns both ETA and EPSILON shrinkage estimates as a list of vectors.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  nmOutput <- read_nm("run315.xml")

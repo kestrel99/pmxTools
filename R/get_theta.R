@@ -15,7 +15,9 @@
 #' \code{rse} returns a vector of THETA relative standard errors (se/est*100).
 #' \code{95ci} returns a vector of the asymptotic 95\% confidence intervals for the elements of THETA (est +/- 1.96*se).
 #' \code{all} returns all available THETA information as a list of named vectors.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  nmOutput <- read_nm("run315.xml")

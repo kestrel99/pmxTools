@@ -7,7 +7,9 @@
 #' @param sep Specifies the separator character to use for 95\% confidence intervals (default="-").
 #'
 #' @return A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' \code{est} returns the estimated OMEGA variance-covariance matrix.
 #' \code{se} returns the standard errors for the estimated OMEGA variance-covariance matrix.
 #' \code{rse} returns the relative standard errors for the estimated OMEGA variance-covariance matrix (se/est*100).

@@ -11,7 +11,8 @@
 #' @param tlag Lag time (h)
 #'
 #' @return Concentration of drug at requested time (\code{tad}) at steady-state, given provided set of parameters and variables.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
 #' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
 #'
@@ -45,45 +46,48 @@ calc_ss_2cmt_linear_oral_0_lag <- function(tad, CL, V1, V2, Q, dur, dose, tau, t
   ca1 <- A / alpha
   cb1 <- B / beta
 
-  # after absorption
+  # rest
+  
   c1a1 <- 1 - exp(-alpha * dur)
   c1a2 <- exp(-alpha * (tad - tlag - dur))
   c1a3 <- 1 - exp(-alpha * tau)
-
-  c1b1 <- 1 - exp(-beta * dur)
+  
+  c1b1 <- 1 - exp(-beta * dur) 
   c1b2 <- exp(-beta * (tad - tlag - dur))
   c1b3 <- 1 - exp(-beta * tau)
-
+  
   Ct <- c1 * (ca1 * ((c1a1 * c1a2) / c1a3) +
-                     (c1b1 * c1b2) / c1b3)
+              cb1 * ((c1b1 * c1b2) / c1b3))
 
   # during lag
+  
   c2a1 <- 1 - exp(-alpha * dur)
-  c2a2 <- exp(-alpha * (tad[tad < tlag] + tau - tlag - dur))
+  c2a2 <- exp(-alpha * (tad[tad <= tlag] + tau - tlag - dur))
   c2a3 <- 1 - exp(-alpha * tau)
-
+  
   c2b1 <- 1 - exp(-beta * dur)
-  c2b2 <- exp(-beta * (tad[tad < tlag] + tau - tlag - dur))
+  c2b2 <- exp(-beta * (tad[tad <= tlag] + tau - tlag - dur))
   c2b3 <- 1 - exp(-beta * tau)
+  
+  Ct[tad <= tlag] <- c1 * (ca1 * ((c2a1 * c2a2) / c2a3) +
+                           cb1 * ((c2b1 * c2b2) / c2b3))
 
-  Ct[tad < tlag] <- c1 * (ca1 * ((c2a1 * c2a2) / c2a3) +
-                    ((c2b1 * c2b2) / c2b3))
 
   # during zero order absorption
-  c3a1 <- 1 - exp(-alpha * (tad[tad >= tlag & tad < dur] - tlag))
-  c3a2 <- exp(-alpha * tau)
-  c3a3 <- 1 - exp(-alpha * dur)
-  c3a4 <- exp(-alpha * (tad[tad >= tlag & tad < dur] - tlag - dur))
-  c3a5 <- 1 - exp(-alpha * tau)
-
-  c3b1 <- 1 - exp(-beta * (tad[tad >= tlag & tad < dur] - tlag))
-  c3b2 <- exp(-beta * tau)
-  c3b3 <- 1 - exp(-beta * dur)
-  c3b4 <- exp(-beta * (tad[tad >= tlag & tad < dur] - tlag - dur))
-  c3b5 <- 1 - exp(-beta * tau)
-
-  Ct[tad >= tlag & tad < dur] <- c1 * ((ca1 * (c3a1 + c3a2*((c3a3 * c3a4)/c3a5))) +
-                                       (cb1 * (c3b1 + c3b2*((c3b3 * c3b4)/c3b5))))
+  
+  c3a1 <- 1 - exp(-alpha * (tad[tad > tlag & tad <= tlag + dur] - tlag))
+  c3a2 <- 1 - exp(-alpha * dur)
+  c3a3 <- exp(-alpha * (tad[tad > tlag & tad <= tlag + dur] - tlag - dur))
+  c3a4 <- 1 - exp(-alpha * tau)
+  
+  c3b1 <- 1 - exp(-beta * (tad[tad > tlag & tad <= tlag + dur] - tlag))
+  c3b2 <- 1 - exp(-beta * dur)
+  c3b3 <- exp(-beta * (tad[tad > tlag & tad <= tlag + dur] - tlag - dur))
+  c3b4 <- 1 - exp(-beta * tau)
+  
+  Ct[tad > tlag & tad <= tlag + dur] <-
+    c1 * (ca1 * (c3a1 + exp(-alpha * tau) * (c3a2 * c3a3 / c3a4)) +
+          cb1 * (c3b1 + exp(-beta * tau) * (c3b2 * c3b3 / c3b4)))
 
   Ct
 }

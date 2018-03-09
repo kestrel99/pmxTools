@@ -7,7 +7,9 @@
 #' @param sigdig The desired number of significant digits to display.
 #'
 #' @return A named vector of NONMEM model parameter estimates.
-#'
+#' 
+#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
+#' 
 #' @examples
 #' \dontrun{
 #'  nmOutput <- read_nm("run315.xml")

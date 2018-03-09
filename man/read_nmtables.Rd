@@ -28,7 +28,7 @@ A data frame.
 Reads NONMEM output tables.
 }
 \note{
-Adapted from Xpose 4 (\url{https://cran.r-project.org/web/packages/xpose4/index.html}).
+Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
 }
 \examples{
 \dontrun{
@@ -36,10 +36,9 @@ tables <- read_nmtables(315)
 }
 
 }
-\author{
-Justin Wilkins, Niclas Jonsson, Andrew Hooker
-}
 \seealso{
 Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64, \url{http://xpose4.sourceforge.net}
 }
-
+\author{
+Justin Wilkins, Niclas Jonsson, Andrew Hooker
+}
