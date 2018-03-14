@@ -2,7 +2,9 @@
 #'
 #' @param fileName A NONMEM XML output file (e.g. "run315.xml").
 #'
-#' @return A list of lists corresponding to the NONMEM output object.
+#' @return A list of lists corresponding to a NONMEM output object.
+#' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' 
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 

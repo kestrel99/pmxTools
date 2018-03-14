@@ -13,6 +13,8 @@
 #'
 #' @return A set of plots.
 #' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' 
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

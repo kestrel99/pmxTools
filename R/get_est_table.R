@@ -8,6 +8,7 @@
 #'
 #' @return A named vector of NONMEM model parameter estimates.
 #' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

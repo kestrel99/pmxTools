@@ -7,6 +7,7 @@
 #'
 #' @return A symmetrical variance-covariance matrix covering all model parameters.
 #'
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

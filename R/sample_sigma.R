@@ -7,7 +7,8 @@
 #' @return A data frame containing \code{n} samples from the multivariate normal distribution, using
 #' the estimated NONMEM SIGMA variance-covariance matrix. This provides \code{n} sets of EPSILON estimates
 #' suitable for simulation of new datasets.
-#'
+#' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

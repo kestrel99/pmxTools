@@ -32,6 +32,9 @@ read_nmext("run315", ".nmlst")
 }
 
 }
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+}
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }

@@ -23,6 +23,9 @@ Read in the NONMEM variance-covariance matrix.
 nmVcov <- read_nmcov("run315")
 }
 }
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+}
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }

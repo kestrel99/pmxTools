@@ -10,7 +10,8 @@
 #' @return A data frame.
 #'
 #' @note Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
-#' @seealso Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64, \url{http://xpose4.sourceforge.net}
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64
 #' @author Justin Wilkins, Niclas Jonsson, Andrew Hooker
 #'
 #' @examples

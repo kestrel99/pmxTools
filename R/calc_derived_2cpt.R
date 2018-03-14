@@ -25,6 +25,7 @@
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Shafer S. L. \code{CONVERT.XLS}
+#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #'
 #' @examples
 #' params <- calc_derived_2cpt(CL=16, V1=25, V2=50, Q=0.5)

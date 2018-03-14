@@ -37,7 +37,9 @@ tables <- read_nmtables(315)
 
 }
 \seealso{
-Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64, \url{http://xpose4.sourceforge.net}
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+
+Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64
 }
 \author{
 Justin Wilkins, Niclas Jonsson, Andrew Hooker

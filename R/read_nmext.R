@@ -15,6 +15,7 @@
 #'   a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
 #'   a list of lists containing standard errors for the SIGMA matrix.
 #' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

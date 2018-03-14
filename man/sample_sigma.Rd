@@ -27,6 +27,9 @@ Sample from the multivariate normal distribution using the SIGMA variance-covari
 }
 
 }
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+}
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }

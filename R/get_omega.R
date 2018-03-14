@@ -8,6 +8,7 @@
 #'
 #' @return A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
 #' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' \code{est} returns the estimated OMEGA variance-covariance matrix.

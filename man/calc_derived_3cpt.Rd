@@ -55,6 +55,8 @@ params <- calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73)
 }
 \references{
 Shafer S. L. \code{CONVERT.XLS}
+
+Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

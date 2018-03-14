@@ -38,6 +38,9 @@ from a NONMEM output object.
 }
 
 }
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+}
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }

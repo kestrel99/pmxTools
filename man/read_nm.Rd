@@ -10,7 +10,7 @@ read_nm(fileName)
 \item{fileName}{A NONMEM XML output file (e.g. "run315.xml").}
 }
 \value{
-A list of lists corresponding to the NONMEM output object.
+A list of lists corresponding to a NONMEM output object.
 }
 \description{
 Read NONMEM 7.2+ output into a list of lists.
@@ -20,6 +20,9 @@ Read NONMEM 7.2+ output into a list of lists.
 nmOutput <- read_nm("run315.xml")
 }
 
+}
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

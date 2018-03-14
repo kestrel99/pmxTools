@@ -17,6 +17,7 @@
 #' matrix (est +/- 1.96*se).
 #' \code{all} returns all available SIGMA matrices.
 #' 
+#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples
