@@ -4,7 +4,8 @@
 \alias{calc_ss_3cmt_linear_oral_1_lag}
 \title{Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing with a lag time}
 \usage{
-calc_ss_3cmt_linear_oral_1_lag(tad, CL, V1, V2, V3, Q2, Q3, ka, dose, tau, tlag)
+calc_ss_3cmt_linear_oral_1_lag(tad, CL, V1, V2, V3, Q2, Q3, ka, dose, tau,
+  tlag)
 }
 \arguments{
 \item{tad}{Time after dose (h)}

@@ -4,8 +4,8 @@
 \alias{get_est_table}
 \title{Create a table of model parameter estimates from a NONMEM output object.}
 \usage{
-get_est_table(x, thetaLabels = c(), omegaLabels = c(), sigmaLabels = c(),
-  sigdig = 3)
+get_est_table(x, thetaLabels = c(), omegaLabels = c(),
+  sigmaLabels = c(), sigdig = 3)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
