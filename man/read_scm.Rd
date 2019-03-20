@@ -17,9 +17,11 @@ A list of data frames, containing
   covariate model building}
   \item{forwardSummary}{the covariate relationships selected at each forward
   step}
+  \item{forwardP}{the P-value used for inclusion during the forward inclusion step}
   \item{backward}{all models evaluated during the backward elimination step of covariate
   model building}
   \item{backwardSummary}{the covariate relationships eliminated at each backward step}
+  \item{backwardP}{the P-value used for exclusion during the backward elimination step}
 }
 \description{
 \code{read_scm} returns a summary of a Perl-speaks-NONMEM (PsN, \url{https://uupharmacometrics.github.io/PsN/}) SCM (stepwise covariate modeling)
@@ -28,7 +30,7 @@ specified directory.
 }
 \examples{
 \dontrun{
-scm <- readSCM("E:/DrugX/ModelDevelopment/scm310")
+scm <- read_scm("E:/DrugX/ModelDevelopment/scm310")
 }
 
 }

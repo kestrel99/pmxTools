@@ -1,7 +1,7 @@
 Package: pmxTools
 Type: Package
 Title: Pharmacometric and Pharmacokinetic Toolkit
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(person("Justin", "Wilkins", email = "justin.wilkins@occams.com", role = c("aut", "cre")),
              person("Rik", "Schoemaker", email="rik.schoemaker@occams.com", role="aut"),
              person("Leonid", "Gibiansky", email="lgibiansky@quantpharm.com", role="ctb"),
@@ -19,5 +19,5 @@ Description: Pharmacometric tools for common data analytical tasks; closed-form 
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 6.1.0
-Imports: grid, stats, utils, MASS, XML, stringr, ggplot2, magrittr, GGally, plyr, PKNCA
+Imports: grid, stats, utils, MASS, XML, stringr, ggplot2, magrittr, GGally, plyr, PKNCA, ggrepel, gridExtra
 Suggests: testthat
