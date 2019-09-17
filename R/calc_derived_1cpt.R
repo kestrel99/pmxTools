@@ -1,8 +1,7 @@
-#' @rdname calc_derived_3cpt
+#' @rdname calc_derived
 #' @examples
 #' params <- calc_derived_1cpt(CL=16, V=25)
 #' @export
-
 calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, type="all", sigdig=5) {
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")

@@ -8,7 +8,8 @@ Authors@R: c(person("Justin", "Wilkins", email = "justin.wilkins@occams.com", ro
              person("Andrew", "Hooker", email="Andrew.Hooker@farmbio.uu.se", role="ctb"),
              person("E. Niclas", "Jonsson", email="niclas.jonsson@pharmetheus.com", role="ctb"),
              person("Mats O.", "Karlsson", email="mats.karlsson@farmbio.uu.se", role="ctb"),
-             person("John", "Johnson", email="johndjohnson@gmail.com", role="ctb"))
+             person("John", "Johnson", email="johndjohnson@gmail.com", role="ctb"),
+             person("Bill", "Denney", email="wdenney@humanpredictions.com", role="ctb", comment=c(ORCID="0000-0002-5759-428X")))
 Maintainer: Justin Wilkins <justin.wilkins@occams.com>
 Contact: Justin Wilkins <justin.wilkins@occams.com>
 Description: Pharmacometric tools for common data analytical tasks; closed-form solutions for calculating concentrations at given 
@@ -21,3 +22,4 @@ LazyData: TRUE
 RoxygenNote: 6.1.1
 Imports: grid, stats, utils, MASS, XML, stringr, ggplot2, magrittr, GGally, plyr, PKNCA, ggrepel, gridExtra
 Suggests: testthat
+Encoding: UTF-8
