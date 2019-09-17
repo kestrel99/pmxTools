@@ -8,7 +8,7 @@ test_that("1-compartment model", {
   expect_equal(
     t,
     list(k10=0.64, Vss=25, thalf=1.083, alpha=0.64, trueA=0.04, fracA=1,
-         V1=25, CL=16, ka=NULL, lag=NULL)
+         V1=25, CL=16, ka=NULL, tlag=NULL)
   )
 })
 
@@ -19,7 +19,7 @@ test_that("2-compartment model", {
     list(
       k10=0.64, k12=0.02, k21=0.01, Vss=75, thalf_alpha=1.0497, thalf_beta=71.514, alpha=0.66031, beta=0.0096925,
       trueA=0.039981, trueB=1.8908e-05, fracA=0.99953, fracB=0.0004727,
-      V1=25, V2=50, CL=16, Q2=0.5, ka=NULL, lag=NULL
+      V1=25, V2=50, CL=16, Q2=0.5, ka=NULL, tlag=NULL
     )
   )
 })
@@ -34,7 +34,7 @@ test_that("3-compartment model", {
       alpha=17.7, beta=0.59449, gamma=0.0044742,
       trueA=0.038279, trueB=0.0043467, trueC=0.0001098,
       fracA=0.89572, fracB=0.10171, fracC=0.0025692,
-      V1=23.4, V2=114, V3=4614, CL=29.4, Q2=270, Q3=73, ka=NULL, lag=NULL
+      V1=23.4, V2=114, V3=4614, CL=29.4, Q2=270, Q3=73, ka=NULL, tlag=NULL
     )
   )
 })
