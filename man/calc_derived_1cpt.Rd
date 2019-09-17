@@ -16,7 +16,7 @@ calc_derived_1cpt(CL, V, type = "all", sigdig = 5)
 \item{sigdig}{Number of significant digits to be returned. Default is 5.}
 }
 \value{
-Return a list of derived PK parameters for a 2-compartment linear model given provided clearances and volumes.
+Return a list of derived PK parameters for a 1-compartment linear model given provided clearances and volumes.
 \itemize{ 
   \item \code{Vss}: \eqn{V_{ss}} (L)
   \item \code{k10}: \eqn{k_{10}} (/h)

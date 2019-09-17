@@ -5,7 +5,7 @@
 #' @param type Type of half-life to return (\code{"Vss"}, \code{"k10"}, \code{"thalf"}, \code{"alpha"}, \code{"trueA"}, \code{"fracA"}, \code{"all"}). Default is \code{"all"}).
 #' @param sigdig Number of significant digits to be returned. Default is 5.
 #' 
-#' @return Return a list of derived PK parameters for a 2-compartment linear model given provided clearances and volumes.
+#' @return Return a list of derived PK parameters for a 1-compartment linear model given provided clearances and volumes.
 #' \itemize{ 
 #'   \item \code{Vss}: \eqn{V_{ss}} (L)
 #'   \item \code{k10}: \eqn{k_{10}} (/h)
