@@ -1,8 +1,7 @@
 #' Calculate C(t) for a 1-compartment linear model with zero-order absorption after a single oral dose, with lag time
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V Central volume of distribution (L)
+#' @inheritParams calc_derived
 #' @param dur Duration of zero-order absorption (h)
 #' @param dose Dose
 #' @param tlag Lag time (h)

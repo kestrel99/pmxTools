@@ -1,8 +1,7 @@
 #' Calculate C(t) for a 1-compartment linear model after a single IV bolus dose
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V Central volume of distribution (L)
+#' @param ... Passed to `calc_derived_1cpt()`
 #' @param dose Dose
 #'
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
@@ -13,18 +12,10 @@
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @examples
 #' Ctrough <- calc_sd_1cmt_linear_bolus(t=0:24, CL=6, V=25, dose=600)
-#'
 #' @export
-
-calc_sd_1cmt_linear_bolus <- function(t, CL, V, dose) {
-
-  ### microconstants
-  k   <- CL/V
-
+calc_sd_1cmt_linear_bolus <- function(t, ..., dose) {
+  param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.1 p. 5
-
-  Ct <- (dose/V) * exp(-k*t)
-
+  Ct <- (dose/param$V1) * exp(-param$k10*t)
   Ct
 }
-

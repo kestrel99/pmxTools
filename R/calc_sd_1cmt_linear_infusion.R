@@ -1,8 +1,7 @@
-#' Calculate C(t) for a 1-compartment linear model after a single infusion
+#' Calculate C(t) for a 1-compartment linear model after a single IV infusion
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V Central volume of distribution (L)
+#' @param ... Passed to `calc_derived_1cpt()`
 #' @param dose Dose
 #' @param tinf Duration of infusion (h)
 #'
@@ -15,20 +14,11 @@
 #'
 #' @examples
 #' Ctrough <- calc_sd_1cmt_linear_infusion(t=0:24, CL=6, V=25, dose=600, tinf=1)
-#'
 #' @export
-
-calc_sd_1cmt_linear_infusion <- function(t, CL, V, dose, tinf) {
-
-  ### microconstants
-  k   <- CL/V
-
+calc_sd_1cmt_linear_infusion <- function(t, ..., dose, tinf) {
+  param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.6 p. 7
-
-  Ct <- (dose/tinf) * (1 / (k*V) ) * (1 - exp(-k * tinf)) * exp(-k * (t-tinf))
-
-  Ct[t <= tinf] <- (dose/tinf) * (1 / (k*V) ) * (1 - exp(-k * t[t <= tinf]))
-
+  Ct <- (dose/tinf) * (1 / (param$k10*param$V1) ) * (1 - exp(-param$k10 * tinf)) * exp(-param$k10 * (t-tinf))
+  Ct[t <= tinf] <- (dose/tinf) * (1 / (param$k10*param$V1) ) * (1 - exp(-param$k10 * t[t <= tinf]))
   Ct
 }
-

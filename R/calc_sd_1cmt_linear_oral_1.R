@@ -1,9 +1,7 @@
 #' Calculate C(t) for a 1-compartment linear model with first-order absorption after a single oral dose
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V Central volume of distribution (L)
-#' @param ka First order absorption rate constant (/h)
+#' @param ... Passed to `calc_derived_1cpt()`
 #' @param dose Dose
 #'
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
@@ -15,18 +13,10 @@
 #'
 #' @examples
 #' Ctrough <- calc_sd_1cmt_linear_oral_1(t=0:24, CL=6, V=25, ka=1.1, dose=600)
-#'
 #' @export
-
-calc_sd_1cmt_linear_oral_1 <- function(t, CL, V, ka, dose) {
-
-  ### microconstants
-  k   <- CL/V
-
+calc_sd_1cmt_linear_oral_1 <- function(t, ..., dose) {
+  param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.11 p. 9
-
-  Ct <- (dose/V) * (ka / (ka - k)) * (exp(-k * t) - exp(-ka * t))
-
+  Ct <- (dose/param$V1) * (param$ka / (param$ka - param$k10)) * (exp(-param$k10 * t) - exp(-param$ka * t))
   Ct
 }
-

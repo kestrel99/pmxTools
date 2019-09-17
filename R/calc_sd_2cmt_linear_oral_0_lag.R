@@ -1,13 +1,9 @@
 #' Calculate C(t) for a 2-compartment linear model after a single zero-order oral dose, with lag time
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V1 Central volume of distribution (L)
-#' @param V2 Peripheral volume of distribution (L)
-#' @param Q Intercompartmental clearance (L/h)
+#' @param ... Passed to `calc_derived_2cpt()`
 #' @param dur Duration of zero-order absorption (h)
 #' @param dose Steady state dose
-#' @param tlag Lag time (h)
 #'
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
 #' 
@@ -22,34 +18,16 @@
 #'
 #' @export
 
-calc_sd_2cmt_linear_oral_0_lag <- function(t, CL, V1, V2, Q, dur, dose, tlag) {
-
-  ### microconstants - 1.2 p. 18
-  k   <- CL/V1
-  k12 <- Q/V1
-  k21 <- Q/V2
-
-  ### beta
-  beta  <- 0.5 * (k12 + k21 + k - sqrt((k12 + k21 + k)^2 - (4 * k21 * k)))
-
-  ### alpha
-  alpha <- (k21 * k)/beta
-
+calc_sd_2cmt_linear_oral_0_lag <- function(t, ..., dur, dose) {
+  param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
-
-  A <- (1/V1) * ((alpha - k21) / (alpha - beta))
-  B <- (1/V1) * ((beta - k21) / (beta - alpha))
-
+  A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
+  B <- (1/param$V1) * ((param$beta - param$k21) / (param$beta - param$alpha))
   ### C(t) after single dose - eq 1.54 p. 31
-
-  Ct <- (dose / dur) * (((A / alpha) * (1 - exp(-alpha * dur)) * exp(-alpha * (t - tlag - dur))) +
-                      ((B / beta) * (1 - exp(-beta * dur)) * exp(-beta * (t - tlag - dur))))
-
-  Ct[t < tlag] <- 0
-
-  Ct[t >= tlag & t < dur] <- (dose / dur) * ((A / alpha) * (1 - exp(-alpha * (t[t >= tlag & t < dur] - tlag))) +
-                                             (B / beta) * (1 - exp(-beta * (t[t >= tlag & t < dur] - tlag))))
-
+  Ct <- (dose / dur) * (((A / param$alpha) * (1 - exp(-param$alpha * dur)) * exp(-param$alpha * (t - param$tlag - dur))) +
+                      ((B / param$beta) * (1 - exp(-param$beta * dur)) * exp(-param$beta * (t - param$tlag - dur))))
+  Ct[t < param$tlag] <- 0
+  Ct[t >= param$tlag & t < dur] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * (t[t >= param$tlag & t < dur] - param$tlag))) +
+                                             (B / param$beta) * (1 - exp(-param$beta * (t[t >= param$tlag & t < dur] - param$tlag))))
   Ct
 }
-

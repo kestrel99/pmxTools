@@ -1,10 +1,7 @@
 #' Calculate C(t) for a 2-compartment linear model after a single zero-order oral dose
 #'
 #' @param t Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V1 Central volume of distribution (L)
-#' @param V2 Peripheral volume of distribution (L)
-#' @param Q Intercompartmental clearance (L/h)
+#' @param ... Passed to `calc_derived_2cpt()`
 #' @param dur Duration of zero-order absorption (h)
 #' @param dose Steady state dose
 #'
@@ -18,35 +15,16 @@
 #' @examples
 #' Ctrough <- calc_sd_2cmt_linear_oral_0(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5,
 #'     dose = 1000, dur = 1)
-#'
 #' @export
-
-calc_sd_2cmt_linear_oral_0 <- function(t, CL, V1, V2, Q, dur, dose) {
-
-  ### microconstants - 1.2 p. 18
-  k   <- CL/V1
-  k12 <- Q/V1
-  k21 <- Q/V2
-
-  ### beta
-  beta  <- 0.5 * (k12 + k21 + k - sqrt((k12 + k21 + k)^2 - (4 * k21 * k)))
-
-  ### alpha
-  alpha <- (k21 * k)/beta
-
+calc_sd_2cmt_linear_oral_0 <- function(t, ..., dur, dose) {
+  param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
-
-  A <- (1/V1) * ((alpha - k21) / (alpha - beta))
-  B <- (1/V1) * ((beta - k21) / (beta - alpha))
-
+  A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
+  B <- (1/param$V1) * ((param$beta - param$k21) / (param$beta - param$alpha))
   ### C(t) after single dose - eq 1.51 p. 29
-
-  Ct <- (dose / dur) * (((A / alpha) * (1 - exp(-alpha * dur)) * exp(-alpha * (t - dur))) +
-                      ((B / beta) * (1 - exp(-beta * dur)) * exp(-beta * (t - dur))))
-
-  Ct[t < dur] <- (dose / dur) * ((A / alpha) * (1 - exp(-alpha * t[t < dur])) +
-                                 (B / beta) * (1 - exp(-beta * t[t < dur])))
-
+  Ct <- (dose / dur) * (((A / param$alpha) * (1 - exp(-param$alpha * dur)) * exp(-param$alpha * (t - dur))) +
+                      ((B / param$beta) * (1 - exp(-param$beta * dur)) * exp(-param$beta * (t - dur))))
+  Ct[t < dur] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * t[t < dur])) +
+                                 (B / param$beta) * (1 - exp(-param$beta * t[t < dur])))
   Ct
 }
-
