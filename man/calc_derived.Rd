@@ -10,14 +10,14 @@
 \usage{
 calc_derived(..., verbose = FALSE)
 
-calc_derived_1cpt(CL, V = NULL, V1 = NULL, ka = NULL, lag = NULL,
+calc_derived_1cpt(CL, V = NULL, V1 = NULL, ka = NULL, tlag = NULL,
   type = "all", sigdig = 5)
 
 calc_derived_2cpt(CL, V1 = NULL, V2, Q2 = NULL, V = NULL, Q = NULL,
-  ka = NULL, lag = NULL, type = "all", sigdig = 5)
+  ka = NULL, tlag = NULL, type = "all", sigdig = 5)
 
 calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
-  Q = NULL, ka = NULL, lag = NULL, type = "all", sigdig = 5)
+  Q = NULL, ka = NULL, tlag = NULL, type = "all", sigdig = 5)
 }
 \arguments{
 \item{...}{Passed to the other `calc_derived_*()` functions.}
@@ -30,7 +30,7 @@ calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
 
 \item{ka}{Absorption rate (1/hr)}
 
-\item{lag}{Absorption lag time (hr)}
+\item{tlag}{Absorption lag time (hr)}
 
 \item{type}{Type of half-life to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.}
 
