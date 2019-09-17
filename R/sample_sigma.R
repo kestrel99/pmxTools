@@ -17,7 +17,7 @@
 #' }
 #'
 #' @export
-
+#' @importFrom MASS mvrnorm
 sample_sigma <- function(nmRun, n, seed) {
 
   set.seed(seed)

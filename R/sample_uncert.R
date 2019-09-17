@@ -18,7 +18,7 @@
 #' }
 #'
 #' @export
-
+#' @importFrom MASS mvrnorm
 sample_uncert <- function(nmRun, n, seed) {
 
   set.seed(seed)
