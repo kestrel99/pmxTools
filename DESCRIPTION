@@ -23,3 +23,4 @@ LazyData: TRUE
 RoxygenNote: 6.1.0
 Imports: grid, stats, utils, MASS, XML, stringr, ggplot2, magrittr, GGally, plyr, PKNCA, ggrepel, gridExtra
 Suggests: testthat
+Encoding: UTF-8
