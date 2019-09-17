@@ -2,7 +2,7 @@
 #' @examples
 #' params <- calc_derived_1cpt(CL=16, V=25)
 #' @export
-calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, type="all", sigdig=5) {
+calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, lag=NULL, type="all", sigdig=5) {
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")
   } else if (!is.null(V)) {
@@ -21,7 +21,12 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, type="all", sigdig=5) {
       thalf=signif(thalf, sigdig),
       alpha=signif(alpha, sigdig),
       trueA=signif(1/V1, sigdig),
-      fracA=1
+      fracA=1,
+      # Include the macro parameters
+      V1=V1,
+      CL=CL,
+      ka=ka,
+      lag=lag
     )
 
   if(type=="all") {

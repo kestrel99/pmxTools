@@ -2,7 +2,7 @@
 #' @examples
 #' params <- calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73)
 #' @export
-calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, type="all", sigdig=5) {
+calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, ka=NULL, lag=NULL, type="all", sigdig=5) {
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")
   } else if (!is.null(V)) {
@@ -69,7 +69,16 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       
       fracA=signif(c1*V1, sigdig),
       fracB=signif(c2*V1, sigdig),
-      fracC=signif(c3*V1, sigdig)
+      fracC=signif(c3*V1, sigdig),
+      # Include the macro parameters
+      V1=V1,
+      V2=V2,
+      V3=V3,
+      CL=CL,
+      Q2=Q2,
+      Q3=Q3,
+      ka=ka,
+      lag=lag
     )
   if(type=="all") {
     o <- out

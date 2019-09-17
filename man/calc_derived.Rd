@@ -10,14 +10,14 @@
 \usage{
 calc_derived(..., verbose = FALSE)
 
-calc_derived_1cpt(CL, V = NULL, V1 = NULL, type = "all",
-  sigdig = 5)
-
-calc_derived_2cpt(CL, V1 = NULL, V2, Q2 = NULL, V = NULL, Q = NULL,
+calc_derived_1cpt(CL, V = NULL, V1 = NULL, ka = NULL, lag = NULL,
   type = "all", sigdig = 5)
 
+calc_derived_2cpt(CL, V1 = NULL, V2, Q2 = NULL, V = NULL, Q = NULL,
+  ka = NULL, lag = NULL, type = "all", sigdig = 5)
+
 calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
-  Q = NULL, type = "all", sigdig = 5)
+  Q = NULL, ka = NULL, lag = NULL, type = "all", sigdig = 5)
 }
 \arguments{
 \item{...}{Passed to the other `calc_derived_*()` functions.}
@@ -27,6 +27,10 @@ calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
 \item{CL}{Clearance (L/h)}
 
 \item{V1, V}{Central volume of distribution (L).  Values are synonyms; use only one.}
+
+\item{ka}{Absorption rate (1/hr)}
+
+\item{lag}{Absorption lag time (hr)}
 
 \item{type}{Type of half-life to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.}
 
@@ -41,7 +45,7 @@ calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
 \item{Q3}{Intercompartmental clearance from central to second peripheral compartment (L/h)}
 }
 \value{
-Return a list of derived PK parameters for a 3-compartment linear model given provided clearances and volumes based on the `type`.
+Return a list of derived PK parameters for a 1-, 2-, or 3-compartment linear model given provided clearances and volumes based on the `type`.
 \itemize{ 
   \item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (L); 1-, 2-, and 3-compartment
   \item \code{k10}: First-order elimination rate, \eqn{k_{10}} (/h); 1-, 2-, and 3-compartment
@@ -62,6 +66,10 @@ Return a list of derived PK parameters for a 3-compartment linear model given pr
   \item \code{fracB}: fractional B; 2- and 3-compartment
   \item \code{fracC}: fractional C; 3-compartment
  }
+
+The input parameters with standardized names (`V1`, `V2`, `V3`, `CL`, `Q2`,
+and `Q3`) are also returned in the list, and if provided, additional PK
+parameters of `ka` and `lag` are also returned in the list.
 }
 \description{
 Calculate derived pharmacokinetic parameters for a 1-, 2-, or 3-compartment linear model.

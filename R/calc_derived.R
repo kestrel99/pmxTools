@@ -6,12 +6,14 @@
 #' @param V3 Second peripheral volume of distribution (L)
 #' @param Q2,Q Intercompartmental clearance from central to first peripheral compartment (L/h).  Values are synonyms; use only one.
 #' @param Q3 Intercompartmental clearance from central to second peripheral compartment (L/h)
+#' @param ka Absorption rate (1/hr)
+#' @param lag Absorption lag time (hr)
 #' @param type Type of half-life to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.
 #' @param sigdig Number of significant digits to be returned. Default is \code{5}.
 #' @param verbose For `calc_derived()`, provide a message indicating the type of model detected.
 #' @param ... Passed to the other `calc_derived_*()` functions.
 #' 
-#' @return Return a list of derived PK parameters for a 3-compartment linear model given provided clearances and volumes based on the `type`.
+#' @return Return a list of derived PK parameters for a 1-, 2-, or 3-compartment linear model given provided clearances and volumes based on the `type`.
 #' \itemize{ 
 #'   \item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (L); 1-, 2-, and 3-compartment
 #'   \item \code{k10}: First-order elimination rate, \eqn{k_{10}} (/h); 1-, 2-, and 3-compartment
@@ -32,6 +34,10 @@
 #'   \item \code{fracB}: fractional B; 2- and 3-compartment
 #'   \item \code{fracC}: fractional C; 3-compartment
 #'  }
+#'
+#' The input parameters with standardized names (`V1`, `V2`, `V3`, `CL`, `Q2`,
+#' and `Q3`) are also returned in the list, and if provided, additional PK
+#' parameters of `ka` and `lag` are also returned in the list.
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Shafer S. L. \code{CONVERT.XLS}
