@@ -1,23 +1,25 @@
-#' Calculate C(t) for a 3-compartment linear model after a single IV bolus dose
+#' Calculate C(t) for a 1-compartment linear model
 #'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param dose Dose
-#'
+#' @inheritParams calc_sd_1cmt
+#' @param ... Passed to `calc_derived_3cpt()`
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
+#'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
 #' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
-#' @examples
-#' Ctrough <- calc_sd_3cmt_linear_bolus(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
-#'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100)
-#'
+#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
+calc_sd_3cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
+  stop("Not yet implemented")
+}
 
-calc_sd_3cmt_linear_bolus <- function(t, CL, V1, V2, V3, Q2, Q3, dose) {
+#' @describeIn calc_sd_3cmt
+#' Calculate C(t) for a 3-compartment linear model after a single IV bolus dose
+#' @examples
+#' Ct <- calc_sd_3cmt_linear_bolus(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100)
+#' @export
+calc_sd_3cmt_linear_bolus <- function(t, dose, ...) {
 
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -61,28 +63,13 @@ calc_sd_3cmt_linear_bolus <- function(t, CL, V1, V2, V3, Q2, Q3, dose) {
   Ct
 }
 
+#' @describeIn calc_sd_3cmt
 #' Calculate C(t) for a 3-compartment linear model after a single oral dose
-#'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param ka First-order absorption rate constant (/h)
-#' @param dose Dose
-#' @param tlag Lag time (h)
-#'
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
-#' Ctrough <- calc_sd_3cmt_linear_oral_1_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#' Ct <- calc_sd_3cmt_linear_oral_1_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tlag = 1.5)
-#'
 #' @export
-
-calc_sd_3cmt_linear_oral_1_lag <- function(t, CL, V1, V2, V3, Q2, Q3, ka, dose, tlag) {
+calc_sd_3cmt_linear_oral_1_lag <- function(t, dose, ...) {
   
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -127,27 +114,13 @@ calc_sd_3cmt_linear_oral_1_lag <- function(t, CL, V1, V2, V3, Q2, Q3, ka, dose, 
   Ct
 }
 
+#' @describeIn calc_sd_3cmt
 #' Calculate C(t) for a 3-compartment linear model after a single IV infusion
-#'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param dose Dose
-#' @param tinf Duration of infusion (h)
-#'
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
-#' Ctrough <- calc_sd_3cmt_linear_infusion(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#' Ct <- calc_sd_3cmt_linear_infusion(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tinf=1)
-#'
 #' @export
-
-calc_sd_3cmt_linear_infusion <- function(t, CL, V1, V2, V3, Q2, Q3, dose, tinf) {
+calc_sd_3cmt_linear_infusion <- function(t, dose, tinf, ...) {
   
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -209,27 +182,13 @@ calc_sd_3cmt_linear_infusion <- function(t, CL, V1, V2, V3, Q2, Q3, dose, tinf) 
   Ct
 }
 
+#' @describeIn calc_sd_3cmt
 #' Calculate C(t) for a 3-compartment linear model after a single dose, with zero-order absorption
-#'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param dur Duration of zero-order absorption (h)
-#' @param dose Dose
-#'
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
-#' Ctrough <- calc_sd_3cmt_linear_oral_0(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#' Ct <- calc_sd_3cmt_linear_oral_0(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100)
-#'
 #' @export
-
-calc_sd_3cmt_linear_oral_0 <- function(t, CL, V1, V2, V3, Q2, Q3, dur, dose) {
+calc_sd_3cmt_linear_oral_0 <- function(t, dose, dur, ...) {
   
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -279,28 +238,13 @@ calc_sd_3cmt_linear_oral_0 <- function(t, CL, V1, V2, V3, Q2, Q3, dur, dose) {
   Ct
 }
 
+#' @describeIn calc_sd_3cmt
 #' Calculate C(t) for a 3-compartment linear model after a single dose, with zero-order absorption and a lag time
-#'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param dur Duration of zero-order absorption (h)
-#' @param dose Dose
-#' @param tlag Lag time (h)
-#'
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
-#' Ctrough <- calc_sd_3cmt_linear_oral_0_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#' Ct <- calc_sd_3cmt_linear_oral_0_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100, tlag=1.5)
-#'
 #' @export
-
-calc_sd_3cmt_linear_oral_0_lag <- function(t, CL, V1, V2, V3, Q2, Q3, dur, dose, tlag) {
+calc_sd_3cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
   
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
@@ -352,27 +296,13 @@ calc_sd_3cmt_linear_oral_0_lag <- function(t, CL, V1, V2, V3, Q2, Q3, dur, dose,
   Ct
 }
 
+#' @describeIn calc_sd_3cmt
 #' Calculate C(t) for a 3-compartment linear model after a single oral dose
-#'
-#' @param t Time after dose (h)
-#' @inheritParams calc_derived
-#' @param ka First-order absorption rate constant (/h)
-#' @param dose Dose
-#'
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
-#' Ctrough <- calc_sd_3cmt_linear_oral_1(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
+#' Ct <- calc_sd_3cmt_linear_oral_1(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100)
-#'
 #' @export
-
-calc_sd_3cmt_linear_oral_1 <- function(t, CL, V1, V2, V3, Q2, Q3, ka, dose) {
+calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
   
   ### microconstants - 1.3 p. 37
   k   <- CL/V1
