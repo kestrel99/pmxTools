@@ -30,7 +30,7 @@
 #' }
 #'
 #' @export
-
+#' @importFrom stringr str_extract str_split
 read_scm <- function(dir, startPhase="forward") {
   
   Drop <- PVal <- NULL  # appease CRAN

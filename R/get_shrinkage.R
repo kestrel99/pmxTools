@@ -29,33 +29,52 @@ get_shrinkage <- function(x, output = "eta", sigdig = 3) {
   }
 
   eta <-
-    signif(as.numeric(x$nonmem$problem$estimation$etashrink[seq(1,
-                                                                length(x$nonmem$problem$estimation$etashrink) -
-                                                                  1, by = 2)]),
-           sigdig)
+    signif(as.numeric(
+      x$nonmem$problem$estimation$etashrink[
+        seq(1,
+            length(x$nonmem$problem$estimation$etashrink) - 1,
+            by = 2)
+        ]
+      ),
+      digits=sigdig
+    )
   names(eta) <-
-    as.character(x$nonmem$problem$estimation$etashrink[seq(2,
-                                                           length(x$nonmem$problem$estimation$etashrink) -
-                                                             1, by = 2)])
-
+    as.character(
+      x$nonmem$problem$estimation$etashrink[
+        seq(2,
+            length(x$nonmem$problem$estimation$etashrink) - 1,
+            by = 2)
+        ]
+      )
   eps <-
-    signif(as.numeric(x$nonmem$problem$estimation$epsshrink[seq(1,
-                                                                length(x$nonmem$problem$estimation$epsshrink) -
-                                                                  1, by = 2)]),
-           sigdig)
+    signif(as.numeric(
+      x$nonmem$problem$estimation$epsshrink[
+        seq(1,
+            length(x$nonmem$problem$estimation$epsshrink) - 1,
+            by = 2)
+        ]
+      ),
+      digits=sigdig
+    )
   names(eps) <-
-    as.character(x$nonmem$problem$estimation$epsshrink[seq(2,
-                                                           length(x$nonmem$problem$estimation$epsshrink) -
-                                                             1, by = 2)])
+    as.character(
+      x$nonmem$problem$estimation$epsshrink[
+        seq(2,
+            length(x$nonmem$problem$estimation$epsshrink) - 1,
+            by = 2)
+        ]
+    )
 
-  if (output == "eta")
+  if (output == "eta") {
     out <- eta
-  if (output == "epsilon")
+  } else if (output == "epsilon") {
     out <- eps
-  if (output == "all") {
+  } else if (output == "all") {
     out <- list()
     out$eta <- eta
     out$epsilon <- eps
+  } else {
+    stop("Unknown `output` argument value: ", output)
   }
 
   out
