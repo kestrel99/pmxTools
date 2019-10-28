@@ -29,9 +29,6 @@ get_shrinkage <- function (x, output = "eta", type="sd", sigdig = 3) {
   if (!(output %in% c("eta", "epsilon", "all"))) {
     stop("Please select a valid output option (eta, epsilon, all).")
   }
-  if (!(type %in% c("sd", "vr"))) {
-    stop("Please select a valid shrinkage type option (sd, vr).")
-  }
   
   if(!is.null(x$nonmem$problem$estimation$etashrink)) {
     eta <- signif(as.numeric(x$nonmem$problem$estimation$etashrink[seq(1, 

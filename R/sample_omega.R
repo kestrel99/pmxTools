@@ -17,7 +17,7 @@
 #' }
 #'
 #' @export
-
+#' @importFrom MASS mvrnorm
 sample_omega <- function(nmRun, n, seed) {
 
   set.seed(seed)

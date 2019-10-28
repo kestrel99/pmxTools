@@ -14,7 +14,7 @@
 #' }
 #'
 #' @export
-
+#' @importFrom XML xmlToList xmlTreeParse
 read_nm <- function(fileName) {
 
   if(length(grep(".xml$", fileName))==0) {
@@ -23,7 +23,6 @@ read_nm <- function(fileName) {
 
   nmFile <- XML::xmlTreeParse(fileName)
   XML::xmlToList(nmFile)
-
 }
 
 
