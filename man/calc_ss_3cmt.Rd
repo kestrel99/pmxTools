@@ -36,33 +36,9 @@ calc_ss_3cmt_linear_oral_1(tad, tau, dose, ...)
 \item{tinf}{Duration of infusion (h)}
 
 \item{...}{Passed to `calc_derived_3cpt()`}
-
-\item{tad}{Time after dose (h)}
-
-\item{CL}{Clearance (L/h)}
-
-\item{V1}{Central volume of distribution (L)}
-
-\item{V2}{First peripheral volume of distribution (L)}
-
-\item{V3}{Second peripheral volume of distribution (L)}
-
-\item{Q2}{Intercompartmental clearance between V1 and V2 (L/h)}
-
-\item{Q3}{Intercompartmental clearance between V2 and V3 (L/h)}
-
-\item{ka}{First-order absorption rate constant (/h)}
-
-\item{dose}{Dose}
-
-\item{tau}{Dosing interval (h)}
-
-\item{tlag}{Lag time (h)}
 }
 \value{
-Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
-
-Concentration of drug at requested time (\code{t}) at steady state after oral dosing, given provided set of parameters and variables.
+Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
 }
 \description{
 Calculate C(t) for a 3-compartment linear model at steady-state
@@ -87,7 +63,6 @@ Ct <- calc_ss_3cmt_linear_bolus(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tau=24)
 Ctrough <- calc_ss_3cmt_linear_oral_1_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tau=24, tlag = 1.5)
-
 Ct <- calc_ss_3cmt_linear_infusion(tad = 11.75, CL = 2.5, V1 = 20, V2 = 50,
     V3 = 100, Q2 = 0.5, Q3 = 0.05, dose = 1000, tinf=1, tau=24)
 Ct <- calc_ss_3cmt_linear_oral_0(tad = 11.75, CL = 3.5, V1 = 20, V2 = 500,
@@ -102,14 +77,7 @@ Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic an
 implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
 
 Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-
-Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-
-Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
 }
 \author{
-Justin Wilkins, \email{justin.wilkins@occams.com}
-
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }

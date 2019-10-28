@@ -38,7 +38,7 @@ calc_ss_2cmt_linear_oral_1(tad, tau, dose, ...)
 \item{...}{Passed to `calc_derived_2cpt()`}
 }
 \value{
-Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
+Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
 }
 \description{
 Calculate C(t) for a 2-compartment linear model at steady-state

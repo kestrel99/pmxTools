@@ -144,13 +144,9 @@ calc_sd_2cmt_linear_oral_0 <- function(t, dose, dur, ...) {
 # Steady-state ####
 #' Calculate C(t) for a 2-compartment linear model at steady-state
 #'
-#' @param tad Time after dose (h)
-#' @param tau Dosing interval (h)
-#' @param dose Dose
-#' @param dur Duration of zero-order absorption (h)
-#' @param tinf Duration of infusion (h)
+#' @inheritParams calc_ss_1cmt
 #' @param ... Passed to `calc_derived_2cpt()`
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
+#' @return Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
