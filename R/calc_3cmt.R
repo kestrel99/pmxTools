@@ -167,13 +167,9 @@ calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
 
 #' Calculate C(t) for a 3-compartment linear model at steady-state
 #'
-#' @param tad Time after dose (h)
-#' @param tau Dosing interval (h)
-#' @param dose Dose
-#' @param dur Duration of zero-order absorption (h)
-#' @param tinf Duration of infusion (h)
+#' @inheritParams calc_ss_1cmt
 #' @param ... Passed to `calc_derived_3cpt()`
-#' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
+#' @return Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
@@ -207,32 +203,10 @@ calc_ss_3cmt_linear_bolus <- function(tad, tau, dose, ...) {
 
 #' @describeIn calc_ss_3cmt
 #' Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing with a lag time
-#'
-#' @param tad Time after dose (h)
-#' @param CL Clearance (L/h)
-#' @param V1 Central volume of distribution (L)
-#' @param V2 First peripheral volume of distribution (L)
-#' @param V3 Second peripheral volume of distribution (L)
-#' @param Q2 Intercompartmental clearance between V1 and V2 (L/h)
-#' @param Q3 Intercompartmental clearance between V2 and V3 (L/h)
-#' @param ka First-order absorption rate constant (/h)
-#' @param dose Dose
-#' @param tau Dosing interval (h)
-#' @param tlag Lag time (h)
-#'
-#' @return Concentration of drug at requested time (\code{t}) at steady state after oral dosing, given provided set of parameters and variables.
-#' 
-#' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
-#' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
-#' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.
-#' 
 #' @examples
 #' Ctrough <- calc_ss_3cmt_linear_oral_1_lag(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tau=24, tlag = 1.5)
-#'
 #' @export
-
 calc_ss_3cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.3 p. 44

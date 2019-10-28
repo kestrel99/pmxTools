@@ -4,13 +4,16 @@
 \alias{get_shrinkage}
 \title{Extract shrinkage estimates from a NONMEM output object.}
 \usage{
-get_shrinkage(x, output = "eta", sigdig = 3)
+get_shrinkage(x, output = "eta", type = "sd", sigdig = 3)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
 
 \item{output}{A flag specifying the shrinkage estimates to be output. Valid flag
 values are \code{eta} (the default), \code{epsilon}, or \code{all}.}
+
+\item{type}{Specifies the type of shrinkage to report. Valid values are \code{sd} 
+(standard deviation, the default) or \code{vr} (variance, if present in the XML output).}
 
 \item{sigdig}{Specifies the number of significant digits to be provided (default=3).}
 }
