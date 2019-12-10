@@ -4,8 +4,15 @@
 \alias{pk_curve}
 \title{Provide concentration-time curves.}
 \usage{
-pk_curve(t, model = "1cmt_oral", params = list(ka = 2.77, CL = 2.5, V =
-  25), dose = 600, ii = 24, addl = 0, ss = F)
+pk_curve(
+  t,
+  model = "1cmt_oral",
+  params = list(ka = 2.77, CL = 2.5, V = 25),
+  dose = 600,
+  ii = 24,
+  addl = 0,
+  ss = F
+)
 }
 \arguments{
 \item{t}{Observation time in h, specified as a vector.}

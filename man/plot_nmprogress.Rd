@@ -4,8 +4,13 @@
 \alias{plot_nmprogress}
 \title{Plot NONMEM parameter estimation by iteration.}
 \usage{
-plot_nmprogress(fileName, fileExt = ".lst", metric = "perc",
-  lineCol = "#902C10", idlineCol = "black")
+plot_nmprogress(
+  fileName,
+  fileExt = ".lst",
+  metric = "perc",
+  lineCol = "#902C10",
+  idlineCol = "black"
+)
 }
 \arguments{
 \item{fileName}{A NONMEM output file prefix, without extension (e.g. 'run315').}

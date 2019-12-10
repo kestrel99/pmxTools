@@ -4,9 +4,14 @@
 \alias{read_nmtables}
 \title{Reads NONMEM output tables.}
 \usage{
-read_nmtables(tableFiles = NULL, runNo = NULL, tabSuffix = "",
-  tableNames = c("sdtab", "mutab", "patab", "catab", "cotab", "mytab",
-  "extra", "xptab"), quiet = FALSE, ...)
+read_nmtables(
+  tableFiles = NULL,
+  runNo = NULL,
+  tabSuffix = "",
+  tableNames = c("sdtab", "mutab", "patab", "catab", "cotab", "mytab", "extra", "xptab"),
+  quiet = FALSE,
+  ...
+)
 }
 \arguments{
 \item{tableFiles}{NONMEM table files to be read.}
