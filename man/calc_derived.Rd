@@ -60,7 +60,7 @@ calc_derived_3cpt(
 
 \item{tlag}{Absorption lag time (hr)}
 
-\item{type}{Type of half-life to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.}
+\item{type}{Parameters to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.}
 
 \item{sigdig}{Number of significant digits to be returned. Default is \code{5}.}
 

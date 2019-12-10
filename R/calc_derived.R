@@ -8,7 +8,7 @@
 #' @param Q3 Intercompartmental clearance from central to second peripheral compartment (L/h)
 #' @param ka Absorption rate (1/hr)
 #' @param tlag Absorption lag time (hr)
-#' @param type Type of half-life to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.
+#' @param type Parameters to return. Default is \code{"all"}; see details for other options that are specific to the number of compartments.
 #' @param sigdig Number of significant digits to be returned. Default is \code{5}.
 #' @param verbose For `calc_derived()`, provide a message indicating the type of model detected.
 #' @param ... Passed to the other `calc_derived_*()` functions.
