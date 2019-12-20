@@ -101,4 +101,3 @@ get_est_table <- function (x, thetaLabels = c(), omegaLabels = c(),
   out
   
 }
-

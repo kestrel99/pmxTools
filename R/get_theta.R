@@ -6,6 +6,7 @@
 #'  \code{se}, \code{rse}, \code{95ci}, or \code{all}.
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
 #' @param sep Specifies the separator character to use for 95\% confidence intervals (default="-").
+#' @param est.step Specifies which estimation step to return parameters from (default is the last).
 #'
 #' @return A named vector of NONMEM model parameter estimates, or in the case of \code{all},
 #' a list of named vectors.
@@ -27,58 +28,66 @@
 #'
 #' @export
 
-get_theta <- function(x, output="est", sigdig=6, sep="-") {
+get_theta <- function(x, output="est", sigdig=6, sep="-", est.step=NULL) {
 
   if (!(output %in% c("est", "se", "rse", "95ci", "all"))) {
     stop("Please select a valid output option (est, se, rse, 95ci, all).")
   }
 
+  if(is.null(est.step)) {
+    no_steps <- sum(stringr::str_count(names(x$nonmem$problem), "estimation"))
+  } else {
+    no_steps <- est.step
+  }
+  
+  ind_est  <- match("estimation", names(x$nonmem$problem))-1+no_steps
+  
   if(output=="est") {
-    out <- signif(as.numeric(x$nonmem$problem$estimation$theta[1,]), sigdig)
-    names(out) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    out <- signif(as.numeric(x$nonmem$problem[[ind_est]]$theta[1,]), sigdig)
+    names(out) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
   }
 
   if(output=="se") {
-    out <- signif(as.numeric(x$nonmem$problem$estimation$thetase[1,]), sigdig)
-    names(out) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    out <- signif(as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,]), sigdig)
+    names(out) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
   }
 
   if(output=="rse") {
-    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
-    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    est <- as.numeric(x$nonmem$problem[[ind_est]]$theta[1,])
+    se  <- as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,])
     out <- signif(abs(se/est*100), sigdig)
-    names(out) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    names(out) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
   }
 
   if(output=="95ci") {
-    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
-    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    est <- as.numeric(x$nonmem$problem[[ind_est]]$theta[1,])
+    se  <- as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,])
     outup <- signif(est + 1.96*se, sigdig)
     outlo <- signif(est - 1.96*se, sigdig)
     out <- paste(outlo, outup, sep=sep)
-    names(out) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    names(out) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
   }
 
   if(output=="all") {
     out <- list()
 
-    out$Theta <- signif(as.numeric(x$nonmem$problem$estimation$theta[1,]), sigdig)
-    names(out$Theta) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    out$Theta <- signif(as.numeric(x$nonmem$problem[[ind_est]]$theta[1,]), sigdig)
+    names(out$Theta) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
 
-    out$ThetaSE <- signif(as.numeric(x$nonmem$problem$estimation$thetase[1,]), sigdig)
-    names(out$ThetaSE) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    out$ThetaSE <- signif(as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,]), sigdig)
+    names(out$ThetaSE) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
 
-    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
-    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    est <- as.numeric(x$nonmem$problem[[ind_est]]$theta[1,])
+    se  <- as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,])
     out$ThetaRSE <- signif(abs(se/est*100), sigdig)
-    names(out$ThetaRSE) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    names(out$ThetaRSE) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
 
-    est <- as.numeric(x$nonmem$problem$estimation$theta[1,])
-    se  <- as.numeric(x$nonmem$problem$estimation$thetase[1,])
+    est <- as.numeric(x$nonmem$problem[[ind_est]]$theta[1,])
+    se  <- as.numeric(x$nonmem$problem[[ind_est]]$thetase[1,])
     outup <- signif(est + 1.96*se, sigdig)
     outlo <- signif(est - 1.96*se, sigdig)
     out$Theta95CI <- paste(outlo, outup, sep=sep)
-    names(out$Theta95CI) <- paste("THETA", x$nonmem$problem$estimation$theta[2,], sep="")
+    names(out$Theta95CI) <- paste("THETA", x$nonmem$problem[[ind_est]]$theta[2,], sep="")
   }
 
   out

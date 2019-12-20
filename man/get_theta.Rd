@@ -5,7 +5,7 @@
 \title{Extract structural model parameter estimates and associated information
 from a NONMEM output object.}
 \usage{
-get_theta(x, output = "est", sigdig = 6, sep = "-")
+get_theta(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
@@ -16,6 +16,8 @@ get_theta(x, output = "est", sigdig = 6, sep = "-")
 \item{sigdig}{Specifies the number of significant digits to be provided (default=6).}
 
 \item{sep}{Specifies the separator character to use for 95\% confidence intervals (default="-").}
+
+\item{est.step}{Specifies which estimation step to return parameters from (default is the last).}
 }
 \value{
 A named vector of NONMEM model parameter estimates, or in the case of \code{all},

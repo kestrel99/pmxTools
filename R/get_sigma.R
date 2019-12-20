@@ -5,7 +5,8 @@
 #'  \code{se}, \code{rse}, \code{cor}, \code{cse}, \code{95ci}, or \code{all}.
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
 #' @param sep Specifies the separator character to use for 95\% confidence intervals (default="-").
-#'
+#' @param est.step Specifies which estimation step to return parameters from (default is the last).
+#' 
 #' @return A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
 #'
 #' \code{est} returns the estimated SIGMA variance-covariance matrix.
@@ -29,174 +30,178 @@
 #'
 #' @export
 
-get_sigma <- function(x, output = "est", sigdig=6, sep="-") {
-
+get_sigma <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL) 
+{
   processMatrix <- function(worklist) {
     nrows <- length(worklist)
-    m <- matrix(nrow=nrows, ncol=nrows, dimnames=list(paste("SIGMA", 1:nrows, sep=""), paste("SIGMA", 1:nrows, sep="")))
-
-    for(i in 1:nrows) {
+    m <- matrix(nrow = nrows, ncol = nrows, dimnames = list(paste("SIGMA", 
+                                                                  1:nrows, sep = ""), paste("SIGMA", 1:nrows, sep = "")))
+    for (i in 1:nrows) {
       a <- as.numeric(unlist(worklist[i]))
-      a <- a[1:length(a)-1]
-      a <- a[seq(1, length(a), by=2)]
-      m[i,1:length(a)] <- a
+      a <- a[1:length(a) - 1]
+      a <- a[seq(1, length(a), by = 2)]
+      m[i, 1:length(a)] <- a
     }
-
-    for(i in 1:nrows) {
-      for(j in 1:nrows) {
-        if(is.na(m[i,j])) {
-          m[i,j] <- m[j,i]
+    for (i in 1:nrows) {
+      for (j in 1:nrows) {
+        if (is.na(m[i, j])) {
+          m[i, j] <- m[j, i]
         }
       }
     }
-
-    m[m==1e+10] <- NA
+    m[m == 1e+10] <- NA
     m
   }
-
-
-  if(!(output %in% c("est","se","rse","cor","cse","95ci","all"))) {
+  if (!(output %in% c("est", "se", "rse", "cor", "cse", "95ci", 
+                      "all"))) {
     stop("Please select a valid output option (est, se, rse, 95ci, cor, cse, all).")
   }
-
-  if (length(grep("row", names(x$nonmem$problem$estimation$sigma))) == 0) {
-    ### single dimension
+  
+  if(is.null(est.step)) {
+    no_steps <- sum(stringr::str_count(names(x$nonmem$problem), "estimation"))
+  } else {
+    no_steps <- est.step
+  }
+  
+  ind_est  <- match("estimation", names(x$nonmem$problem))-1+no_steps
+  
+  if (length(grep("row", names(x$nonmem$problem[[ind_est]]$sigma))) == 
+      0) {
     if (output == "est") {
-      o <- matrix(signif(as.numeric(x$nonmem$problem$estimation$sigma)[1], sigdig), dimnames=list("SIGMA1","SIGMA1"))
+      o <- matrix(signif(as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1], 
+                         sigdig), dimnames = list("SIGMA1", "SIGMA1"))
       o[o == 1e+10] <- NA
     }
-
     if (output == "se") {
-      o <- matrix(signif(as.numeric(x$nonmem$problem$estimation$sigmase)[1], sigdig), dimnames=list("SIGMA1","SIGMA1"))
+      o <- matrix(signif(as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1], 
+                         sigdig), dimnames = list("SIGMA1", "SIGMA1"))
       o[o == 1e+10] <- NA
     }
-
     if (output == "cor") {
-      o <- matrix(signif(as.numeric(x$nonmem$problem$estimation$sigmac)[1], sigdig), dimnames=list("SIGMA1","SIGMA1"))
+      o <- matrix(signif(as.numeric(x$nonmem$problem[[ind_est]]$sigmac)[1], 
+                         sigdig), dimnames = list("SIGMA1", "SIGMA1"))
       o[o == 1e+10] <- NA
     }
-
     if (output == "cse") {
-      o <- matrix(signif(as.numeric(x$nonmem$problem$estimation$sigmacse)[1], sigdig), dimnames=list("SIGMA1","SIGMA1"))
+      o <- matrix(signif(as.numeric(x$nonmem$problem[[ind_est]]$sigmacse)[1], 
+                         sigdig), dimnames = list("SIGMA1", "SIGMA1"))
       o[o == 1e+10] <- NA
     }
-
     if (output == "rse") {
-      m1 <- as.numeric(x$nonmem$problem$estimation$sigma)[1]
-      m2 <- as.numeric(x$nonmem$problem$estimation$sigmase)[1]
-
-      if(m2==1e+10) m2 <- NA
-
-      m  <- matrix(m2 / m1 * 100, dimnames=list("SIGMA1","SIGMA1"))
+      m1 <- as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1]
+      m2 <- as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1]
+      if (m2 == 1e+10) 
+        m2 <- NA
+      m <- matrix(m2/m1 * 100, dimnames = list("SIGMA1", 
+                                               "SIGMA1"))
       m[is.infinite(m)] <- NA
       o <- signif(m, sigdig)
       o[o == 1e+10] <- NA
     }
-
     if (output == "95ci") {
-      m1 <- as.numeric(x$nonmem$problem$estimation$sigma)[1]
-      m2 <- as.numeric(x$nonmem$problem$estimation$sigmase)[1]
-
-      if(m2==1e+10) m2 <- NA
-
-      oup <- signif(m1 + 1.96*m2, sigdig)
-      olo <- signif(m1 - 1.96*m2, sigdig)
-      o <- matrix(paste(olo, oup, sep=sep), dimnames=list("SIGMA1","SIGMA1"))
+      m1 <- as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1]
+      m2 <- as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1]
+      if (m2 == 1e+10) 
+        m2 <- NA
+      oup <- signif(m1 + 1.96 * m2, sigdig)
+      olo <- signif(m1 - 1.96 * m2, sigdig)
+      o <- matrix(paste(olo, oup, sep = sep), dimnames = list("SIGMA1", 
+                                                              "SIGMA1"))
     }
-
     if (output == "all") {
       out <- list()
-
-      out$Sigma <- matrix(signif(as.numeric(x$nonmem$problem$estimation$sigma)[1], sigdig), dimnames=list("SIGMA1","SIGMA1"))
-
-      m <- as.numeric(x$nonmem$problem$estimation$sigmase)[1]
-      if(m==1e+10) m <- NA
-      out$SigmaSE <- matrix(signif(m, sigdig), dimnames=list("SIGMA1","SIGMA1"))
-
-      m1 <- as.numeric(x$nonmem$problem$estimation$sigma)[1]
-      m2 <- as.numeric(x$nonmem$problem$estimation$sigmase)[1]
-      if(m2==1e+10) m2 <- NA
-      m  <- matrix(m2 / m1 * 100, dimnames=list("SIGMA1","SIGMA1"))
+      out$Sigma <- matrix(signif(as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1], 
+                                 sigdig), dimnames = list("SIGMA1", "SIGMA1"))
+      m <- as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1]
+      if (m == 1e+10) 
+        m <- NA
+      out$SigmaSE <- matrix(signif(m, sigdig), dimnames = list("SIGMA1", 
+                                                               "SIGMA1"))
+      m1 <- as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1]
+      m2 <- as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1]
+      if (m2 == 1e+10) 
+        m2 <- NA
+      m <- matrix(m2/m1 * 100, dimnames = list("SIGMA1", 
+                                               "SIGMA1"))
       m[is.infinite(m)] <- NA
-      out$SigmaRSE           <- signif(m, sigdig)
-
-      m1 <- as.numeric(x$nonmem$problem$estimation$sigma)[1]
-      m2 <- as.numeric(x$nonmem$problem$estimation$sigmase)[1]
-
-      if(m2==1e+10) m2 <- NA
-
-      oup <- signif(m1 + 1.96*m2, sigdig)
-      olo <- signif(m1 - 1.96*m2, sigdig)
-      out$Sigma95CI <- paste(olo, oup, sep=sep)
-
-      m <- as.numeric(x$nonmem$problem$estimation$sigmac)[1]
-      if(m==1e+10) m <- NA
-      out$SigmaCorrelation   <- matrix(signif(m, sigdig), dimnames=list("SIGMA1","SIGMA1"))
-
-      m <- as.numeric(x$nonmem$problem$estimation$sigmacse)[1]
-      if(m==1e+10) m <- NA
-      out$SigmaCorrelationSE <- matrix(signif(m, sigdig), dimnames=list("SIGMA1","SIGMA1"))
-
+      out$SigmaRSE <- signif(m, sigdig)
+      m1 <- as.numeric(x$nonmem$problem[[ind_est]]$sigma)[1]
+      m2 <- as.numeric(x$nonmem$problem[[ind_est]]$sigmase)[1]
+      if (m2 == 1e+10) 
+        m2 <- NA
+      oup <- signif(m1 + 1.96 * m2, sigdig)
+      olo <- signif(m1 - 1.96 * m2, sigdig)
+      out$Sigma95CI <- paste(olo, oup, sep = sep)
+      m <- as.numeric(x$nonmem$problem[[ind_est]]$sigmac)[1]
+      if (m == 1e+10) 
+        m <- NA
+      out$SigmaCorrelation <- matrix(signif(m, sigdig), 
+                                     dimnames = list("SIGMA1", "SIGMA1"))
+      m <- as.numeric(x$nonmem$problem[[ind_est]]$sigmacse)[1]
+      if (m == 1e+10) 
+        m <- NA
+      out$SigmaCorrelationSE <- matrix(signif(m, sigdig), 
+                                       dimnames = list("SIGMA1", "SIGMA1"))
       o <- out
     }
-
-  } else {  ### matrix
-
-    if(output=="est") {
-      o <- signif(processMatrix(x$nonmem$problem$estimation$sigma), sigdig)
+  }
+  else {
+    if (output == "est") {
+      o <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigma), 
+                  sigdig)
     }
-
-    if(output=="se") {
-      o <- signif(processMatrix(x$nonmem$problem$estimation$sigmase), sigdig)
+    if (output == "se") {
+      o <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmase), 
+                  sigdig)
     }
-
-    if(output=="cor") {
-      o <- signif(processMatrix(x$nonmem$problem$estimation$sigmac), sigdig)
+    if (output == "cor") {
+      o <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmac), 
+                  sigdig)
     }
-
-    if(output=="cse") {
-      o <- signif(processMatrix(x$nonmem$problem$estimation$sigmacse), sigdig)
+    if (output == "cse") {
+      o <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmacse), 
+                  sigdig)
     }
-
-    if(output=="rse") {
-      m1 <- processMatrix(x$nonmem$problem$estimation$sigma)
-      m2 <- processMatrix(x$nonmem$problem$estimation$sigmase)
-      m  <- m2/m1*100
+    if (output == "rse") {
+      m1 <- processMatrix(x$nonmem$problem[[ind_est]]$sigma)
+      m2 <- processMatrix(x$nonmem$problem[[ind_est]]$sigmase)
+      m <- m2/m1 * 100
       m[is.infinite(m)] <- NA
       o <- signif(m, sigdig)
     }
-
-    if(output=="95ci") {
-      m1 <- processMatrix(x$nonmem$problem$estimation$sigma)
-      m2 <- processMatrix(x$nonmem$problem$estimation$sigmase)
-      mup <- signif(m1 + 1.96*m2, sigdig)
-      mlo <- signif(m1 - 1.96*m2, sigdig)
-      m <- matrix(paste(mlo, mup, sep=sep), nrow=nrow(m1), ncol=ncol(m2), dimnames=dimnames(m1))
+    if (output == "95ci") {
+      m1 <- processMatrix(x$nonmem$problem[[ind_est]]$sigma)
+      m2 <- processMatrix(x$nonmem$problem[[ind_est]]$sigmase)
+      mup <- signif(m1 + 1.96 * m2, sigdig)
+      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
+                  ncol = ncol(m2), dimnames = dimnames(m1))
       o <- m
     }
-
-    if(output=="all") {
+    if (output == "all") {
       out <- list()
-      out$Sigma              <- signif(processMatrix(x$nonmem$problem$estimation$sigma), sigdig)
-      out$SigmaSE            <- signif(processMatrix(x$nonmem$problem$estimation$sigmase), sigdig)
-
-      m1 <- processMatrix(x$nonmem$problem$estimation$sigma)
-      m2 <- processMatrix(x$nonmem$problem$estimation$sigmase)
-      m  <- m2/m1*100
+      out$Sigma <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigma), 
+                          sigdig)
+      out$SigmaSE <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmase), 
+                            sigdig)
+      m1 <- processMatrix(x$nonmem$problem[[ind_est]]$sigma)
+      m2 <- processMatrix(x$nonmem$problem[[ind_est]]$sigmase)
+      m <- m2/m1 * 100
       m[is.infinite(m)] <- NA
-      out$SigmaRSE           <- signif(m, sigdig)
-
-      m1 <- processMatrix(x$nonmem$problem$estimation$sigma)
-      m2 <- processMatrix(x$nonmem$problem$estimation$sigmase)
-      mup <- signif(m1 + 1.96*m2, sigdig)
-      mlo <- signif(m1 - 1.96*m2, sigdig)
-      m <- matrix(paste(mlo, mup, sep=sep), nrow=nrow(m1), ncol=ncol(m2), dimnames=dimnames(m1))
+      out$SigmaRSE <- signif(m, sigdig)
+      m1 <- processMatrix(x$nonmem$problem[[ind_est]]$sigma)
+      m2 <- processMatrix(x$nonmem$problem[[ind_est]]$sigmase)
+      mup <- signif(m1 + 1.96 * m2, sigdig)
+      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
+                  ncol = ncol(m2), dimnames = dimnames(m1))
       out$Sigma95CI <- m
-
-      out$SigmaCorrelation   <- signif(processMatrix(x$nonmem$problem$estimation$sigmac), sigdig)
-      out$SigmaCorrelationSE <- signif(processMatrix(x$nonmem$problem$estimation$sigmacse), sigdig)
-
+      out$SigmaCorrelation <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmac), 
+                                     sigdig)
+      out$SigmaCorrelationSE <- signif(processMatrix(x$nonmem$problem[[ind_est]]$sigmacse), 
+                                       sigdig)
       o <- out
-    }}
+    }
+  }
   o
 }

@@ -4,7 +4,7 @@
 \alias{get_sigma}
 \title{Extract residual variability parameter estimates from a NONMEM output object.}
 \usage{
-get_sigma(x, output = "est", sigdig = 6, sep = "-")
+get_sigma(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
@@ -15,6 +15,8 @@ get_sigma(x, output = "est", sigdig = 6, sep = "-")
 \item{sigdig}{Specifies the number of significant digits to be provided (default=6).}
 
 \item{sep}{Specifies the separator character to use for 95\% confidence intervals (default="-").}
+
+\item{est.step}{Specifies which estimation step to return parameters from (default is the last).}
 }
 \value{
 A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.

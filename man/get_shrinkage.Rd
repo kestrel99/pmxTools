@@ -4,7 +4,7 @@
 \alias{get_shrinkage}
 \title{Extract shrinkage estimates from a NONMEM output object.}
 \usage{
-get_shrinkage(x, output = "eta", type = "sd", sigdig = 3)
+get_shrinkage(x, output = "eta", type = "sd", sigdig = 3, est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
@@ -16,6 +16,8 @@ values are \code{eta} (the default), \code{epsilon}, or \code{all}.}
 (standard deviation, the default) or \code{vr} (variance, if present in the XML output).}
 
 \item{sigdig}{Specifies the number of significant digits to be provided (default=3).}
+
+\item{est.step}{Specifies which estimation step to return parameters from (default is the last).}
 }
 \value{
 A named vector of NONMEM shrinkage estimates, or in the case of \code{all},

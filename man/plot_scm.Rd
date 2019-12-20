@@ -4,9 +4,18 @@
 \alias{plot_scm}
 \title{Plot PsN SCM results.}
 \usage{
-plot_scm(dir, phase = "both", lineCol = "#902C10", lineType = 1,
-  lineSize = 1, pointCol = "#902C10", pointShape = 16,
-  pointSize = 3, textCol = "black", textSize = 5)
+plot_scm(
+  dir,
+  phase = "both",
+  lineCol = "#902C10",
+  lineType = 1,
+  lineSize = 1,
+  pointCol = "#902C10",
+  pointShape = 16,
+  pointSize = 3,
+  textCol = "black",
+  textSize = 5
+)
 }
 \arguments{
 \item{dir}{A PsN SCM folder (containing \code{scmlog.txt}).}
