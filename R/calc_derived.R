@@ -21,7 +21,7 @@
 #'   \item \code{k21}: First-order rate of transfer from first peripheral to central compartment, \eqn{k_{21}} (/h); 2- and 3-compartment
 #'   \item \code{k13}: First-order rate of transfer from central to second peripheral compartment, \eqn{k_{13}} (/h); 3-compartment
 #'   \item \code{k31}: First-order rate of transfer from second peripheral to central compartment,\eqn{k_{31}} (/h); 3-compartment
-#'   \item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (h); 2- and 3-compartment
+#'   \item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (h); 1-, 2-, and 3-compartment
 #'   \item \code{thalf_beta}: \eqn{t_{1/2,\beta}} (h); 2- and 3-compartment
 #'   \item \code{thalf_gamma}: \eqn{t_{1/2,\gamma}} (h); 3-compartment
 #'   \item \code{alpha}: \eqn{\alpha}; 1-, 2-, and 3-compartment
@@ -37,7 +37,8 @@
 #'
 #' The input parameters with standardized names (`V1`, `V2`, `V3`, `CL`, `Q2`,
 #' and `Q3`) are also returned in the list, and if provided, additional PK
-#' parameters of `ka` and `lag` are also returned in the list.
+#' parameters of `ka` and `lag` are also returned in the list.  All inputs may
+#' be scalars or vectors.
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Shafer S. L. \code{CONVERT.XLS}
@@ -213,9 +214,10 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
   root2 <- -(cos(phi + 2 * pi/3) * r2 - a2/3)
   root3 <- -(cos(phi + 4 * pi/3) * r2 - a2/3)
   
-  i1 <- max(c(root1, root2, root3))
-  i2 <- median(c(root1, root2, root3))
-  i3 <- min(c(root1, root2, root3))
+  i1 <- pmax(root1, root2, root3)
+  # There is no pmedian function
+  i2 <- mapply(FUN=function(...) median(c(...)), root1, root2, root3)
+  i3 <- pmin(root1, root2, root3)
   
   c1 <- (k21 - i1) * (k31 - i1) / (i1 - i2) / (i1 - i3) / V1
   c2 <- (k21 - i2) * (k31 - i2) / (i2 - i1) / (i2 - i3) / V1
