@@ -1,7 +1,7 @@
 # pmxTools
 Pharmacometric Tools for Modeling &amp; Simulation
 
-Developed by *Justin Wilkins*, *Bill Denney* and *Rik Schoemaker*, with contributions from a host of others.
+Developed by **Justin Wilkins**, **Bill Denney** and **Rik Schoemaker**, with contributions from a host of others.
 
 Pharmacometric tools for common data analytical tasks; closed-form solutions for calculating concentrations at given 
     times after dosing based on compartmental PK models (1-compartment, 2-compartment and 3-compartment, covering infusions, zero- 
