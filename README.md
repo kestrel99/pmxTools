@@ -1,5 +1,6 @@
 # pmxTools
 Pharmacometric Tools for Modeling &amp; Simulation
+[![Build Status](https://travis-ci.org/kestrel99/pmxTools.png?branch=master)](https://travis-ci.org/kestrel99/pmxTools)
 
 Developed by **Justin Wilkins**, **Bill Denney** and **Rik Schoemaker**, with contributions from a host of others.
 
