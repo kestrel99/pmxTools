@@ -81,7 +81,7 @@ Return a list of derived PK parameters for a 1-, 2-, or 3-compartment linear mod
   \item \code{k21}: First-order rate of transfer from first peripheral to central compartment, \eqn{k_{21}} (/h); 2- and 3-compartment
   \item \code{k13}: First-order rate of transfer from central to second peripheral compartment, \eqn{k_{13}} (/h); 3-compartment
   \item \code{k31}: First-order rate of transfer from second peripheral to central compartment,\eqn{k_{31}} (/h); 3-compartment
-  \item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (h); 2- and 3-compartment
+  \item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (h); 1-, 2-, and 3-compartment
   \item \code{thalf_beta}: \eqn{t_{1/2,\beta}} (h); 2- and 3-compartment
   \item \code{thalf_gamma}: \eqn{t_{1/2,\gamma}} (h); 3-compartment
   \item \code{alpha}: \eqn{\alpha}; 1-, 2-, and 3-compartment
@@ -97,7 +97,8 @@ Return a list of derived PK parameters for a 1-, 2-, or 3-compartment linear mod
 
 The input parameters with standardized names (`V1`, `V2`, `V3`, `CL`, `Q2`,
 and `Q3`) are also returned in the list, and if provided, additional PK
-parameters of `ka` and `lag` are also returned in the list.
+parameters of `ka` and `lag` are also returned in the list.  All inputs may
+be scalars or vectors.
 }
 \description{
 Calculate derived pharmacokinetic parameters for a 1-, 2-, or 3-compartment linear model.

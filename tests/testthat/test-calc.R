@@ -190,6 +190,3 @@ test_that("3-compartment linear, first-order oral with lag time, steady-state", 
   t <- calc_ss_3cmt_linear_oral_1_lag(t=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, ka = 1.5, tlag = 1.2, tau=12)
   expect_equal(signif(t, 4), c(0.10400, 0.41810, 0.19010, 0.13210, 0.10400, 0.08716, 0.07516, 0.06561, 0.05757))
 })
-
-
-
