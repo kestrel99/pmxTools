@@ -60,5 +60,8 @@ pcv <- function(x, na.rm=FALSE) {
 #' \url{http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
 #' @export
 gcv_convert <- function(gvar=gsd^2, gsd) {
+  if (!xor(missing(gvar), missing(gsd))) {
+    stop("Only one of `gvar` or `gsd` may be provided at a time.")
+  }
   100*sqrt(exp(gvar)-1)
 }
