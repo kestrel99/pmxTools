@@ -38,3 +38,27 @@ gm <- function(x) {
 pcv <- function(x, na.rm=FALSE) {
   sd(x, na.rm=na.rm)/mean(x, na.rm=na.rm)*100 
 }
+
+#' Convert geometric variance or standard deviation to a geometric coefficient of variation
+#'
+#' The equation used is: \code{100*sqrt(exp(gvar)-1)}
+#'
+#' @param gvar The geometric variance (note that this is the variance not a
+#'   vector of values to compute the gcv from)
+#' @param gsd The geometric standard deviation
+#'
+#' @return
+#' 
+#' @author Bill Denney
+#'
+#' @examples
+#' gcv_convert(0.2)
+#' gcv_convert(gsd=0.2)
+#' @references 
+#' \url{https://www.cognigen.com/nonmem/nm/99feb042003.html}
+#' 
+#' \url{http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
+#' @export
+gcv_convert <- function(gvar=gsd^2, gsd) {
+  100*sqrt(exp(gvar)-1)
+}
