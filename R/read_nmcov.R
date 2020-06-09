@@ -18,10 +18,16 @@
 #' @export
 
 read_nmcov <- function(fileName) {
-  if(file.exists(paste(fileName, ".cov", sep=""))) {
-    as.matrix(read.table(paste(fileName, ".cov", sep=""), skip=1, header=T, row.names=1))
-  } else {
-    stop(paste("File ", paste(fileName, ".cov", sep=""), " not found.", sep=""))
+  if (!file.exists(fileName)) {
+    fileName_orig <- fileName
+    fileName <- paste0(fileName, ".cov")
+    if (!file.exists(fileName)) {
+      stop("Neither ", fileName, " nor ", fileName_orig, " exist.")
+    } else {
+      message(fileName_orig, " does not exist, trying ", fileName, ".")
+    }
   }
+  as.matrix(
+    read.table(fileName, skip=1, header=TRUE, row.names=1)
+  )
 }
-

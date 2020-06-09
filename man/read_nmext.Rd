@@ -7,30 +7,32 @@
 read_nmext(fileName, fileExt = ".lst")
 }
 \arguments{
-\item{fileName}{A NONMEM output file prefix, without extension (e.g. "run315").}
+\item{fileName}{A NONMEM output file prefix, without extension (e.g.
+"run315").}
 
-\item{fileExt}{The file extension for NONMEM output, set to ".lst" by default.}
+\item{fileExt}{The file extension for NONMEM output, set to ".lst" by
+default.}
 }
 \value{
-A list of lists, containing 'Termination' (summary of NONMEM's termination
-  output, including shrinkages and ETABAR estimates), 'OFV' (the objective function
-  value), 'Thetas' (a vector of structural parameter estimates, or THETAs), 'Omega',
-  a list of lists containing the OMEGA matrix, 'Sigma', a list of lists containing
-  the SIGMA matrix, 'seThetas', a vector of standard errors for THETAs, 'seOmega',
-  a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
-  a list of lists containing standard errors for the SIGMA matrix.
+A list of lists, containing 'Termination' (summary of NONMEM's
+  termination output, including shrinkages and ETABAR estimates), 'OFV' (the
+  objective function value), 'Thetas' (a vector of structural parameter
+  estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
+  matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
+  vector of standard errors for THETAs, 'seOmega', a list of lists containing
+  standard errors for the OMEGA matrix, and 'seSigma', a list of lists
+  containing standard errors for the SIGMA matrix.
 }
 \description{
-\code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
-parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
-files must be available.
+\code{read_nmext} returns a summary of a given NONMEM run, including
+termination messages, parameter estimates, and precision estimates.
+Minimally, the NONMEM output and '.ext' files must be available.
 }
 \examples{
 \dontrun{
 read_nmext("run315")
 read_nmext("run315", ".nmlst")
 }
-
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})

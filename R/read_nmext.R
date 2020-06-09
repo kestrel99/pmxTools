@@ -1,19 +1,22 @@
 #' Read NONMEM output into a list.
 #'
-#' \code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
-#' parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
-#' files must be available.
+#' \code{read_nmext} returns a summary of a given NONMEM run, including
+#' termination messages, parameter estimates, and precision estimates.
+#' Minimally, the NONMEM output and '.ext' files must be available.
 #'
-#' @param fileName A NONMEM output file prefix, without extension (e.g. "run315").
-#' @param fileExt  The file extension for NONMEM output, set to ".lst" by default.
+#' @param fileName A NONMEM output file prefix, without extension (e.g.
+#'   "run315").
+#' @param fileExt  The file extension for NONMEM output, set to ".lst" by
+#'   default.
 #'
-#' @return A list of lists, containing 'Termination' (summary of NONMEM's termination
-#'   output, including shrinkages and ETABAR estimates), 'OFV' (the objective function
-#'   value), 'Thetas' (a vector of structural parameter estimates, or THETAs), 'Omega',
-#'   a list of lists containing the OMEGA matrix, 'Sigma', a list of lists containing
-#'   the SIGMA matrix, 'seThetas', a vector of standard errors for THETAs, 'seOmega',
-#'   a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
-#'   a list of lists containing standard errors for the SIGMA matrix.
+#' @return A list of lists, containing 'Termination' (summary of NONMEM's
+#'   termination output, including shrinkages and ETABAR estimates), 'OFV' (the
+#'   objective function value), 'Thetas' (a vector of structural parameter
+#'   estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
+#'   matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
+#'   vector of standard errors for THETAs, 'seOmega', a list of lists containing
+#'   standard errors for the OMEGA matrix, and 'seSigma', a list of lists
+#'   containing standard errors for the SIGMA matrix.
 #' 
 #' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
@@ -23,12 +26,10 @@
 #' read_nmext("run315")
 #' read_nmext("run315", ".nmlst")
 #' }
-#'
-#' @import utils
 #' @export
 
 read_nmext <- function(fileName, fileExt = ".lst") {
-  fileName <- paste(fileName, fileExt, sep = "")
+  fileName <- paste0(fileName, fileExt)
   nmFile <-
     scan(fileName,
          sep = "\n",
@@ -48,7 +49,7 @@ read_nmext <- function(fileName, fileExt = ".lst") {
       termMsg <- substring(termMsg, 2)
     }
   extFileName <-
-    paste(sub("\\.\\w*$", "", fileName), ".ext", sep = "")
+    paste0(sub("\\.\\w*$", "", fileName), ".ext")
   if (!file.exists(extFileName)) {
     stop(paste(
       "Could not find the raw results file (",
@@ -58,7 +59,7 @@ read_nmext <- function(fileName, fileExt = ".lst") {
       ".\n"
     ))
   } else {
-    extData <- read.table(extFileName, skip = 1, header = T)
+    extData <- read.table(extFileName, skip = 1, header = TRUE)
   }
 
   ofv          <- extData$OBJ[extData$ITERATION == -1e+09]
@@ -203,4 +204,3 @@ read_nmext <- function(fileName, fileExt = ".lst") {
   )
   return(out)
 }
-
