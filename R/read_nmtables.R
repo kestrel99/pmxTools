@@ -26,13 +26,10 @@ read_nmtables <-
   function(tableFiles = NULL,
            runNo      = NULL,
            tabSuffix  = "",
-           tableNames = c("sdtab","mutab","patab","catab",
-                          "cotab","mytab","extra","xptab"),
+           tableNames = c("sdtab", "mutab", "patab", "catab",
+                          "cotab", "mytab", "extra", "xptab"),
            quiet = FALSE,
            ...) {
-
-    ### based on read.nm.tables function from Xpose 4
-    ### written by Andrew C. Hooker, Justin J. Wilkins, Mats O. Karlsson and E. Niclas Jonsson
 
     if (is.null(tableFiles)){
       if(is.null(runNo)) {
@@ -55,25 +52,29 @@ read_nmtables <-
       if(!file.exists(filename)) {
         next
       } else {
-        cat(paste("    Reading",filename,"\n"))
+        cat(paste("    Reading", filename, "\n"))
 
         ## Check which type of separator we have in our tables
-        header.line = scan(file=filename, nlines=1, skip=1, what="character", sep="\n", quiet=T)
+        header.line = scan(file=filename, nlines=1, skip=1, what="character", sep="\n", quiet=TRUE)
         sep.char = ""
-        if(length(grep(",",header.line))!=0) sep.char = ","
+        if (length(grep(",", header.line)) != 0) {
+          sep.char = ","
+        }
 
         ## Check if we have unequal number of fields in the file
         ## used for multiple simulations
         fields.per.line      <- count.fields(filename)
         fields.in.first.line <- fields.per.line[1]
         fields.in.rest       <- fields.per.line[-1]
-        if((length(unique(fields.in.rest))!=1) ||
-           (all(fields.in.first.line==fields.in.rest))){
-          if(!quiet) {
-            cat(paste(filename," conatins varying numbers of fields.\n",sep=""))
-            cat("This may be due to multiple TABLE and header rows \n")
-            cat("caused by running multiple simulations in NONMEM (NSIM > 1).\n")
-            cat("Will attempt to remove these rows. Please be patient...\n")
+        if((length(unique(fields.in.rest)) != 1) ||
+           (all(fields.in.first.line == fields.in.rest))) {
+          if (!quiet) {
+            message(
+              filename, " conatins varying numbers of fields.  ",
+              "This may be due to multiple TABLE and header rows ",
+              "caused by running multiple simulations in NONMEM (NSIM > 1).",
+              "Will attempt to remove these rows. Please be patient..."
+            )
           }
           tmp   <- readLines(filename, n = -1)
           inds  <- grep("TABLE",tmp)
@@ -83,20 +84,29 @@ read_nmtables <-
             tempfile<- paste(filename,".xptmp",sep="")
             write.table(tmp[-c(inds,inds2)],file=tempfile,
                         row.names=FALSE,quote=FALSE)
-            assign(paste("n.",filename,sep=""),read.table(tempfile,skip=2,header=T,sep=sep.char))
+            assign(
+              paste("n.",filename,sep=""),
+              read.table(tempfile,skip=2,header=TRUE,sep=sep.char)
+            )
             unlink(tempfile)
           } else {
-            assign(paste("n.",filename,sep=""),read.table(filename,skip=1,header=T,sep=sep.char))
+            assign(
+              paste("n.", filename, sep=""),
+              read.table(filename, skip=1, header=TRUE, sep=sep.char)
+            )
           }
         } else {
-          assign(paste("n.",filename,sep=""),read.table(filename,skip=1,header=T,sep=sep.char))
+          assign(
+            paste("n.", filename,sep=""),
+            read.table(filename, skip=1, header=TRUE, sep=sep.char)
+          )
         }
 
         ## Remember the files seen
         ##if(is.null(seen.files)) {
         ##  seen.files <- paste("n.",filename,sep="")
         ##} else {
-        seen.files <- c(seen.files,paste("n.",filename,sep=""))
+        seen.files <- c(seen.files, paste("n.",filename,sep=""))
         ##}
       }
     }
@@ -105,8 +115,7 @@ read_nmtables <-
 
     if(any(is.null(seen.files))) {
       #if(tab.suffix!=sim.suffix) {
-      cat("There don't seem to be any table files matching this row number (",
-          runNo, ")!\n")
+      warning("There don't seem to be any table files matching this run number (", runNo, ")!\n")
       return(NULL)
     }
 
@@ -123,13 +132,13 @@ read_nmtables <-
     lngths  <- sort(unique(file.df$filedim))
 
     if(length(lngths) !=1) {
-      cat("\nThe table files associated with this run number (",runNo,
-          ") appear\n")
-      cat("to have different lengths.\n")
-      cat("Please check your output, it is likely files have been modified or the $TABLE step has failed.\n")
+      message(
+        "The table files associated with this run number (", runNo, ") appear ",
+        "to have different lengths. ",
+        "Please check your output, it is likely files have been modified or the $TABLE step has failed."
+      )
       return(NULL)
     }
-
 
     ## Add the tables to totab and replicate the shorter ones to match
     ## the size of the longest one
@@ -139,25 +148,25 @@ read_nmtables <-
     ##  c("id","idlab","idv","dv","pred","ipred","iwres","wres","res")
 
     for(ii in 1:nrow(file.df)) {
-      filnam <- as.character(file.df[ii,"seen.files"])
+      filnam <- as.character(file.df[ii, "seen.files"])
       new.df <- get(filnam)
-      sz     <- file.df[ii,"filedim"]
+      sz     <- file.df[ii, "filedim"]
       rl     <- maxlngth/sz
 
       if(any(is.null(totab))) {
         totab <- new.df
       } else {
-        totab <- cbind(totab,new.df)
+        totab <- cbind(totab, new.df)
       }
 
-      totnam <- c(totnam,names(new.df))
+      totnam <- c(totnam, names(new.df))
 
       ## store parameters & covariates for Data.R & SData.R
 
-      if(!is.na(pmatch("n.patab", filnam))){
+      if (!is.na(pmatch("n.patab", filnam))){
         write(names(new.df), file=".patab.names.tmp")
       } else {
-        if(!is.na(pmatch("n.catab", filnam))){
+        if (!is.na(pmatch("n.catab", filnam))){
           write(names(new.df), file=".catab.names.tmp")
         } else {
           if(!is.na(pmatch("n.cotab", filnam))){
@@ -169,15 +178,10 @@ read_nmtables <-
           }
         }
       }
-
-
     }
-
-    # cat(totnam, "\n")
 
     ## Delete all duplicates
 
     totab <- totab[, !duplicated(totnam)]
     return(totab)
   }
-
