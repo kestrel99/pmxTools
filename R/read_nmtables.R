@@ -3,8 +3,12 @@
 #' @param tableFiles NONMEM table files to be read.
 #' @param runNo Run number.
 #' @param tabSuffix Table file suffix.
-#' @param tableNames List of root table names, using the Xpose naming convention as the default.
-#' @param quiet Flag for displaying intermediate output (defaults to \code{FALSE}).
+#' @param tableNames List of root table names, using the Xpose naming convention
+#'   as the default.
+#' @param quiet Flag for displaying intermediate output (defaults to
+#'   \code{FALSE}).
+#' @param directory The directory to look for files within.  If NULL, uses the
+#'   current directory.
 #' @param ... Additional arguments.
 #'
 #' @return A data frame.
