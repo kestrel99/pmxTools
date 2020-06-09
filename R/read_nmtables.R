@@ -9,9 +9,12 @@
 #'   \code{FALSE}).
 #' @param directory The directory to look for files within.  If NULL, uses the
 #'   current directory.
+#' @param output_type Should output be a "data.frame" where all results are
+#'   merged or a "list" of data.frames.
 #' @param ... Additional arguments.
 #'
-#' @return A data frame.
+#' @return A data.frame or list of data.frames depending on the
+#'   \code{output_type} argument.
 #'
 #' @note Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
 #' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})

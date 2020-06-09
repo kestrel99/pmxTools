@@ -32,10 +32,14 @@ as the default.}
 \item{directory}{The directory to look for files within.  If NULL, uses the
 current directory.}
 
+\item{output_type}{Should output be a "data.frame" where all results are
+merged or a "list" of data.frames.}
+
 \item{...}{Additional arguments.}
 }
 \value{
-A data frame.
+A data.frame or list of data.frames depending on the
+  \code{output_type} argument.
 }
 \description{
 Reads NONMEM output tables.
