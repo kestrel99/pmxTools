@@ -4,10 +4,17 @@
 \alias{read_nm}
 \title{Read NONMEM 7.2+ output into a list of lists.}
 \usage{
-read_nm(fileName)
+read_nm(fileName, directory = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{fileName}{A NONMEM XML output file (e.g. "run315.xml").}
+
+\item{directory}{The directory to look for files within.  If NULL, uses the
+current directory.}
+
+\item{quiet}{Flag for displaying intermediate output.}
+
+\item{...}{Passed to each of the read functions (ignored in the functions).}
 }
 \value{
 A list of lists corresponding to a NONMEM output object.
@@ -19,11 +26,18 @@ Read NONMEM 7.2+ output into a list of lists.
 \dontrun{
 nmOutput <- read_nm("run315.xml")
 }
-
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nmcov}()},
+\code{\link{read_nmext}()},
+\code{\link{read_nmtables}()},
+\code{\link{read_scm}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }
+\concept{NONMEM reading}

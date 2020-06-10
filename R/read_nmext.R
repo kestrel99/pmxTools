@@ -4,6 +4,7 @@
 #' termination messages, parameter estimates, and precision estimates.
 #' Minimally, the NONMEM output and '.ext' files must be available.
 #'
+#' @inheritParams read_nm_all
 #' @param fileName A NONMEM output file prefix, without extension (e.g.
 #'   "run315").
 #' @param fileExt  The file extension for NONMEM output, set to ".lst" by
@@ -19,6 +20,7 @@
 #'   containing standard errors for the SIGMA matrix.
 #' 
 #' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @family NONMEM reading
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples
@@ -27,11 +29,17 @@
 #' read_nmext("run315", ".nmlst")
 #' }
 #' @export
-
-read_nmext <- function(fileName, fileExt = ".lst") {
-  fileName <- paste0(fileName, fileExt)
+read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, ...) {
+  fileName_read <- check_file_exists(fileName, fileExt, directory=directory)
+  if (is.null(fileName_read)) {
+    warning("Could not find file: ", fileName)
+    return(NULL)
+  }
+  if (!quiet) {
+    message("Reading ", fileName_read)
+  }
   nmFile <-
-    scan(fileName,
+    scan(fileName_read,
          sep = "\n",
          what = character(),
          quiet = TRUE)
@@ -49,13 +57,13 @@ read_nmext <- function(fileName, fileExt = ".lst") {
       termMsg <- substring(termMsg, 2)
     }
   extFileName <-
-    paste0(sub("\\.\\w*$", "", fileName), ".ext")
+    paste0(sub("\\.\\w*$", "", fileName_read), ".ext")
   if (!file.exists(extFileName)) {
     stop(paste(
       "Could not find the raw results file (",
       extFileName,
       ") for  ",
-      fileName,
+      fileName_read,
       ".\n"
     ))
   } else {

@@ -4,7 +4,7 @@
 \alias{read_nmext}
 \title{Read NONMEM output into a list.}
 \usage{
-read_nmext(fileName, fileExt = ".lst")
+read_nmext(fileName, fileExt = ".lst", directory = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{fileName}{A NONMEM output file prefix, without extension (e.g.
@@ -12,6 +12,13 @@ read_nmext(fileName, fileExt = ".lst")
 
 \item{fileExt}{The file extension for NONMEM output, set to ".lst" by
 default.}
+
+\item{directory}{The directory to look for files within.  If NULL, uses the
+current directory.}
+
+\item{quiet}{Flag for displaying intermediate output.}
+
+\item{...}{Passed to each of the read functions (ignored in the functions).}
 }
 \value{
 A list of lists, containing 'Termination' (summary of NONMEM's
@@ -36,7 +43,15 @@ read_nmext("run315", ".nmlst")
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nmcov}()},
+\code{\link{read_nmtables}()},
+\code{\link{read_nm}()},
+\code{\link{read_scm}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }
+\concept{NONMEM reading}

@@ -26,8 +26,7 @@ read_nmtables(
 \item{tableNames}{List of root table names, using the Xpose naming convention
 as the default.}
 
-\item{quiet}{Flag for displaying intermediate output (defaults to
-\code{FALSE}).}
+\item{quiet}{Flag for displaying intermediate output.}
 
 \item{directory}{The directory to look for files within.  If NULL, uses the
 current directory.}
@@ -35,7 +34,7 @@ current directory.}
 \item{output_type}{Should output be a "data.frame" where all results are
 merged or a "list" of data.frames.}
 
-\item{...}{Additional arguments.}
+\item{...}{Passed to each of the read functions (ignored in the functions).}
 }
 \value{
 A data.frame or list of data.frames depending on the
@@ -53,13 +52,22 @@ tables <- read_nmtables(runNo=315)
 }
 
 }
-\seealso{
+\references{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 
 Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
   pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
   Methods Programs Biomed. 1999 Jan;58(1):51-64
 }
+\seealso{
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nmcov}()},
+\code{\link{read_nmext}()},
+\code{\link{read_nm}()},
+\code{\link{read_scm}()}
+}
 \author{
 Bill Denney, Justin Wilkins, Niclas Jonsson, Andrew Hooker
 }
+\concept{NONMEM reading}
