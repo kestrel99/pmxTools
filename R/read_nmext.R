@@ -39,33 +39,39 @@ read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, 
     message("Reading ", fileName_read)
   }
   nmFile <-
-    scan(fileName_read,
-         sep = "\n",
-         what = character(),
-         quiet = TRUE)
-  minStart <- grep("#TERM:", nmFile)
-  minEnd   <- grep("#TERE:", nmFile)
-  if (length(minStart) > 1) {
-    stop(
-      "More than one set of termination messages in this file. This is not currently supported.\n"
+    scan(
+      fileName_read,
+      sep = "\n",
+      what = character(),
+      quiet = TRUE
     )
-  } else
-    if (length(minStart) == 0 || length(minEnd) == 0) {
-      termMsg <- NULL
-    } else {
-      termMsg <- nmFile[(minStart + 1):(minEnd - 1)]
-      termMsg <- substring(termMsg, 2)
-    }
-  extFileName <-
-    paste0(sub("\\.\\w*$", "", fileName_read), ".ext")
+  ret <- parse_nmext(nmFile, fileName_read)
+  ret$raw_lst <- nmFile
+  ret
+}
+
+parse_nmext <- function(nmFile, fileName_read) {
+  minStart <- grep(pattern="#TERM:", x=nmFile)
+  minEnd   <- grep(pattern="#TERE:", x=nmFile)
+  if (length(minStart) > 1) {
+    warning("More than one set of termination messages in this file. This is not currently supported.")
+    return(list(NULL))
+  } else if (length(minStart) == 0 || length(minEnd) == 0) {
+    termMsg <- NULL
+  } else {
+    termMsg <- nmFile[(minStart + 1):(minEnd - 1)]
+    termMsg <- substring(termMsg, 2)
+  }
+  extFileName <- paste0(sub("\\.\\w*$", "", fileName_read), ".ext")
   if (!file.exists(extFileName)) {
-    stop(paste(
+    warning(paste(
       "Could not find the raw results file (",
       extFileName,
       ") for  ",
       fileName_read,
-      ".\n"
+      "."
     ))
+    return(list(NULL))
   } else {
     extData <- read.table(extFileName, skip = 1, header = TRUE)
   }
