@@ -24,5 +24,3 @@ read_nm <- function(fileName) {
   nmFile <- XML::xmlTreeParse(fileName)
   XML::xmlToList(nmFile)
 }
-
-

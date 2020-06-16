@@ -21,7 +21,7 @@ License: GPL-2
 URL: https://github.com/kestrel99/pmxTools
 BugReports: https://github.com/kestrel99/pmxTools/issues
 LazyData: TRUE
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Imports:
   ggplot2,
   ggrepel,

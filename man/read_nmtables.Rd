@@ -8,8 +8,11 @@ read_nmtables(
   tableFiles = NULL,
   runNo = NULL,
   tabSuffix = "",
-  tableNames = c("sdtab", "mutab", "patab", "catab", "cotab", "mytab", "extra", "xptab"),
+  tableNames = c("sdtab", "mutab", "patab", "catab", "cotab", "mytab", "extra",
+    "xptab"),
   quiet = FALSE,
+  directory = NULL,
+  output_type = c("data.frame", "list"),
   ...
 )
 }
@@ -20,14 +23,23 @@ read_nmtables(
 
 \item{tabSuffix}{Table file suffix.}
 
-\item{tableNames}{List of root table names, using the Xpose naming convention as the default.}
+\item{tableNames}{List of root table names, using the Xpose naming convention
+as the default.}
 
-\item{quiet}{Flag for displaying intermediate output (defaults to \code{FALSE}).}
+\item{quiet}{Flag for displaying intermediate output (defaults to
+\code{FALSE}).}
+
+\item{directory}{The directory to look for files within.  If NULL, uses the
+current directory.}
+
+\item{output_type}{Should output be a "data.frame" where all results are
+merged or a "list" of data.frames.}
 
 \item{...}{Additional arguments.}
 }
 \value{
-A data frame.
+A data.frame or list of data.frames depending on the
+  \code{output_type} argument.
 }
 \description{
 Reads NONMEM output tables.
@@ -37,15 +49,17 @@ Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
 }
 \examples{
 \dontrun{
-tables <- read_nmtables(315)
+tables <- read_nmtables(runNo=315)
 }
 
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 
-Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput Methods Programs Biomed. 1999 Jan;58(1):51-64
+Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
+  pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
+  Methods Programs Biomed. 1999 Jan;58(1):51-64
 }
 \author{
-Justin Wilkins, Niclas Jonsson, Andrew Hooker
+Bill Denney, Justin Wilkins, Niclas Jonsson, Andrew Hooker
 }
