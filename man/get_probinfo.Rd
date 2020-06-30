@@ -2,19 +2,27 @@
 % Please edit documentation in R/get_probinfo.r
 \name{get_probinfo}
 \alias{get_probinfo}
-\title{Extract problem information from a NONMEM output object.}
+\title{Extract problem and estimation information from a NONMEM output object.}
 \usage{
-get_probinfo(x)
+get_probinfo(x, sigdig = 6, est.step = NULL)
 }
 \arguments{
-\item{x}{A NONMEM output object generated using \code{\link{read_nm}}.
+\item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
 
-#' @examples
+\item{sigdig}{Specifies the number of significant digits to be provided (default=6).}
+
+\item{est.step}{Specifies which estimation step to return parameters from (default is the last).}
+}
+\description{
+Extract problem and estimation information from a NONMEM output object.
+}
+\examples{
 \dontrun{
  nmOutput <- read_nm("run315.xml")
  probInfo <- get_probinfo(nmOutput)
-}}
 }
-\description{
-Extract problem information from a NONMEM output object.
+
+}
+\seealso{
+NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 }
