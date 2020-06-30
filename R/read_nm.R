@@ -14,15 +14,17 @@
 #' }
 #'
 #' @export
-#' @importFrom XML xmlToList xmlTreeParse
+#' @importFrom xml2 read_xml as_list
 read_nm <- function(fileName) {
 
   if(length(grep(".xml$", fileName))==0) {
     fileName <- paste(fileName, ".xml", sep="")
   }
 
-  nmFile <- XML::xmlTreeParse(fileName)
-  XML::xmlToList(nmFile)
+  # nmFile <- XML::xmlTreeParse(fileName)
+  # XML::xmlToList(nmFile)
+  nmFile <- xml2::read_xml(fileName, ".xml", sep = "")
+  xml2::as_list(nmFile)$output
 }
 
 

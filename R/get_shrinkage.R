@@ -40,37 +40,27 @@ get_shrinkage <- function (x, output = "eta", type="sd", sigdig = 3, est.step=NU
   ind_est  <- match("estimation", names(x$nonmem$problem))-1+no_steps
   
   if(!is.null(x$nonmem$problem[[ind_est]]$etashrink)) {
-    eta <- signif(as.numeric(x$nonmem$problem[[ind_est]]$etashrink[seq(1, 
-                                                                       length(x$nonmem$problem[[ind_est]]$etashrink) - 1, by = 2)]), 
-                  sigdig)
-    names(eta) <- as.character(x$nonmem$problem[[ind_est]]$etashrink[seq(2, 
-                                                                         length(x$nonmem$problem[[ind_est]]$etashrink) - 1, by = 2)])
-    eps <- signif(as.numeric(x$nonmem$problem[[ind_est]]$epsshrink[seq(1, 
-                                                                       length(x$nonmem$problem[[ind_est]]$epsshrink) - 1, by = 2)]), 
-                  sigdig)
-    names(eps) <- as.character(x$nonmem$problem[[ind_est]]$epsshrink[seq(2, 
-                                                                         length(x$nonmem$problem[[ind_est]]$epsshrink) - 1, by = 2)])
+    
+    eta <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$etashrink)), sigdig)
+    names(eta) <- paste("ETA",1:length(eta),sep = "")
+    
+    eps <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$epsshrink)), sigdig)
+    names(eps) <- paste("EPS",1:length(eps),sep = "")
+    
   } else {
-    eta <- signif(as.numeric(x$nonmem$problem[[ind_est]]$etashrinksd[seq(1, 
-                                                                         length(x$nonmem$problem[[ind_est]]$etashrinksd) - 1, by = 2)]), 
-                  sigdig)
-    names(eta) <- as.character(x$nonmem$problem[[ind_est]]$etashrinksd[seq(2, 
-                                                                           length(x$nonmem$problem[[ind_est]]$etashrinksd) - 1, by = 2)])
-    eps <- signif(as.numeric(x$nonmem$problem[[ind_est]]$epsshrinksd[seq(1, 
-                                                                         length(x$nonmem$problem[[ind_est]]$epsshrinksd) - 1, by = 2)]), 
-                  sigdig)
-    names(eps) <- as.character(x$nonmem$problem[[ind_est]]$epsshrinksd[seq(2, 
-                                                                           length(x$nonmem$problem[[ind_est]]$epsshrinksd) - 1, by = 2)]) 
-    etavr <- signif(as.numeric(x$nonmem$problem[[ind_est]]$etashrinkvr[seq(1, 
-                                                                           length(x$nonmem$problem[[ind_est]]$etashrinkvr) - 1, by = 2)]), 
-                    sigdig)
-    names(etavr) <- as.character(x$nonmem$problem[[ind_est]]$etashrinkvr[seq(2, 
-                                                                             length(x$nonmem$problem[[ind_est]]$etashrinkvr) - 1, by = 2)])
-    epsvr <- signif(as.numeric(x$nonmem$problem[[ind_est]]$epsshrinkvr[seq(1, 
-                                                                           length(x$nonmem$problem[[ind_est]]$epsshrinkvr) - 1, by = 2)]), 
-                    sigdig)
-    names(epsvr) <- as.character(x$nonmem$problem[[ind_est]]$epsshrinkvr[seq(2, 
-                                                                             length(x$nonmem$problem[[ind_est]]$epsshrinkvr) - 1, by = 2)]) 
+    
+    eta <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$etashrinksd)), sigdig)
+    names(eta) <- paste("ETA",1:length(eta),sep = "")
+    
+    eps <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$epsshrinksd)), sigdig)
+    names(eps) <- paste("EPS",1:length(eps),sep = "")
+    
+    etavr <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$etashrinkvr)), sigdig)
+    names(etavr) <- paste("ETA",1:length(eta),sep = "")
+  
+    epsvr <- signif(as.numeric(unlist(x$nonmem$problem[[ind_est]]$epsshrinkvr)), sigdig)
+    names(epsvr) <- paste("EPS",1:length(eps),sep = "")        
+    
   }
   if (output == "eta" & type=="sd") {
     out <- eta

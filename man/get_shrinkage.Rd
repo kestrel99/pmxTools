@@ -4,7 +4,8 @@
 \alias{get_shrinkage}
 \title{Extract shrinkage estimates from a NONMEM output object.}
 \usage{
-get_shrinkage(x, output = "eta", type = "sd", sigdig = 3, est.step = NULL)
+get_shrinkage(x, output = "eta", type = "sd", sigdig = 3,
+  est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}
