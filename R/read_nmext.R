@@ -1,21 +1,26 @@
 #' Read NONMEM output into a list.
 #'
-#' \code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
-#' parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
-#' files must be available.
+#' \code{read_nmext} returns a summary of a given NONMEM run, including
+#' termination messages, parameter estimates, and precision estimates.
+#' Minimally, the NONMEM output and '.ext' files must be available.
 #'
-#' @param fileName A NONMEM output file prefix, without extension (e.g. "run315").
-#' @param fileExt  The file extension for NONMEM output, set to ".lst" by default.
+#' @inheritParams read_nm_all
+#' @param fileName A NONMEM output file prefix, without extension (e.g.
+#'   "run315").
+#' @param fileExt  The file extension for NONMEM output, set to ".lst" by
+#'   default.
 #'
-#' @return A list of lists, containing 'Termination' (summary of NONMEM's termination
-#'   output, including shrinkages and ETABAR estimates), 'OFV' (the objective function
-#'   value), 'Thetas' (a vector of structural parameter estimates, or THETAs), 'Omega',
-#'   a list of lists containing the OMEGA matrix, 'Sigma', a list of lists containing
-#'   the SIGMA matrix, 'seThetas', a vector of standard errors for THETAs, 'seOmega',
-#'   a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
-#'   a list of lists containing standard errors for the SIGMA matrix.
+#' @return A list of lists, containing 'Termination' (summary of NONMEM's
+#'   termination output, including shrinkages and ETABAR estimates), 'OFV' (the
+#'   objective function value), 'Thetas' (a vector of structural parameter
+#'   estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
+#'   matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
+#'   vector of standard errors for THETAs, 'seOmega', a list of lists containing
+#'   standard errors for the OMEGA matrix, and 'seSigma', a list of lists
+#'   containing standard errors for the SIGMA matrix.
 #' 
 #' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @family NONMEM reading
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples
@@ -23,42 +28,52 @@
 #' read_nmext("run315")
 #' read_nmext("run315", ".nmlst")
 #' }
-#'
-#' @import utils
 #' @export
-
-read_nmext <- function(fileName, fileExt = ".lst") {
-  fileName <- paste(fileName, fileExt, sep = "")
+read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, ...) {
+  fileName_read <- check_file_exists(fileName, fileExt, directory=directory)
+  if (is.null(fileName_read)) {
+    warning("Could not find file: ", fileName)
+    return(NULL)
+  }
+  if (!quiet) {
+    message("Reading ", fileName_read)
+  }
   nmFile <-
-    scan(fileName,
-         sep = "\n",
-         what = character(),
-         quiet = TRUE)
-  minStart <- grep("#TERM:", nmFile)
-  minEnd   <- grep("#TERE:", nmFile)
-  if (length(minStart) > 1) {
-    stop(
-      "More than one set of termination messages in this file. This is not currently supported.\n"
+    scan(
+      fileName_read,
+      sep = "\n",
+      what = character(),
+      quiet = TRUE
     )
-  } else
-    if (length(minStart) == 0 || length(minEnd) == 0) {
-      termMsg <- NULL
-    } else {
-      termMsg <- nmFile[(minStart + 1):(minEnd - 1)]
-      termMsg <- substring(termMsg, 2)
-    }
-  extFileName <-
-    paste(sub("\\.\\w*$", "", fileName), ".ext", sep = "")
+  ret <- parse_nmext(nmFile, fileName_read)
+  ret$raw_lst <- nmFile
+  ret
+}
+
+parse_nmext <- function(nmFile, fileName_read) {
+  minStart <- grep(pattern="#TERM:", x=nmFile)
+  minEnd   <- grep(pattern="#TERE:", x=nmFile)
+  if (length(minStart) > 1) {
+    warning("More than one set of termination messages in this file. This is not currently supported.")
+    return(list(NULL))
+  } else if (length(minStart) == 0 || length(minEnd) == 0) {
+    termMsg <- NULL
+  } else {
+    termMsg <- nmFile[(minStart + 1):(minEnd - 1)]
+    termMsg <- substring(termMsg, 2)
+  }
+  extFileName <- paste0(sub("\\.\\w*$", "", fileName_read), ".ext")
   if (!file.exists(extFileName)) {
-    stop(paste(
+    warning(paste(
       "Could not find the raw results file (",
       extFileName,
       ") for  ",
-      fileName,
-      ".\n"
+      fileName_read,
+      "."
     ))
+    return(list(NULL))
   } else {
-    extData <- read.table(extFileName, skip = 1, header = T)
+    extData <- read.table(extFileName, skip = 1, header = TRUE)
   }
 
   ofv          <- extData$OBJ[extData$ITERATION == -1e+09]
@@ -203,4 +218,3 @@ read_nmext <- function(fileName, fileExt = ".lst") {
   )
   return(out)
 }
-

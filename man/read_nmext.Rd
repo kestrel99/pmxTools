@@ -4,37 +4,54 @@
 \alias{read_nmext}
 \title{Read NONMEM output into a list.}
 \usage{
-read_nmext(fileName, fileExt = ".lst")
+read_nmext(fileName, fileExt = ".lst", directory = NULL, quiet = FALSE, ...)
 }
 \arguments{
-\item{fileName}{A NONMEM output file prefix, without extension (e.g. "run315").}
+\item{fileName}{A NONMEM output file prefix, without extension (e.g.
+"run315").}
 
-\item{fileExt}{The file extension for NONMEM output, set to ".lst" by default.}
+\item{fileExt}{The file extension for NONMEM output, set to ".lst" by
+default.}
+
+\item{directory}{The directory to look for files within.  If NULL, uses the
+current directory.}
+
+\item{quiet}{Flag for displaying intermediate output.}
+
+\item{...}{Passed to each of the read functions (ignored in the functions).}
 }
 \value{
-A list of lists, containing 'Termination' (summary of NONMEM's termination
-  output, including shrinkages and ETABAR estimates), 'OFV' (the objective function
-  value), 'Thetas' (a vector of structural parameter estimates, or THETAs), 'Omega',
-  a list of lists containing the OMEGA matrix, 'Sigma', a list of lists containing
-  the SIGMA matrix, 'seThetas', a vector of standard errors for THETAs, 'seOmega',
-  a list of lists containing standard errors for the OMEGA matrix, and 'seSigma',
-  a list of lists containing standard errors for the SIGMA matrix.
+A list of lists, containing 'Termination' (summary of NONMEM's
+  termination output, including shrinkages and ETABAR estimates), 'OFV' (the
+  objective function value), 'Thetas' (a vector of structural parameter
+  estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
+  matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
+  vector of standard errors for THETAs, 'seOmega', a list of lists containing
+  standard errors for the OMEGA matrix, and 'seSigma', a list of lists
+  containing standard errors for the SIGMA matrix.
 }
 \description{
-\code{read_nmext} returns a summary of a given NONMEM run, including termination messages,
-parameter estimates, and precision estimates. Minimally, the NONMEM output and '.ext'
-files must be available.
+\code{read_nmext} returns a summary of a given NONMEM run, including
+termination messages, parameter estimates, and precision estimates.
+Minimally, the NONMEM output and '.ext' files must be available.
 }
 \examples{
 \dontrun{
 read_nmext("run315")
 read_nmext("run315", ".nmlst")
 }
-
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nmcov}()},
+\code{\link{read_nmtables}()},
+\code{\link{read_nm}()},
+\code{\link{read_scm}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }
+\concept{NONMEM reading}

@@ -4,13 +4,20 @@
 \alias{read_nmcov}
 \title{Read in the NONMEM variance-covariance matrix.}
 \usage{
-read_nmcov(fileName)
+read_nmcov(fileName, quiet = FALSE, directory = NULL, ...)
 }
 \arguments{
 \item{fileName}{Root filename for the NONMEM run (e.g. "run315").
 
 This function reads the ".cov" NONMEM output table, and will return an error if this
 is missing.}
+
+\item{quiet}{Flag for displaying intermediate output.}
+
+\item{directory}{The directory to look for files within.  If NULL, uses the
+current directory.}
+
+\item{...}{Passed to each of the read functions (ignored in the functions).}
 }
 \value{
 A symmetrical variance-covariance matrix covering all model parameters.
@@ -25,7 +32,15 @@ nmVcov <- read_nmcov("run315")
 }
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nmext}()},
+\code{\link{read_nmtables}()},
+\code{\link{read_nm}()},
+\code{\link{read_scm}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }
+\concept{NONMEM reading}

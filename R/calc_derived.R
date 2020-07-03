@@ -129,8 +129,8 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, ka=NULL,
   
   ### variables
   k10   <- CL/V1
-  k12   <- Q/V1
-  k21   <- Q/V2
+  k12   <- Q2/V1
+  k21   <- Q2/V2
   
   a0 <- k10 * k21
   a1 <- -(k10 + k12 + k21)

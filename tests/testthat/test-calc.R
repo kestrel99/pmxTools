@@ -124,7 +124,7 @@ test_that("2-compartment linear, first-order oral, steady-state", {
 })
 
 test_that("2-compartment linear, first-order oral with lag time, steady-state", {
-  t <- calc_ss_2cmt_linear_oral_1_lag(t=seq(0, 24, by=3), CL = 7.5, V1 = 20, V2 = 30, Q = 0.5, dose = 10, ka = 1.5, tlag = 1.2, tau=6)
+  t <- calc_ss_2cmt_linear_oral_1_lag(tad=seq(0, 24, by=3), CL = 7.5, V1 = 20, V2 = 30, Q = 0.5, dose = 10, ka = 1.5, tlag = 1.2, tau=6)
   expect_equal(signif(t, 4), c(0.12340, 0.33300, 0.12340, 0.04684, 0.02328, 0.01579, 0.01314, 0.01196, 0.01124))
 })
 
@@ -177,16 +177,16 @@ test_that("3-compartment linear, zero-order oral, steady-state", {
 })
 
 test_that("3-compartment linear, zero-order oral with lag time, steady-state", {
-  t <- calc_ss_3cmt_linear_oral_0_lag(t=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, dur = 0.75, tlag = 1.2, tau=12)
+  t <- calc_ss_3cmt_linear_oral_0_lag(tad=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, dur = 0.75, tlag = 1.2, tau=12)
   expect_equal(signif(t, 4), c(0.10180, 0.29960, 0.17960, 0.12790, 0.10180, 0.08573, 0.07409, 0.06474, 0.05683))
 })
 
 test_that("3-compartment linear, first-order oral, steady-state", {
-  t <- calc_ss_3cmt_linear_oral_1(t=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, ka = 1.5, tau=12)
+  t <- calc_ss_3cmt_linear_oral_1(tad=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, ka = 1.5, tau=12)
   expect_equal(signif(t, 4), c(0.09642, 0.27040, 0.16100, 0.11880, 0.09642, 0.08196, 0.07112, 0.06225, 0.05468))
 })
 
 test_that("3-compartment linear, first-order oral with lag time, steady-state", {
-  t <- calc_ss_3cmt_linear_oral_1_lag(t=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, ka = 1.5, tlag = 1.2, tau=12)
+  t <- calc_ss_3cmt_linear_oral_1_lag(tad=seq(0, 24, by=3), CL = 87.6, V1 = 20.1, V2 = 186, V3=749, Q2 = 111, Q3 = 53.4, dose = 280, ka = 1.5, tlag = 1.2, tau=12)
   expect_equal(signif(t, 4), c(0.10400, 0.41810, 0.19010, 0.13210, 0.10400, 0.08716, 0.07516, 0.06561, 0.05757))
 })

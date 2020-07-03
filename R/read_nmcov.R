@@ -1,5 +1,6 @@
 #' Read in the NONMEM variance-covariance matrix.
 #'
+#' @inheritParams read_nm_all
 #' @param fileName Root filename for the NONMEM run (e.g. "run315").
 #'
 #' This function reads the ".cov" NONMEM output table, and will return an error if this
@@ -15,13 +16,19 @@
 #' nmVcov <- read_nmcov("run315")
 #' }
 #' @import utils
+#' @family NONMEM reading
 #' @export
-
-read_nmcov <- function(fileName) {
-  if(file.exists(paste(fileName, ".cov", sep=""))) {
-    as.matrix(read.table(paste(fileName, ".cov", sep=""), skip=1, header=T, row.names=1))
+read_nmcov <- function(fileName, quiet=FALSE, directory=NULL, ...) {
+  fileName_read <- check_file_exists(fileName, ".cov", directory=directory)
+  if (is.null(fileName_read)) {
+    warning("Could not find file: ", fileName)
+    return(NULL)
   } else {
-    stop(paste("File ", paste(fileName, ".cov", sep=""), " not found.", sep=""))
+    if (!quiet) {
+      message("Reading ", fileName_read)
+    }
+    as.matrix(
+      read.table(fileName_read, skip=1, header=TRUE, row.names=1)
+    )
   }
 }
-
