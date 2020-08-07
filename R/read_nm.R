@@ -17,7 +17,7 @@
 #' @export
 #' @importFrom XML xmlToList xmlTreeParse
 read_nm <- function(fileName, directory=NULL, quiet=FALSE, ...) {
-  fileName_read <- check_file_exists(filename=fileName, ext=".xml", directory=directory)
+  fileName_read <- check_file_exists(fileName=fileName, ext=".xml", directory=directory)
   if (is.null(fileName_read)) {
     warning("Could not find file: ", fileName)
     return(NULL)

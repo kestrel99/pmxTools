@@ -27,8 +27,14 @@ read_nmcov <- function(fileName, quiet=FALSE, directory=NULL, ...) {
     if (!quiet) {
       message("Reading ", fileName_read)
     }
-    as.matrix(
-      read.table(fileName_read, skip=1, header=TRUE, row.names=1)
-    )
+    ret <-
+      lapply(
+        X=read_nm_multi_table(fileName=fileName_read, row.names=1, simplify=FALSE),
+        FUN=as.matrix
+      )
+    if (length(ret) == 1) {
+      ret <- ret[[1]]
+    }
+    ret
   }
 }

@@ -4,7 +4,14 @@
 \alias{read_nmext}
 \title{Read NONMEM output into a list.}
 \usage{
-read_nmext(fileName, fileExt = ".lst", directory = NULL, quiet = FALSE, ...)
+read_nmext(
+  fileName,
+  fileExt = ".lst",
+  directory = NULL,
+  quiet = FALSE,
+  estNo = NULL,
+  ...
+)
 }
 \arguments{
 \item{fileName}{A NONMEM output file prefix, without extension (e.g.
@@ -17,6 +24,10 @@ default.}
 current directory.}
 
 \item{quiet}{Flag for displaying intermediate output.}
+
+\item{estNo}{The estimation number to report (by default, if only one
+estimation step is present, that will be reported; if multiple are
+reported, the last will be reported by default).}
 
 \item{...}{Passed to each of the read functions (ignored in the functions).}
 }
@@ -46,6 +57,7 @@ NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 
 Other NONMEM reading: 
 \code{\link{read_nm_all}()},
+\code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmtables}()},
 \code{\link{read_nm}()},

@@ -9,6 +9,9 @@
 #'   "run315").
 #' @param fileExt  The file extension for NONMEM output, set to ".lst" by
 #'   default.
+#' @param estNo The estimation number to report (by default, if only one
+#'   estimation step is present, that will be reported; if multiple are
+#'   reported, the last will be reported by default).
 #'
 #' @return A list of lists, containing 'Termination' (summary of NONMEM's
 #'   termination output, including shrinkages and ETABAR estimates), 'OFV' (the
@@ -29,7 +32,7 @@
 #' read_nmext("run315", ".nmlst")
 #' }
 #' @export
-read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, ...) {
+read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, estNo=NULL, ...) {
   fileName_read <- check_file_exists(fileName, fileExt, directory=directory)
   if (is.null(fileName_read)) {
     warning("Could not find file: ", fileName)
@@ -45,18 +48,26 @@ read_nmext <- function(fileName, fileExt = ".lst", directory=NULL, quiet=FALSE, 
       what = character(),
       quiet = TRUE
     )
-  ret <- parse_nmext(nmFile, fileName_read)
+  ret <- parse_nmext(nmFile, fileName_read, estNo=estNo)
   ret$raw_lst <- nmFile
   ret
 }
 
-parse_nmext <- function(nmFile, fileName_read) {
+parse_nmext <- function(nmFile, fileName_read, estNo=NULL) {
   minStart <- grep(pattern="#TERM:", x=nmFile)
   minEnd   <- grep(pattern="#TERE:", x=nmFile)
-  if (length(minStart) > 1) {
-    warning("More than one set of termination messages in this file. This is not currently supported.")
-    return(list(NULL))
-  } else if (length(minStart) == 0 || length(minEnd) == 0) {
+  if (!is.null(estNo)) {
+    if (estNo > length(minStart)) {
+      stop("Requested estimation number, ", estNo, " does not exist or did not complete successfully.")
+    }
+    minStart <- minStart[estNo]
+    minEnd <- minEnd[estNo]
+  } else if (length(minStart) > 1) {
+    warning("More than one set of termination messages in this file. Returning information for the final estimation.")
+    minStart <- max(minStart)
+    minEnd <- max(minEnd)
+  }
+  if (length(minStart) == 0 || length(minEnd) == 0) {
     termMsg <- NULL
   } else {
     termMsg <- nmFile[(minStart + 1):(minEnd - 1)]
@@ -73,7 +84,16 @@ parse_nmext <- function(nmFile, fileName_read) {
     ))
     return(list(NULL))
   } else {
-    extData <- read.table(extFileName, skip = 1, header = TRUE)
+    extData <- read_nm_multi_table(extFileName, header = TRUE, simplify=FALSE)
+    # Regardless, we need to get it out of a list
+    extData <-
+      if (is.null(estNo)) {
+        extData[[length(extData)]]
+      } else if (estNo <= length(extData)) {
+        extData[[estNo]]
+      } else {
+        stop("Fewer tables than the requested estimation number (", estNo, ") in ", extFileName)
+      }
   }
 
   ofv          <- extData$OBJ[extData$ITERATION == -1e+09]
