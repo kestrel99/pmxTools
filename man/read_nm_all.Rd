@@ -28,6 +28,7 @@ The filename for loading is constructed as \code{paste(run_prefix,
 }
 \seealso{
 Other NONMEM reading: 
+\code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
