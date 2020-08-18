@@ -6,3 +6,6 @@
 ^\.travis\.yml$     # Used for continuous integration testing with travis
 ^\.github.*$        # Extra files for GitHub
 pmxTools.Rproj
+.travis.yml
+.github
+
