@@ -26,10 +26,10 @@ Imports:
   ggplot2,
   ggrepel,
   gridExtra,
-  chron
+  chron,
+  xml2
 Depends:
   MASS,
-  stringr,
-  XML
+  stringr
 Suggests: testthat
 Encoding: UTF-8

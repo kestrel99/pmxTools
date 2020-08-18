@@ -15,16 +15,21 @@
 #' }
 #' @family NONMEM reading
 #' @export
-#' @importFrom XML xmlToList xmlTreeParse
+#' @importFrom xml2 read_xml as_list
 read_nm <- function(fileName, directory=NULL, quiet=FALSE, ...) {
+
   fileName_read <- check_file_exists(fileName=fileName, ext=".xml", directory=directory)
+
   if (is.null(fileName_read)) {
     warning("Could not find file: ", fileName)
     return(NULL)
   }
+  
   if (!quiet) {
     message("Reading ", fileName_read)
   }
-  nmFile <- XML::xmlTreeParse(fileName_read)
-  XML::xmlToList(nmFile)
+  
+  nmFile <- xml2::read_xml(fileName, ".xml", sep = "")
+  xml2::as_list(nmFile)$output
+  
 }

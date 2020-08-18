@@ -4,20 +4,9 @@
 \alias{rnm}
 \title{Read NONMEM 7.2+ output into an R object.}
 \usage{
-rnm(
-  index,
-  prefix = "run",
-  pathNM,
-  ndig = 3,
-  ndigB = 3,
-  ndigP = 1,
-  Pci = 95,
-  ext = ".lst",
-  extmod = ".mod",
-  Pvalues = TRUE,
-  RawCI = FALSE,
-  ...
-)
+rnm(index, prefix = "run", pathNM, ndig = 3, ndigB = 3, ndigP = 1,
+  Pci = 95, ext = ".lst", extmod = ".mod", Pvalues = TRUE,
+  RawCI = FALSE, ...)
 }
 \arguments{
 \item{index}{The NONMEM model index, i.e. the numeric part of the filename assuming it follows the convention 'run123.mod'.}
