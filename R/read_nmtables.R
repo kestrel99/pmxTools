@@ -25,7 +25,6 @@
 #'
 #' @import utils
 #' @export
-
 read_nmtables <- function(tableFiles = NULL,
                           runNo      = NULL,
                           tabSuffix  = "",
@@ -159,4 +158,76 @@ read_nmtable_single <- function(filename, quiet) {
       read.table(filename, skip=1, header=TRUE, sep=sep.char)
   }
   ret
+}
+
+#' Read (single or) multiple NONMEM tables from a single file
+#' 
+#' @param fileName The filename to read from
+#' @param header,... Arguments passed to read.table
+#' @param simplify If a single table is present, return a data.frame instead of
+#'   a list of data.frames?
+#' @param table_start_pattern What should be found to start a new table?
+#' @return A list of data.frames, or if only one is present and simplify=TRUE, a
+#'   data.frame.
+#' @family NONMEM reading
+#' @author Bill Denney
+#' @examples
+#' \dontrun{
+#' read_nm_multi_table("run1.cov", row.names=1)
+#' }
+#' @export
+read_nm_multi_table <- function(fileName, header=TRUE, ..., simplify=TRUE, table_start_pattern="^TABLE NO") {
+  file_data <- readLines(fileName)
+  new_tables <- grep(x=file_data, pattern=table_start_pattern)
+  ret <- list()
+  for (idx in seq_along(new_tables)) {
+    start_line <- new_tables[idx] + 1
+    end_line <- 
+      if (idx == length(new_tables)) {
+        length(file_data)
+      } else {
+        new_tables[idx + 1] - 1
+      }
+    current_table_name <- file_data[new_tables[idx]]
+    ret[[current_table_name]] <-
+      read.table(
+        textConnection(file_data[start_line:end_line]),
+        header=header, ...
+      )
+  }
+  if (simplify & (length(ret) == 1)) {
+    # Simplify to just the matrix in the common case of a single estimation
+    # step
+    ret <- ret[[1]]
+  }
+  ret
+}
+
+#' Read a standard NONMEM extension file
+#' 
+#' @param fileName The filename (with directory name, if applicable) to read
+#'   (with or without the extension)
+#' @param extension The file extension to optionally append (preferably starting
+#'   with a ".")
+#' @param directory The directory to look for files within.  If NULL, uses the
+#'   current directory.
+#' @param ... Passed to \code{read_nm_multi_table()}
+#' @return NULL if the file does not exist or the value of
+#'   \code{read_nm_multi_table()} if it does exist.
+#' @examples
+#' \dontrun{
+#' read_nm_std_ext("run1", "phi")
+#' }
+#' @export
+read_nm_std_ext <- function(fileName, extension, directory=NULL, ...) {
+  if (!is.character(fileName)) fileName <- as.character(fileName)
+  if (!startsWith(extension, prefix=".")) {
+    extension <- paste0(".", extension)
+  }
+  fileName_read <- check_file_exists(fileName=fileName, ext=extension, directory=directory)
+  if (is.null(fileName_read)) {
+    warning("Could not find file: ", fileName, ", with extension: ", extension)
+    return(NULL)
+  }
+  read_nm_multi_table(fileName=fileName_read, ...)
 }
