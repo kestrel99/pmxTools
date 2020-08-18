@@ -47,7 +47,7 @@ pcv <- function(x, na.rm=FALSE) {
 #'   vector of values to compute the gcv from)
 #' @param gsd The geometric standard deviation
 #'
-#' @return
+#' @return Geometric coefficient of variation
 #' 
 #' @author Bill Denney
 #'

@@ -5,8 +5,7 @@
 \title{Extract structural model parameter estimates and associated information
 from a NONMEM output object.}
 \usage{
-get_theta(x, output = "est", sigdig = 6, sep = "-",
-  est.step = NULL)
+get_theta(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}

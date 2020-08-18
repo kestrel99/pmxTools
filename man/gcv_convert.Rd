@@ -13,7 +13,7 @@ vector of values to compute the gcv from)}
 \item{gsd}{The geometric standard deviation}
 }
 \value{
-
+Geometric coefficient of variation
 }
 \description{
 The equation used is: \code{100*sqrt(exp(gvar)-1)}

@@ -10,14 +10,43 @@ linear model.}
 \usage{
 calc_derived(..., verbose = FALSE)
 
-calc_derived_1cpt(CL, V = NULL, V1 = NULL, ka = NULL, tlag = NULL,
-  type = "all", sigdig = 5)
+calc_derived_1cpt(
+  CL,
+  V = NULL,
+  V1 = NULL,
+  ka = NULL,
+  tlag = NULL,
+  type = "all",
+  sigdig = 5
+)
 
-calc_derived_2cpt(CL, V1 = NULL, V2, Q2 = NULL, V = NULL, Q = NULL,
-  ka = NULL, tlag = NULL, type = "all", sigdig = 5)
+calc_derived_2cpt(
+  CL,
+  V1 = NULL,
+  V2,
+  Q2 = NULL,
+  V = NULL,
+  Q = NULL,
+  ka = NULL,
+  tlag = NULL,
+  type = "all",
+  sigdig = 5
+)
 
-calc_derived_3cpt(CL, V1 = NULL, V2, V3, Q2 = NULL, Q3, V = NULL,
-  Q = NULL, ka = NULL, tlag = NULL, type = "all", sigdig = 5)
+calc_derived_3cpt(
+  CL,
+  V1 = NULL,
+  V2,
+  V3,
+  Q2 = NULL,
+  Q3,
+  V = NULL,
+  Q = NULL,
+  ka = NULL,
+  tlag = NULL,
+  type = "all",
+  sigdig = 5
+)
 }
 \arguments{
 \item{...}{Passed to the other \code{calc_derived_*()} functions.}

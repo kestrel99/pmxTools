@@ -118,6 +118,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, tlag=NULL, type="all
       stop("Invalid value for `type`: ", type)
     }
   }
+  o[sapply(o, is.null)] <- NULL   # drops NULL values
   o
 }
 
@@ -184,6 +185,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, ka=NULL,
       stop("Invalid value for `type`: ", type)
     }
   }
+  o[sapply(o, is.null)] <- NULL   # drops NULL values
   o
 }
 
@@ -278,5 +280,6 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       stop("Invalid value for `type`: ", type)
     }
   }
+  o[sapply(o, is.null)] <- NULL   # drops NULL values
   o
 }

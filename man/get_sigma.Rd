@@ -4,8 +4,7 @@
 \alias{get_sigma}
 \title{Extract residual variability parameter estimates from a NONMEM output object.}
 \usage{
-get_sigma(x, output = "est", sigdig = 6, sep = "-",
-  est.step = NULL)
+get_sigma(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 }
 \arguments{
 \item{x}{A NONMEM output object generated using \code{\link{read_nm}}.}

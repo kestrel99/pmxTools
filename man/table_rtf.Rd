@@ -4,8 +4,14 @@
 \alias{table_rtf}
 \title{Read NONMEM output into a list.}
 \usage{
-table_rtf(df, outFile = NULL, rtfFile = TRUE, boldHeader = TRUE,
-  rowNames = FALSE, ...)
+table_rtf(
+  df,
+  outFile = NULL,
+  rtfFile = TRUE,
+  boldHeader = TRUE,
+  rowNames = FALSE,
+  ...
+)
 }
 \arguments{
 \item{df}{A data frame.}
