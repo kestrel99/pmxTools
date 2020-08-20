@@ -1,10 +1,10 @@
 #' Read PsN SCM output into a format suitable for further use.
 #'
 #' \code{read_scm} returns a summary of a Perl-speaks-NONMEM (PsN, \url{https://uupharmacometrics.github.io/PsN/}) SCM (stepwise covariate modeling)
-#' procedure. It depends on the presence of an \code{scmlog.txt} file in the
+#' procedure. It depends on the presence of \code{scmlog.txt} and \code{short_scmlog.txt} files in the
 #' specified directory.
 #'
-#' @param dir A PsN SCM folder (containing \code{scmlog.txt}).
+#' @param dir A PsN SCM folder (containing \code{scmlog.txt} and \code{short_scmlog.txt}).
 #' @param startPhase Where to start collating the output; can be \code{"forward"} (the default) or \code{"backward"}.
 #'
 #' @return A list of data frames, containing

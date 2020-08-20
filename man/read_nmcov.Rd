@@ -34,6 +34,7 @@ nmVcov <- read_nmcov("run315")
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 
 Other NONMEM reading: 
+\code{\link{plot_scm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmext}()},

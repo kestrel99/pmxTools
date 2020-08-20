@@ -36,6 +36,7 @@ read_nm_multi_table("run1.cov", row.names=1)
 }
 \seealso{
 Other NONMEM reading: 
+\code{\link{plot_scm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},

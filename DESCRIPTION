@@ -32,6 +32,8 @@ Imports:
 Depends:
   MASS,
   stringr,
-  magrittr
+  magrittr,
+  data.tree,
+  DiagrammeR
 Suggests: testthat
 Encoding: UTF-8

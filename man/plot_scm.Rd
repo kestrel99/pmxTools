@@ -2,49 +2,118 @@
 % Please edit documentation in R/plot_scm.R
 \name{plot_scm}
 \alias{plot_scm}
-\title{Plot PsN SCM results.}
+\title{Visualize PsN SCM output.}
 \usage{
 plot_scm(
   dir,
-  phase = "both",
-  lineCol = "#902C10",
-  lineType = 1,
-  lineSize = 1,
-  pointCol = "#902C10",
-  pointShape = 16,
-  pointSize = 3,
-  textCol = "black",
-  textSize = 5
+  startPhase = "forward",
+  fwdSuccessCol = "#66C2A5",
+  fwdFailCol = "black",
+  bwdSuccessCol = "#FC8D62",
+  bwdFailCol = "black",
+  defCol = "black",
+  fwdSuccessFillCol = "#B3E2CD",
+  fwdFailFillCol = "white",
+  bwdSuccessFillCol = "#FDCDAC",
+  bwdFailFillCol = "white",
+  defFillCol = "white",
+  fwdSuccessFontCol = "black",
+  fwdFailFontCol = "black",
+  bwdSuccessFontCol = "black",
+  bwdFailFontCol = "black",
+  defFontCol = "black",
+  fullFwdCol = "#8DA0CB",
+  finalCol = "#E78AC3",
+  fullFwdFillCol = "#CBD5E8",
+  finalFillCol = "#F4CAE4",
+  fullFwdFontCol = "black",
+  finalFontCol = "black",
+  fullFwdWidth = "2px",
+  finalWidth = "2px",
+  defWidth = "1px",
+  nodeStyle = "filled,rounded",
+  nodeShape = "box",
+  fontname = "helvetica",
+  rankdir = "TB",
+  lookupDF = NULL,
+  ...
 )
 }
 \arguments{
-\item{dir}{A PsN SCM folder (containing \code{scmlog.txt}).}
+\item{dir}{A PsN SCM folder (containing \code{scmlog.txt} and \code{short_scmlog.txt}).}
 
-\item{phase}{SCM phase. Can be \code{"both"} (the default), \code{"forward"} or \code{"backward"}.}
+\item{startPhase}{Where to start collating the output; can be \code{"forward"} (the default) or \code{"backward"}.}
 
-\item{lineCol}{Line color. Default is '#902C10'.}
+\item{fwdSuccessCol}{Node outline color for a model fit matching the forward inclusion criterion.}
 
-\item{lineType}{Line type. Default is '1'.}
+\item{fwdFailCol}{Node outline color for a model fit not matching the forward inclusion criterion.}
 
-\item{lineSize}{Line color. Default is '1'.}
+\item{bwdSuccessCol}{Node outline color for a model fit matching the backward elimination criterion.}
 
-\item{pointCol}{Point color. Default is '#902C10'.}
+\item{bwdFailCol}{Node outline color for a model fit not matching the backward elimination criterion.}
 
-\item{pointShape}{Point shape. Default is '16'.}
+\item{defCol}{Default node outline color.}
 
-\item{pointSize}{Point size. Default is '3'.}
+\item{fwdSuccessFillCol}{Node fill color for a model fit matching the forward inclusion criterion.}
 
-\item{textCol}{Point color. Default is 'black'.}
+\item{fwdFailFillCol}{Node fill color for a model fit not matching the forward inclusion criterion.}
 
-\item{textSize}{Point color. Default is '6'.}
+\item{bwdSuccessFillCol}{Node fill color for a model fit matching the backward elimination criterion.}
+
+\item{bwdFailFillCol}{Node fill color for a model fit not matching the backward elimination criterion.}
+
+\item{defFillCol}{Default node fill color.}
+
+\item{fwdSuccessFontCol}{Node font color for a model fit matching the forward inclusion criterion.}
+
+\item{fwdFailFontCol}{Node font color for a model fit not matching the forward inclusion criterion.}
+
+\item{bwdSuccessFontCol}{Node font color for a model fit matching the backward elimination criterion.}
+
+\item{bwdFailFontCol}{Node font color for a model fit not matching the backward elimination criterion.}
+
+\item{defFontCol}{Default node font color.}
+
+\item{fullFwdCol}{Node outline color for the full forward model (i.e. the final model before the backward elimination procedure in SCM).}
+
+\item{finalCol}{Node outline color for the final reduced model (i.e. the final model reached after the backward elimination procedure in SCM).}
+
+\item{fullFwdFillCol}{Node fill color for the full forward model (i.e. the final model before the backward elimination procedure in SCM).}
+
+\item{finalFillCol}{Node fill color for the final reduced model (i.e. the final model reached after the backward elimination procedure in SCM).}
+
+\item{fullFwdFontCol}{Node font color for the full forward model (i.e. the final model before the backward elimination procedure in SCM).}
+
+\item{finalFontCol}{Node font color for the final reduced model (i.e. the final model reached after the backward elimination procedure in SCM).}
+
+\item{fullFwdWidth}{Node outline width for the full forward model (i.e. the final model before the backward elimination procedure in SCM).}
+
+\item{finalWidth}{Node outline width for the final reduced model (i.e. the final model reached after the backward elimination procedure in SCM).}
+
+\item{defWidth}{Default node outline width.}
+
+\item{nodeStyle}{Node style. A string containing a comma-separated list of options (which include "filled", "striped", "wedged", "diagonals" and "rounded"). See the GraphViz documentation for further details.}
+
+\item{nodeShape}{Node shape. Options include "box" (the default), "oval", "diamond", "egg", "plaintext", "point", "square", "triangle" and many more. See the GraphViz documentation for further details.}
+
+\item{fontname}{Font for nodes. Options depend heavily on the local system - see the GraphViz documentation for further details.}
+
+\item{rankdir}{Direction of graph layout. Possible values are "TB" (the default), "LR", "BT", "RL", corresponding to directed graphs drawn from top to bottom, from left to right, from bottom to top, and from right to left, respectively.}
+
+\item{lookupDF}{A data frame containing a lookup table for node labels. By default, {plot_scm} will use the PSN model names. If a lookup table containing the fields `Model` and `Alias` is provided, model names in `Model` will be replaced in the output plots by mtaching labels in `Alias`.}
+
+\item{...}{Additional parameters passed to the underlying \code{\link[data.tree]{SetNodeStyle}} and \code{\link[data.tree]{SetEdgeStyle}} functions, which in turn rely on \code{\link[DiagrammeR]{DiagrammeR}}.}
 }
 \value{
-A \code{\link{ggplot2}} plot object.
+A \code{grViz} object.
 }
 \description{
-\code{plot_scm} returns a step-plot summary of a Perl-speaks-NONMEM (PsN, \url{https://uupharmacometrics.github.io/PsN/}) SCM (stepwise covariate modeling)
-procedure. It depends on the presence of an \code{scmlog.txt} file in the
-specified directory, and is inspired by the plot code provided with PsN 4.8.1.
+\code{plot_scm} returns a visualization of a Perl-speaks-NONMEM (PsN, \url{https://uupharmacometrics.github.io/PsN/}) SCM (stepwise covariate modeling)
+procedure. It depends on the presence of \code{scmlog.txt} and \code{short_scmlog.txt} files in the
+specified directory.
+}
+\details{
+This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to doucmentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}.
 }
 \examples{
 \dontrun{
@@ -55,10 +124,22 @@ scm <- plot_scm("E:/DrugX/ModelDevelopment/scm310")
 \seealso{
 NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
 
+GraphViz (\url{https://graphviz.org/Documentation.php})
+
 Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl module for NONMEM related programming. Computer Methods and Programs in Biomedicine, 75(2), 85-94. \url{https://doi.org/10.1016/j.cmpb.2003.11.003}
 
 Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer intensive statistical methods for non-linear mixed effect modeling using NONMEM. Computer Methods and Programs in Biomedicine, 79(3), 241-257. \url{https://doi.org/10.1016/j.cmpb.2005.04.005}
+
+Other NONMEM reading: 
+\code{\link{read_nm_all}()},
+\code{\link{read_nm_multi_table}()},
+\code{\link{read_nmcov}()},
+\code{\link{read_nmext}()},
+\code{\link{read_nmtables}()},
+\code{\link{read_nm}()},
+\code{\link{read_scm}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
 }
+\concept{NONMEM reading}

@@ -61,6 +61,7 @@ Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
 }
 \seealso{
 Other NONMEM reading: 
+\code{\link{plot_scm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
