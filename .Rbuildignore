@@ -8,3 +8,6 @@
 pmxTools.Rproj
 .travis.yml
 .github
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -35,6 +35,7 @@ plot_scm(
   nodeShape = "box",
   fontname = "helvetica",
   rankdir = "TB",
+  layout = "dot",
   lookupDF = NULL,
   ...
 )
@@ -99,6 +100,8 @@ plot_scm(
 \item{fontname}{Font for nodes. Options depend heavily on the local system - see the GraphViz documentation for further details.}
 
 \item{rankdir}{Direction of graph layout. Possible values are "TB" (the default), "LR", "BT", "RL", corresponding to directed graphs drawn from top to bottom, from left to right, from bottom to top, and from right to left, respectively.}
+
+\item{layout}{Graph layout. Possible values are "dot" (the default), "neato", "twopi", and "circo". Note that of these, "dot" is the easiest to interpret and the others may produce odd results.}
 
 \item{lookupDF}{A data frame containing a lookup table for node labels. By default, {plot_scm} will use the PSN model names. If a lookup table containing the fields `Model` and `Alias` is provided, model names in `Model` will be replaced in the output plots by mtaching labels in `Alias`.}
 

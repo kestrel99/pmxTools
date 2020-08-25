@@ -91,7 +91,7 @@ calc_sd_1cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
   ### C(t) after single dose - eq 1.24 p. 13
   Ct <- (dose / dur) * (1 / (param$k10 * param$V1)) * (1 - exp(-param$k10 * dur)) * exp(-param$k10 * (t - param$tlag - dur))
   Ct[t < param$tlag] <- 0
-  Ct[t >= param$tlag & t < dur] <- (dose / dur) * (1 / (param$k10 * param$V1)) * (1 - exp(-param$k10 * (t[t >= param$tlag & t < dur] - param$tlag)))
+  Ct[t >= param$tlag & t < (dur+param$tlag)] <- (dose / dur) * (1 / (param$k10 * param$V1)) * (1 - exp(-param$k10 * (t[t >= param$tlag & t < (dur+param$tlag)] - param$tlag)))
   Ct
 }
 
@@ -204,13 +204,13 @@ calc_ss_1cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
        exp(-param$k10 * (tad[tad < param$tlag] + tau - param$tlag - dur)) /
        (1 - exp(-param$k10 * tau))
     )
-  Ct[tad >= param$tlag & tad < dur] <-
+  Ct[tad >= param$tlag & tad < (dur+param$tlag)] <-
     (dose / dur) *
     (1 / (param$k10 * param$V1)) *
-    ((1 - exp(-param$k10 * (tad[tad >= param$tlag & tad < dur] - param$tlag))) +
+    ((1 - exp(-param$k10 * (tad[tad >= param$tlag & tad < (dur+param$tlag)] - param$tlag))) +
        exp(-param$k10 * tau) *
        ((1 - exp(-param$k10 * dur)) *
-          exp(-param$k10 * (tad[tad >= param$tlag & tad < dur] - param$tlag - dur)) /
+          exp(-param$k10 * (tad[tad >= param$tlag & tad < (dur+param$tlag)] - param$tlag - dur)) /
           (1 - exp(-param$k10 * tau)))
     )
   Ct

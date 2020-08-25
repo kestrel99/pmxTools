@@ -18,7 +18,7 @@
 #' }
 #' 
 #' @author John Johnson, \email{johndjohnson@@gmail.com}
-#' @references \url{http://www.r-bloggers.com/another-solution-to-the-r-to-word-table-problem/}
+#' @references \url{https://www.r-bloggers.com/another-solution-to-the-r-to-word-table-problem/}
 #'
 #' @export
 

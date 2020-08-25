@@ -81,8 +81,8 @@ calc_sd_2cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
   Ct <- (dose / dur) * (((A / param$alpha) * (1 - exp(-param$alpha * dur)) * exp(-param$alpha * (t - param$tlag - dur))) +
                           ((B / param$beta) * (1 - exp(-param$beta * dur)) * exp(-param$beta * (t - param$tlag - dur))))
   Ct[t < param$tlag] <- 0
-  Ct[t >= param$tlag & t < dur] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * (t[t >= param$tlag & t < dur] - param$tlag))) +
-                                                     (B / param$beta) * (1 - exp(-param$beta * (t[t >= param$tlag & t < dur] - param$tlag))))
+  Ct[t >= param$tlag & t < (dur+param$tlag)] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * (t[t >= param$tlag & t < (dur+param$tlag)] - param$tlag))) +
+                                                     (B / param$beta) * (1 - exp(-param$beta * (t[t >= param$tlag & t < (dur+param$tlag)] - param$tlag))))
   Ct
 }
 
@@ -101,8 +101,8 @@ calc_sd_2cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
   Ct <- (dose / dur) * (((A / param$alpha) * (1 - exp(-param$alpha * dur)) * exp(-param$alpha * (t - param$tlag - dur))) +
                           ((B / param$beta) * (1 - exp(-param$beta * dur)) * exp(-param$beta * (t - param$tlag - dur))))
   Ct[t < param$tlag] <- 0
-  Ct[t >= param$tlag & t < dur] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * (t[t >= param$tlag & t < dur] - param$tlag))) +
-                                                     (B / param$beta) * (1 - exp(-param$beta * (t[t >= param$tlag & t < dur] - param$tlag))))
+  Ct[t >= param$tlag & t < (dur+param$tlag)] <- (dose / dur) * ((A / param$alpha) * (1 - exp(-param$alpha * (t[t >= param$tlag & t < (dur+param$tlag)] - param$tlag))) +
+                                                     (B / param$beta) * (1 - exp(-param$beta * (t[t >= param$tlag & t < (dur+param$tlag)] - param$tlag))))
   Ct
 }
 
