@@ -1,7 +1,7 @@
 Package: pmxTools
 Type: Package
 Title: Pharmacometric and Pharmacokinetic Toolkit
-Version: 1.21
+Version: 1.2.1
 Authors@R: c(person("Justin", "Wilkins", email = "justin.wilkins@occams.com", role = c("aut", "cre"), comment=c(ORCID="0000-0002-7099-9396")),
              person("Bill", "Denney", email="wdenney@humanpredictions.com", role="aut", comment=c(ORCID="0000-0002-5759-428X")),
              person("Rik", "Schoemaker", email="rik.schoemaker@occams.com", role="aut"),
