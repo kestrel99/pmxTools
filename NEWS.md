@@ -1,10 +1,10 @@
-# pmxTools 1.21
+# pmxTools 1.2.1
 
 * Added vignette describing PK curves.
 
 * Fixed a systematic error in `calc_sd_1cmt_linear_oral_0_lag()`, `calc_ss_1cmt_linear_oral_0_lag()`, `calc_sd_2cmt_linear_oral_0_lag()` which resulted in incorrect curves being plotted.
 
-# pmxTools 1.20
+# pmxTools 1.2
 
 * Rewrote `plot_scm` function to produce tree diagrams via `DiagrammeR`.
 
