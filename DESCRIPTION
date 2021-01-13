@@ -24,18 +24,19 @@ BugReports: https://github.com/kestrel99/pmxTools/issues
 LazyData: TRUE
 RoxygenNote: 7.1.1
 Imports:
+  chron,
+  dplyr (>= 0.8.5),
   ggplot2,
   ggrepel,
   gridExtra,
-  chron,
-  xml2,
-  dplyr (>= 0.8.5)
+  scales,
+  xml2
 Depends:
-  MASS,
-  stringr,
-  magrittr,
   data.tree,
-  DiagrammeR
+  DiagrammeR,
+  magrittr,
+  MASS,
+  stringr
 Suggests: 
     testthat,
     knitr,

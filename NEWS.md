@@ -1,3 +1,7 @@
+# pmxTools >1.2.1
+
+* Added `blq_trans()` and `blq_log_trans()` for assistance with visualization of measurements below a limit of quantification.
+
 # pmxTools 1.2.1
 
 * Added vignette describing PK curves.
