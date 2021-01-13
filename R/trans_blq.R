@@ -1,3 +1,26 @@
+#' Estimate the lower limit of quantification (LLOQ) from a vector
+#'
+#' Nonnegative values are considered to be above the LLOQ. \code{NA} values are
+#' ignored.
+#' 
+#' @param x The numeric vector to use for estimation of the LLOQ
+#' @return The lowest, nonzero value from \code{x}.  If all are \code{NA} or
+#'   zero, 1 is returned, and a warning is issued.
+#' @export
+#' @examples
+#' estimate_lloq(c(NA, 0, 2, 5))
+#' @family BLQ Transformation
+estimate_lloq <- function(x) {
+  choices <- x[!is.na(x) & x > 0]
+  if (length(choices)) {
+    lloq <- min(choices)
+  } else {
+    warning("No samples above the lloq, using 1")
+    lloq <- 1
+  }
+  lloq
+}
+
 #' A transform for ggplot2 with data that may be below the lower limit of
 #' quantification
 #' 
@@ -33,13 +56,7 @@
 #' @importFrom scales trans_new breaks_extended
 blq_trans <- function(lloq, x, multiplier=0.5, lloq_text) {
   if (missing(lloq)) {
-    choices <- x[!is.na(x) & x > 0]
-    if (length(choices)) {
-      lloq <- min(choices)
-    } else {
-      warning("No samples above the lloq, using 1")
-      lloq <- 1
-    }
+    lloq <- estimate_lloq(x)
   }
   
   breaks_blq_linear <- breaks_blq_general(lloq=lloq, breakfun=scales::breaks_extended)
@@ -59,13 +76,7 @@ blq_trans <- function(lloq, x, multiplier=0.5, lloq_text) {
 #' @importFrom scales breaks_log trans_new
 blq_log_trans <- function(lloq, x, multiplier=0.5, base=10, lloq_text) {
   if (missing(lloq)) {
-    choices <- x[!is.na(x) & x > 0]
-    if (length(choices)) {
-      lloq <- min(choices)
-    } else {
-      warning("No samples above the lloq, using 1")
-      lloq <- 1
-    }
+    lloq <- estimate_lloq(x)
   }
   
   breaks_blq_log <- breaks_blq_general(lloq=lloq, breakfun=scales::breaks_log, trans=log)

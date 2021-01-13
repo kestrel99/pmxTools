@@ -56,6 +56,7 @@ ggplot(data=data.frame(x=1:10, y=1:10), aes(x=x, y=y)) +
 \seealso{
 Other BLQ Transformation: 
 \code{\link{breaks_blq_general}()},
+\code{\link{estimate_lloq}()},
 \code{\link{ftrans_blq_linear}()},
 \code{\link{itrans_blq_linear}()},
 \code{\link{label_blq}()}
