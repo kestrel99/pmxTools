@@ -1,3 +1,7 @@
+# pmxTools 1.2.2
+
+* Fixed an error in `sample_uncert()` which was crashing the function.
+
 # pmxTools 1.2.1
 
 * Added vignette describing PK curves.
