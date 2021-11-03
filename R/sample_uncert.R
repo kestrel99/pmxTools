@@ -19,6 +19,7 @@
 #'
 #' @export
 #' @importFrom MASS mvrnorm
+#' @importFrom stringr str_replace
 sample_uncert <- function(nmRun, n, seed) {
 
   set.seed(seed)
@@ -44,7 +45,7 @@ sample_uncert <- function(nmRun, n, seed) {
   }
 
   mu   <- as.numeric(c(thetas, siList, omList))
-  vcov <- read_nmcov(nmRun)
+  vcov <- read_nmcov(stringr::str_replace(nmRun, ".xml", ".cov"))
 
   as.data.frame(MASS::mvrnorm(n=n, mu, Sigma=vcov))
 }
