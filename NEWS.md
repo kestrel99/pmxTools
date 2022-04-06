@@ -2,7 +2,7 @@
 
 * Fixed another error in `sample_uncert()` which was still crashing the function.
 
-* Added helper functions `count_na()`, `dgr_table()`, `geomean()`, `gcv()`, `fmt_signif()`.
+* Added helper functions `count_na()`, `dgr_table()`, `gcv()`, `fmt_signif()`.
 
 * Added distribution plotting function `plot_dist()`. 
 

@@ -23,8 +23,6 @@ gcv_convert(0.2)
 gcv_convert(gsd=0.2)
 }
 \references{
-\url{https://www.cognigen.com/nonmem/nm/99feb042003.html}
-
 \url{http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
 }
 \author{

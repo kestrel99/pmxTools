@@ -9,7 +9,7 @@
 #' provides \code{n} sets of parameter estimates sampled from the uncertainty distribution, suitable
 #' for simulation under model uncertainty.
 #' 
-#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

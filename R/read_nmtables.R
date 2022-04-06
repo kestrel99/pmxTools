@@ -12,7 +12,7 @@
 #'   \code{output_type} argument.
 #'
 #' @note Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
-#' @references NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @references NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @references Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
 #'   pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
 #'   Methods Programs Biomed. 1999 Jan;58(1):51-64

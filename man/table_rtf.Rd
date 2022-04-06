@@ -40,7 +40,7 @@ myRTF <- table_rtf(scm$forwardSummary)
 
 }
 \references{
-\url{https://www.r-bloggers.com/another-solution-to-the-r-to-word-table-problem/}
+\url{https://www.r-bloggers.com/2008/10/another-solution-to-the-r-to-word-table-problem/}
 }
 \author{
 John Johnson, \email{johndjohnson@gmail.com}

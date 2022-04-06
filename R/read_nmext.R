@@ -22,7 +22,7 @@
 #'   standard errors for the OMEGA matrix, and 'seSigma', a list of lists
 #'   containing standard errors for the SIGMA matrix.
 #' 
-#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @family NONMEM reading
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
