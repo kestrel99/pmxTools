@@ -2,7 +2,7 @@
 title: "Drawing PK curves with pmxTools"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pk-curves}
+  %\VignetteIndexEntry{Drawing PK curves with pmxTools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
