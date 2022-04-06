@@ -1,3 +1,11 @@
+# pmxTools 1.2.3
+
+* Fixed another error in `sample_uncert()` which was still crashing the function.
+
+* Added helper functions `count_na()`, `dgr_table()`, `geomean()`, `gcv()`, `fmt_signif()`.
+
+* Added distribution plotting function `plot_dist()`. 
+
 # pmxTools 1.2.2
 
 * Fixed an error in `sample_uncert()` which was crashing the function.

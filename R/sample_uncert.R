@@ -1,6 +1,6 @@
 #' Sample from the multivariate normal distribution to generate new sets of parameters from NONMEM output.
 #'
-#' @param nmRun Root filename for the NONMEM run (e.g. "run315").
+#' @param nmRun Root filename for the NONMEM run (e.g. "run315.xml").
 #' @param n Number of samples required.
 #' @param seed Random seed.
 #'
@@ -14,38 +14,31 @@
 #' 
 #' @examples
 #' \dontrun{
-#'  nmMatrix <- sample_uncert("run315", 5000, seed=740727)
+#'  nmMatrix <- sample_uncert("run315.xml", 5000, seed=740727)
 #' }
 #'
 #' @export
 #' @importFrom MASS mvrnorm
 #' @importFrom stringr str_replace
 sample_uncert <- function(nmRun, n, seed) {
-
   set.seed(seed)
-
   nmOutput <- read_nm(nmRun)
-
   thetas <- get_theta(nmOutput)
   omegas <- get_omega(nmOutput)
   sigmas <- get_sigma(nmOutput)
-
   omList <- c()
-  for(i in 1:nrow(omegas)) {
-    for(j in 1:i) {
-      omList <- c(omList, omegas[i,j])
+  for (i in 1:nrow(omegas)) {
+    for (j in 1:i) {
+      omList <- c(omList, omegas[i, j])
     }
   }
-
   siList <- c()
-  for(i in 1:nrow(sigmas)) {
-    for(j in 1:i) {
-      siList <- c(siList, sigmas[i,j])
+  for (i in 1:nrow(sigmas)) {
+    for (j in 1:i) {
+      siList <- c(siList, sigmas[i, j])
     }
   }
-
-  mu   <- as.numeric(c(thetas, siList, omList))
-  vcov <- read_nmcov(stringr::str_replace(nmRun, ".xml", ".cov"))
-
-  as.data.frame(MASS::mvrnorm(n=n, mu, Sigma=vcov))
+  mu <- as.numeric(c(thetas, siList, omList))
+  vcov <- read_nmcov(gsub(pattern = ".xml", replacement = ".cov", x = nmRun))
+  as.data.frame(MASS::mvrnorm(n = n, mu, Sigma = vcov))
 }
