@@ -8,7 +8,7 @@
 \alias{calc_sd_2cmt_linear_oral_0_lag}
 \alias{calc_sd_2cmt_linear_oral_1}
 \alias{calc_sd_2cmt_linear_oral_0}
-\title{Calculate C(t) for a 1-compartment linear model}
+\title{Calculate C(t) for a 2-compartment linear model}
 \usage{
 calc_sd_2cmt(t, dose, dur = NULL, tinf = NULL, ...)
 
@@ -17,8 +17,6 @@ calc_sd_2cmt_linear_bolus(t, dose, ...)
 calc_sd_2cmt_linear_oral_1_lag(t, dose, ...)
 
 calc_sd_2cmt_linear_infusion(t, dose, tinf, ...)
-
-calc_sd_2cmt_linear_oral_0_lag(t, dose, dur, ...)
 
 calc_sd_2cmt_linear_oral_0_lag(t, dose, dur, ...)
 
@@ -41,7 +39,7 @@ calc_sd_2cmt_linear_oral_0(t, dose, dur, ...)
 Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
 }
 \description{
-Calculate C(t) for a 1-compartment linear model
+Calculate C(t) for a 2-compartment linear model
 }
 \section{Functions}{
 \itemize{
@@ -50,8 +48,6 @@ Calculate C(t) for a 1-compartment linear model
 \item \code{calc_sd_2cmt_linear_oral_1_lag}: Calculate C(t) for a 2-compartment linear model after a single first-order oral dose with a lag time
 
 \item \code{calc_sd_2cmt_linear_infusion}: Calculate C(t) for a 2-compartment linear model after a single infusion
-
-\item \code{calc_sd_2cmt_linear_oral_0_lag}: Calculate C(t) for a 2-compartment linear model after a single zero-order oral dose, with lag time
 
 \item \code{calc_sd_2cmt_linear_oral_0_lag}: Calculate C(t) for a 2-compartment linear model after a single zero-order oral dose, with lag time
 
@@ -67,8 +63,6 @@ Ct <- calc_sd_2cmt_linear_oral_1_lag(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 
 Ctrough <- calc_sd_2cmt_linear_infusion(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5,
     dose = 10, tinf = 1)
 Ctrough <- calc_sd_2cmt_linear_oral_0_lag(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5,
-    dose = 1000, dur = 1, tlag=2)
-Ct <- calc_sd_2cmt_linear_oral_0_lag(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5,
     dose = 1000, dur = 1, tlag=2)
 Ct <- calc_sd_2cmt_linear_oral_1(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5,
     dose = 1000, ka = 1)

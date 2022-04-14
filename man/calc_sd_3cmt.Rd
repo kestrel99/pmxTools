@@ -8,7 +8,7 @@
 \alias{calc_sd_3cmt_linear_oral_0}
 \alias{calc_sd_3cmt_linear_oral_0_lag}
 \alias{calc_sd_3cmt_linear_oral_1}
-\title{Calculate C(t) for a 1-compartment linear model}
+\title{Calculate C(t) for a 3-compartment linear model}
 \usage{
 calc_sd_3cmt(t, dose, dur = NULL, tinf = NULL, ...)
 
@@ -39,7 +39,7 @@ calc_sd_3cmt_linear_oral_1(t, dose, ...)
 Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
 }
 \description{
-Calculate C(t) for a 1-compartment linear model
+Calculate C(t) for a 3-compartment linear model
 }
 \section{Functions}{
 \itemize{

@@ -1,6 +1,6 @@
 # Single Dose ####
 
-#' Calculate C(t) for a 1-compartment linear model
+#' Calculate C(t) for a 3-compartment linear model
 #'
 #' @inheritParams calc_sd_1cmt
 #' @param ... Passed to `calc_derived_3cpt()`

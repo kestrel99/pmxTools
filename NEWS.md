@@ -1,3 +1,7 @@
+# pmxTools 1.2.4
+
+* Fixed some minor documentation issues. Thanks to Julien Grassot for spotting these.
+
 # pmxTools 1.2.3
 
 * Fixed another error in `sample_uncert()` which was still crashing the function.
