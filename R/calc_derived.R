@@ -119,6 +119,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, tlag=NULL, type="all
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
+  
+  if(ka < k10) warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
+  
   o
 }
 
@@ -186,6 +189,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, ka=NULL,
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
+  
+  if(ka < k10) warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
+  
   o
 }
 
@@ -281,5 +287,8 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
+  
+  if(ka < k10) warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
+  
   o
 }
