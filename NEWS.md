@@ -4,6 +4,8 @@
 
 * Added `blq_trans()` and `blq_log_trans()` for assistance with visualization of measurements below a limit of quantification.
 
+* Replaced `gridExtra` with `patchwork`.
+
 # pmxTools 1.2.4
 
 * Fixed some minor documentation issues. Thanks to Julien Grassot for spotting these.

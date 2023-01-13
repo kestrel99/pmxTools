@@ -35,9 +35,9 @@ minimum value above zero.
 }
 \section{Functions}{
 \itemize{
-\item \code{blq_log_trans}: Log-scale transformation with BLQ
-}}
+\item \code{blq_log_trans()}: Log-scale transformation with BLQ
 
+}}
 \examples{
 \dontrun{
 library(ggplot2)

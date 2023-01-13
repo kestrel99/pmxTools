@@ -19,7 +19,8 @@
 #' }
 #'
 #' @export
-#' @importFrom dplyr mutate_if
+#' @importFrom dplyr mutate_if 
+#' @importFrom patchwork area 
 
 # generate summary table
 dgr_table <- function(dat, fields, names, cutoff=7, sig=3, by=NULL, idvar="ID", navars=c("-99","-999")) {

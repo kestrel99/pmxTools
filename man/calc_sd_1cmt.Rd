@@ -43,19 +43,19 @@ Calculate C(t) for a 1-compartment linear model
 }
 \section{Functions}{
 \itemize{
-\item \code{calc_sd_1cmt_linear_bolus}: Calculate C(t) for a 1-compartment linear model after a single IV bolus dose
+\item \code{calc_sd_1cmt_linear_bolus()}: Calculate C(t) for a 1-compartment linear model after a single IV bolus dose
 
-\item \code{calc_sd_1cmt_linear_oral_1_lag}: Calculate C(t) for a 1-compartment linear model with first-order absorption after a single oral dose, with lag time
+\item \code{calc_sd_1cmt_linear_oral_1_lag()}: Calculate C(t) for a 1-compartment linear model with first-order absorption after a single oral dose, with lag time
 
-\item \code{calc_sd_1cmt_linear_infusion}: Calculate C(t) for a 1-compartment linear model after a single IV infusion
+\item \code{calc_sd_1cmt_linear_infusion()}: Calculate C(t) for a 1-compartment linear model after a single IV infusion
 
-\item \code{calc_sd_1cmt_linear_oral_0}: Calculate C(t) for a 1-compartment linear model with zero-order absorption after a single oral dose
+\item \code{calc_sd_1cmt_linear_oral_0()}: Calculate C(t) for a 1-compartment linear model with zero-order absorption after a single oral dose
 
-\item \code{calc_sd_1cmt_linear_oral_1}: Calculate C(t) for a 1-compartment linear model with first-order absorption after a single oral dose
+\item \code{calc_sd_1cmt_linear_oral_1()}: Calculate C(t) for a 1-compartment linear model with first-order absorption after a single oral dose
 
-\item \code{calc_sd_1cmt_linear_oral_0_lag}: Calculate C(t) for a 1-compartment linear model with zero-order absorption after a single oral dose, with lag time
+\item \code{calc_sd_1cmt_linear_oral_0_lag()}: Calculate C(t) for a 1-compartment linear model with zero-order absorption after a single oral dose, with lag time
+
 }}
-
 \examples{
 Ct <- calc_sd_1cmt_linear_bolus(t=0:24, CL=6, V=25, dose=600)
 Ct <- calc_sd_1cmt_linear_oral_1_lag(t=0:24, CL=6, V=25, ka=1.1, dose=600, tlag=2)

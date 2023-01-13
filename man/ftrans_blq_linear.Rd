@@ -27,9 +27,9 @@ For ggplot2 scales.
 }
 \section{Functions}{
 \itemize{
-\item \code{ftrans_blq_log}: Log-scale transformation
-}}
+\item \code{ftrans_blq_log()}: Log-scale transformation
 
+}}
 \seealso{
 Other BLQ Transformation: 
 \code{\link{blq_trans}()},

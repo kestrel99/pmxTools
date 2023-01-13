@@ -45,19 +45,19 @@ Calculate C(t) for a 1-compartment linear model at steady-state
 }
 \section{Functions}{
 \itemize{
-\item \code{calc_ss_1cmt_linear_bolus}: Calculate C(t) for a 1-compartment linear model with IV bolus dosing at steady state
+\item \code{calc_ss_1cmt_linear_bolus()}: Calculate C(t) for a 1-compartment linear model with IV bolus dosing at steady state
 
-\item \code{calc_ss_1cmt_linear_infusion}: Calculate C(t) for a 1-compartment linear model with infusion at steady state
+\item \code{calc_ss_1cmt_linear_infusion()}: Calculate C(t) for a 1-compartment linear model with infusion at steady state
 
-\item \code{calc_ss_1cmt_linear_oral_0}: Calculate C(t) for a 1-compartment linear model with zero-order oral absorption at steady state
+\item \code{calc_ss_1cmt_linear_oral_0()}: Calculate C(t) for a 1-compartment linear model with zero-order oral absorption at steady state
 
-\item \code{calc_ss_1cmt_linear_oral_0_lag}: Calculate C(t) for a 1-compartment linear model with zero-order oral absorption at steady state, with lag time
+\item \code{calc_ss_1cmt_linear_oral_0_lag()}: Calculate C(t) for a 1-compartment linear model with zero-order oral absorption at steady state, with lag time
 
-\item \code{calc_ss_1cmt_linear_oral_1_lag}: Calculate C(t) for a 1-compartment linear model with first-order oral absorption at steady state, with lag time
+\item \code{calc_ss_1cmt_linear_oral_1_lag()}: Calculate C(t) for a 1-compartment linear model with first-order oral absorption at steady state, with lag time
 
-\item \code{calc_ss_1cmt_linear_oral_1}: Calculate C(t) for a 1-compartment linear model with first-order oral absorption at steady state
+\item \code{calc_ss_1cmt_linear_oral_1()}: Calculate C(t) for a 1-compartment linear model with first-order oral absorption at steady state
+
 }}
-
 \examples{
 Ct <- calc_ss_1cmt_linear_bolus(t=0:24, CL=6, V=25, dose=600, tau=24)
 Ct <- calc_ss_1cmt_linear_infusion(tad=0:36, CL=2, V=25, dose=600, tinf=1, tau=24)

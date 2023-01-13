@@ -45,19 +45,19 @@ Calculate C(t) for a 3-compartment linear model at steady-state
 }
 \section{Functions}{
 \itemize{
-\item \code{calc_ss_3cmt_linear_bolus}: Calculate C(t) for a 3-compartment linear model at steady state with IV bolus dosing
+\item \code{calc_ss_3cmt_linear_bolus()}: Calculate C(t) for a 3-compartment linear model at steady state with IV bolus dosing
 
-\item \code{calc_ss_3cmt_linear_oral_1_lag}: Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing with a lag time
+\item \code{calc_ss_3cmt_linear_oral_1_lag()}: Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing with a lag time
 
-\item \code{calc_ss_3cmt_linear_infusion}: Calculate C(t) for a 3-compartment linear model at steady state with IV infusions
+\item \code{calc_ss_3cmt_linear_infusion()}: Calculate C(t) for a 3-compartment linear model at steady state with IV infusions
 
-\item \code{calc_ss_3cmt_linear_oral_0}: Calculate C(t) for a 3-compartment linear model at steady state, with zero-order absorption
+\item \code{calc_ss_3cmt_linear_oral_0()}: Calculate C(t) for a 3-compartment linear model at steady state, with zero-order absorption
 
-\item \code{calc_ss_3cmt_linear_oral_0_lag}: Calculate C(t) for a 3-compartment linear model at steady state, with zero-order absorption and lag time
+\item \code{calc_ss_3cmt_linear_oral_0_lag()}: Calculate C(t) for a 3-compartment linear model at steady state, with zero-order absorption and lag time
 
-\item \code{calc_ss_3cmt_linear_oral_1}: Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing
+\item \code{calc_ss_3cmt_linear_oral_1()}: Calculate C(t) for a 3-compartment linear model at steady-state with first-order oral dosing
+
 }}
-
 \examples{
 Ct <- calc_ss_3cmt_linear_bolus(t = 11.75, CL = 3.5, V1 = 20, V2 = 500,
     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tau=24)

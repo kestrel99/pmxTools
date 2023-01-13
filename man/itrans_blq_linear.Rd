@@ -23,9 +23,9 @@ For ggplot2 scales.
 }
 \section{Functions}{
 \itemize{
-\item \code{itrans_blq_log}: Log-scale inverse transform
-}}
+\item \code{itrans_blq_log()}: Log-scale inverse transform
 
+}}
 \seealso{
 Other BLQ Transformation: 
 \code{\link{blq_trans}()},
