@@ -31,7 +31,7 @@ nmVcov <- read_nmcov("run315")
 }
 }
 \seealso{
-NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 
 Other NONMEM reading: 
 \code{\link{plot_scm}()},

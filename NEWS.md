@@ -1,6 +1,24 @@
-# pmxTools >1.2.1
+# pmxTools 1.2.5
+
+* Added a warning about flip-flop kinetics and their potential effects on derived half-lives to `calc_derived_1cpt()`, `calc_derived_2cpt()`, and `calc_derived_3cpt()`.
 
 * Added `blq_trans()` and `blq_log_trans()` for assistance with visualization of measurements below a limit of quantification.
+
+# pmxTools 1.2.4
+
+* Fixed some minor documentation issues. Thanks to Julien Grassot for spotting these.
+
+# pmxTools 1.2.3
+
+* Fixed another error in `sample_uncert()` which was still crashing the function.
+
+* Added helper functions `count_na()`, `dgr_table()`, `gcv()`, `fmt_signif()`.
+
+* Added distribution plotting function `plot_dist()`. 
+
+# pmxTools 1.2.2
+
+* Fixed an error in `sample_uncert()` which was crashing the function.
 
 # pmxTools 1.2.1
 

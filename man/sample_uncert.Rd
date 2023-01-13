@@ -7,7 +7,7 @@
 sample_uncert(nmRun, n, seed)
 }
 \arguments{
-\item{nmRun}{Root filename for the NONMEM run (e.g. "run315").}
+\item{nmRun}{Root filename for the NONMEM run (e.g. "run315.xml").}
 
 \item{n}{Number of samples required.}
 
@@ -24,12 +24,12 @@ Sample from the multivariate normal distribution to generate new sets of paramet
 }
 \examples{
 \dontrun{
- nmMatrix <- sample_uncert("run315", 5000, seed=740727)
+ nmMatrix <- sample_uncert("run315.xml", 5000, seed=740727)
 }
 
 }
 \seealso{
-NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

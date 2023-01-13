@@ -2,7 +2,7 @@
 title: "Drawing PK curves with pmxTools"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pk-curves}
+  %\VignetteIndexEntry{Drawing PK curves with pmxTools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,7 @@ library(gridExtra)
 
 `pmxTools` includes functions for constructing pharmacokinetic (PK) concentration-time curves for a range of common compartmental systems using PK parameters and microconstants. The underlying solutions are based on Julie Bertrand and France Mentré's [Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models implemented in the Monolix software](http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf), published in 2008. 
 
-The options available are by necessity confined to one-, two- and three-compartmental linear models with intravenous bolus, infusion or oral dosing (the latter with zero- or first-order absorption). If more complex systems are needed, you are probably better off using an ODE-based simulation package such as [`RxODE`](https://nlmixrdevelopment.github.io/RxODE/) or [`mrgSolve`](https://mrgsolve.github.io/). 
+The options available are by necessity confined to one-, two- and three-compartmental linear models with intravenous bolus, infusion or oral dosing (the latter with zero- or first-order absorption). If more complex systems are needed, you are probably better off using an ODE-based simulation package such as [`RxODE`](https://nlmixrdevelopment.github.io/RxODE/) or [`mrgSolve`](https://mrgsolve.org/). 
 
 ## Specifying model parameters
 

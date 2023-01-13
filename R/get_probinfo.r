@@ -4,7 +4,7 @@
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
 #' @param est.step Specifies which estimation step to return parameters from (default is the last).
 #' 
-#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' 
 #' @examples
 #' \dontrun{

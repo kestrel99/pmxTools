@@ -36,7 +36,7 @@
 #'  
 #' }
 #' 
-#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' 
 #' @author Rik Schoemaker, \email{rik.schoemaker@@occams.com}
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}

@@ -18,10 +18,10 @@
 #'   \item{backwardSummary}{the covariate relationships eliminated at each backward step}
 #'   \item{backwardP}{the P-value used for exclusion during the backward elimination step}
 #' 
-#' @seealso NONMEM (\url{http://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' 
-#' @seealso Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl module for NONMEM related programming. Computer Methods and Programs in Biomedicine, 75(2), 85-94. \url{https://doi.org/10.1016/j.cmpb.2003.11.003}
-#' @seealso Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer intensive statistical methods for non-linear mixed effect modeling using NONMEM. Computer Methods and Programs in Biomedicine, 79(3), 241-257. \url{https://doi.org/10.1016/j.cmpb.2005.04.005}
+#' @seealso Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl module for NONMEM related programming. Computer Methods and Programs in Biomedicine, 75(2), 85-94. \doi{10.1016/j.cmpb.2003.11.003}
+#' @seealso Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer intensive statistical methods for non-linear mixed effect modeling using NONMEM. Computer Methods and Programs in Biomedicine, 79(3), 241-257. \doi{10.1016/j.cmpb.2005.04.005}
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @family NONMEM reading
 #' @examples
