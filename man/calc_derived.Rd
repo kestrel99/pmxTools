@@ -15,7 +15,12 @@ calc_derived_1cpt(
   V = NULL,
   V1 = NULL,
   ka = NULL,
+  dur = NULL,
   tlag = NULL,
+  tinf = NULL,
+  dose = NULL,
+  tau = NULL,
+  step = 0.1,
   type = "all",
   sigdig = 5
 )
@@ -27,8 +32,13 @@ calc_derived_2cpt(
   Q2 = NULL,
   V = NULL,
   Q = NULL,
+  dur = NULL,
+  tinf = NULL,
   ka = NULL,
   tlag = NULL,
+  dose = NULL,
+  tau = NULL,
+  step = 0.1,
   type = "all",
   sigdig = 5
 )
@@ -43,7 +53,12 @@ calc_derived_3cpt(
   V = NULL,
   Q = NULL,
   ka = NULL,
+  dur = NULL,
+  tinf = NULL,
   tlag = NULL,
+  dose = NULL,
+  tau = NULL,
+  step = 0.1,
   type = "all",
   sigdig = 5
 )
@@ -61,7 +76,17 @@ are synonyms; use only one.}
 
 \item{ka}{Absorption rate (inverse time units, e.g. 1/h)}
 
+\item{dur}{Duration of zero-order absorption (time units, e.g. h)}
+
 \item{tlag}{Absorption lag time (time units, e.g. h)}
+
+\item{tinf}{Duration of infusion (time units, e.g. h)}
+
+\item{dose}{Dose (amount units, e.g. mg)}
+
+\item{tau}{Duration of interdose interval (time units, e.g. h; defaults to 24)}
+
+\item{step}{Time increment to use when estimating NCA parameters (time units, e.g. h; defaults to 0.1)}
 
 \item{type}{Parameters to return. Default is \code{"all"}.  If not
 \code{"all"}, this may be a vector from the names of the return value list.}
@@ -83,7 +108,8 @@ compartment (volume per time units, e.g. L/h)}
 \value{
 Return a list of derived PK parameters for a 1-, 2-, or 3-compartment
   linear model given provided clearances and volumes based on the
-  \code{type}.
+  \code{type}. If a dose is provided, estimated non-compartmental analysis (NCA) parameters will
+  be provided as well, based on simulation of single-dose and (if `tau` is specified) steady-state time courses.
 \itemize{ 
   \item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (volume units, e.g. L); 1-, 2-, and 3-compartment
   \item \code{k10}: First-order elimination rate, \eqn{k_{10}} (inverse time units, e.g. 1/h); 1-, 2-, and 3-compartment
@@ -103,11 +129,21 @@ Return a list of derived PK parameters for a 1-, 2-, or 3-compartment
   \item \code{fracA}: fractional A; 1-, 2-, and 3-compartment
   \item \code{fracB}: fractional B; 2- and 3-compartment
   \item \code{fracC}: fractional C; 3-compartment
+  \item \code{AUCinf}: Area under the concentration-time curve to infinity (single dose)
+  \item \code{AUCtau}: Area under the concentration-time curve over the dosing interval at steady state
+  \item \code{Cmax}: Maximum concentration after a single dose
+  \item \code{Cmaxss}: Maximum concentration over the dosing interval at steady state
+  \item \code{Tmax}: Time after dose of maximum concentration 
+  \item \code{AUCinf_dose_normalized}: Dose-normalized area under the concentration-time curve to infinity (single dose)
+  \item \code{AUCtau_dose_normalized}: Dose-normalized area under the concentration-time curve over the dosing interval at steady state
+  \item \code{Cmax_dose_normalized}: Dose-normalized maximum concentration after a single dose
+  \item \code{Cmaxss_dose_normalized}: Dose-normalized maximum concentration over the dosing interval at steady state
+  \item \code{step}: Time increment used when estimating NCA parameters.
  }
 
-The input parameters with standardized names (\code{V1}, \code{V2},
+The input parameters with standardized names (\code{dose}, \code{V1}, \code{V2},
 \code{V3}, \code{CL}, \code{Q2}, and \code{Q3}) are also returned in the
-list, and if provided, additional PK parameters of `ka` and `lag` are also
+list, and if provided, additional PK parameters of `ka`, `tlag`, `tinf` and `dur` are also
 returned in the list.  All inputs may be scalars or vectors.
 }
 \description{
@@ -129,4 +165,6 @@ Rowland M, Tozer TN. Clinical Pharmacokinetics and
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
+
+Bill Denney, \email{wdenney@humanpredictions.com}
 }

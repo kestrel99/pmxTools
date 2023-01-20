@@ -17,7 +17,8 @@
 #'  AUCs <- get_auc(myAUCdata)
 #' }
 #'
-#' @import stats magrittr
+#' @import stats 
+#' @importFrom magrittr `%>%`
 #' @importFrom dplyr group_by_at
 #' @export
 

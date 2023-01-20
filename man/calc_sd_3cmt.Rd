@@ -78,4 +78,6 @@ Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts an
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}
+
+Bill Denney, \email{wdenney@humanpredictions.com}
 }

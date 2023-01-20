@@ -55,7 +55,7 @@
 #' }
 #'
 #' @export
-#' @import data.tree DiagrammeR
+#' @importFrom data.tree SetEdgeStyle SetGraphStyle SetNodeStyle as.Node GetDefaultTooltip
 #' @importFrom stringr str_extract str_split
 
 plot_scm <- function(dir, startPhase="forward", 

@@ -8,8 +8,19 @@ test_that("1-compartment model", {
   expect_equal(
     t,
     list(k10=0.64, Vss=25, thalf=1.083, alpha=0.64, trueA=0.04, fracA=1,
-         V1=25, CL=16)
+         step=0.1, CL=16, V1=25)
   )
+  
+  t <- calc_derived_1cpt(CL=1.6, V=25, dose=2000, tau=6, ka=0.25)
+  expect_equal(
+    t,
+    list(k10=0.064, Vss=25, thalf=10.83, alpha=0.064, trueA=0.04, fracA=1,
+         tau=6, AUCinf=1250, AUCtau=1249.983, Cmax=50.05775, Cmaxss=213.2689, Tmax=7.3, 
+         AUCinf_dose_normalized=0.625, AUCtau_dose_normalized=0.6249915, Cmax_dose_normalized=0.02502888,
+         Cmaxss_dose_normalized=0.1066344, step=0.1, CL=1.6, V1=25, ka=0.25, dose=2000),
+    tolerance = 10e-5
+  )
+  
   t_vec <- calc_derived_1cpt(CL=c(16, 8), V=c(25, 25))
   expect_equal(
     t_vec,
@@ -20,8 +31,9 @@ test_that("1-compartment model", {
       alpha=c(0.64, 0.32),
       trueA=c(0.04, 0.04),
       fracA=1,
-      V1=c(25, 25),
-      CL=c(16, 8)
+      step=0.1,
+      CL=c(16, 8), 
+      V1=c(25, 25)
     )
   )
 })
@@ -32,8 +44,8 @@ test_that("2-compartment model", {
     t,
     list(
       k10=0.64, k12=0.02, k21=0.01, Vss=75, thalf_alpha=1.0497, thalf_beta=71.514, alpha=0.66031, beta=0.0096925,
-      trueA=0.039981, trueB=1.8908e-05, fracA=0.99953, fracB=0.0004727,
-      V1=25, V2=50, CL=16, Q2=0.5
+      trueA=0.039981, trueB=1.8908e-05, fracA=0.99953, fracB=0.0004727, step=0.1,
+      CL=16, V1=25, V2=50, Q2=0.5
     )
   )
   t_vec <- calc_derived_2cpt(CL=c(16, 8), V1=c(25, 50), V2=c(50, 25), Q=c(0.5, 1))
@@ -52,9 +64,10 @@ test_that("2-compartment model", {
       trueB=c(1.8908e-05, 7.2827e-04),
       fracA=c(0.99953, 0.96359),
       fracB=c(0.0004727, 0.0364140),
+      step=0.1,
+      CL=c(16, 8),
       V1=c(25, 50),
       V2=c(50, 25),
-      CL=c(16, 8),
       Q2=c(0.5, 1)
     )
   )
@@ -69,8 +82,8 @@ test_that("3-compartment model", {
       thalf_alpha=0.039161, thalf_beta=1.1659, thalf_gamma=154.92,
       alpha=17.7, beta=0.59449, gamma=0.0044742,
       trueA=0.038279, trueB=0.0043467, trueC=0.0001098,
-      fracA=0.89572, fracB=0.10171, fracC=0.0025692,
-      V1=23.4, V2=114, V3=4614, CL=29.4, Q2=270, Q3=73
+      fracA=0.89572, fracB=0.10171, fracC=0.0025692, step=0.1,
+      CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73
     )
   )
   t_vec <-
@@ -106,10 +119,11 @@ test_that("3-compartment model", {
       fracA=c(0.85518, 0.94872),
       fracB=c(0.040266, 0.00078148),
       fracC=c(0.10455, 0.050494),
+      step=0.1,
+      CL=c(20, 10),
       V1=c(20, 10),
       V2=c(30, 40),
       V3=c(40, 100),
-      CL=c(20, 10),
       Q2=c(10, 20),
       Q3=c(30, 40)
     )
