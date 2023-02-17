@@ -157,6 +157,16 @@ read_nmtable_single <- function(filename, quiet) {
     ret <-
       read.table(filename, skip=1, header=TRUE, sep=sep.char)
   }
+  # scan to ensure no remaining column headers or other text pollution
+
+  # Define the regular expression pattern
+  pattern <- "^[[:space:]]*([[:alpha:]].*)"
+  
+  # Find the indices of rows that match the pattern
+  indices <- which(!grepl(pattern, ret[[1]]))
+  ret <- ret[indices,]
+  ret <- as.data.frame(sapply(ret, as.numeric))
+  
   ret
 }
 
@@ -189,11 +199,22 @@ read_nm_multi_table <- function(fileName, header=TRUE, ..., simplify=TRUE, table
         new_tables[idx + 1] - 1
       }
     current_table_name <- file_data[new_tables[idx]]
-    ret[[current_table_name]] <-
-      read.table(
-        textConnection(file_data[start_line:end_line]),
-        header=header, ...
-      )
+    
+    tmptab <- read.table(
+      textConnection(file_data[start_line:end_line]),
+      header=header, ...
+    )
+    
+    # scan to ensure no remaining column headers or other text pollution
+    
+    # Define the regular expression pattern
+    pattern <- "^[[:space:]]*([[:alpha:]].*)"
+    
+    # Find the indices of rows that match the pattern
+    indices <- which(!grepl(pattern, tmptab[[1]]))
+    tmptab <- tmptab[indices,]
+    tmptab <- as.data.frame(sapply(tmptab, as.numeric))    
+    ret[[current_table_name]] <- tmptab
   }
   if (simplify & (length(ret) == 1)) {
     # Simplify to just the matrix in the common case of a single estimation

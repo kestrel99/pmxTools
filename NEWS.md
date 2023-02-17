@@ -1,12 +1,14 @@
 # pmxTools 1.3
 
-* Added NCA parameter estimation to `calc_derived_1cpt()`, `calc_derived_2cpt()` and `calc_derived_3cpt()`, if dose and other required information (e.g. `tinf`, `dur`, `tau`) is required.
+* Added NCA parameter estimation to `calc_derived_1cpt()`, `calc_derived_2cpt()` and `calc_derived_3cpt()`, if dose and other required information (e.g. `tinf`, `dur`, `tau`) is provided.
 
 * Added a warning about flip-flop kinetics and their potential effects on derived half-lives to `calc_derived_1cpt()`, `calc_derived_2cpt()`, and `calc_derived_3cpt()`.
 
 * Added `blq_trans()` and `blq_log_trans()` for assistance with visualization of measurements below a limit of quantification.
 
 * Added a test for valid XML to `read_nm()`.
+
+* Small fixes and enhancements to `read_nmtable_single()` and `read_nm_multi_table()` to ensure that stray text is properly handled while reading in NONMEM output files.
 
 * Replaced `gridExtra` with `patchwork`.
 
