@@ -215,19 +215,18 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
   a3 <- do.call(rbind, a2)
   pdata <- a3
   
-  if(metric!="perc") {
-  ggplot(pdata, aes_string("ITERATION", "THETA1")) +
-    geom_line(col=lineCol) +
-    facet_wrap(~ Parameter, scales = "free_y") +
-      scale_x_continuous("Iteration") +
-      scale_y_continuous("Estimated value")
-  } else {
-    ggplot(pdata, aes_string("ITERATION", "percDelta")) +
-      geom_abline(slope=0, intercept=0, linetype=2, col=idlineCol) +
+  drawplot <- function(var1, var2, ylab) {
+    ggplot(pdata, aes(!! sym(var1), !! sym(var2))) +
       geom_line(col=lineCol) +
-      facet_wrap(~ Parameter, scales = "free_y")  +
+      facet_wrap(~ Parameter, scales = "free_y") +
       scale_x_continuous("Iteration") +
-      scale_y_continuous("Change from starting value (%)")  
+      scale_y_continuous(ylab)
+  }
+  
+  if(metric!="perc") {
+    drawplot("ITERATION", "THETA1", "Estimated value")
+  } else {
+    drawplot("ITERATION", "percDelta", "Change from starting value (%)")
   }
 }
 

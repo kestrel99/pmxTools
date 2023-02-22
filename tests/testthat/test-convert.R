@@ -1,8 +1,6 @@
 library(testthat)
 library(pmxTools)
 
-context("Convert.xls PK functions")
-
 test_that("1-compartment model", {
   t <- calc_derived_1cpt(CL=16, V=25)
   expect_equal(
@@ -11,7 +9,11 @@ test_that("1-compartment model", {
          step=0.1, CL=16, V1=25)
   )
   
-  t <- calc_derived_1cpt(CL=1.6, V=25, dose=2000, tau=6, ka=0.25)
+  tt <- evaluate_promise(t <- calc_derived_1cpt(CL=1.6, V=25, dose=2000, tau=6, ka=0.25))
+  expect_equal(tt$messages[1], "dose present. NCA parameters will be estimated.\n")
+  expect_equal(tt$messages[2], "tau present. Steady state NCA parameters will be estimated.\n")
+  expect_equal(tt$messages[3], "1-compartment first-order oral detected.\n")
+  
   expect_equal(
     t,
     list(k10=0.064, Vss=25, thalf=10.83, alpha=0.064, trueA=0.04, fracA=1,
@@ -131,30 +133,25 @@ test_that("3-compartment model", {
 })
 
 test_that("automatic detection works", {
-  expect_equal(
-    expect_message(
-      calc_derived(CL=16, V=25, verbose=TRUE),
-      regexp="Detected 1-compartment model",
-      fixed=TRUE
-    ),
-    calc_derived_1cpt(CL=16, V=25)
+  expect_message(out <- calc_derived(CL=16, V=25, verbose=TRUE),
+    regexp="Detected 1-compartment model",
+    fixed=TRUE
   )
-  expect_equal(
-    expect_message(
-      calc_derived(CL=16, V1=25, V2=50, Q=0.5, verbose=TRUE),
+  expect_equal(out, calc_derived_1cpt(CL=16, V=25))
+  
+  expect_message(out <- calc_derived(CL=16, V1=25, V2=50, Q=0.5, verbose=TRUE),
       regexp="Detected 2-compartment model",
       fixed=TRUE
-    ),
-    calc_derived_2cpt(CL=16, V1=25, V2=50, Q=0.5)
+    )
+  expect_equal(out, calc_derived_2cpt(CL=16, V1=25, V2=50, Q=0.5))
+  
+  expect_message(out <- calc_derived(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73, verbose=TRUE),
+    regexp="Detected 3-compartment model",
+    fixed=TRUE
   )
-  expect_equal(
-    expect_message(
-      calc_derived(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73, verbose=TRUE),
-      regexp="Detected 3-compartment model",
-      fixed=TRUE
-    ),
-    calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73)
-  )
+  
+  expect_equal(out, calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73))
+  
   expect_error(
     calc_derived(foo=1),
     regexp="Could not determine model type based on argument names.  Please check the following argument names: foo",

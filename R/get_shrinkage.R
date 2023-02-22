@@ -31,6 +31,11 @@ get_shrinkage <- function (x, output = "eta", type="sd", sigdig = 3, est.step=NU
     stop("Please select a valid output option (eta, epsilon, all).")
   }
   
+  eta <- NA
+  eps <- NA
+  etavr <- NA
+  epsvr <- NA
+  
   if(is.null(est.step)) {
     no_steps <- sum(stringr::str_count(names(x$nonmem$problem), "estimation"))
   } else {
@@ -77,17 +82,11 @@ get_shrinkage <- function (x, output = "eta", type="sd", sigdig = 3, est.step=NU
   }  
   
   if (output == "all") {
-    if(!is.null(x$nonmem$problem[[ind_est]]$etashrink)) {
       out <- list()
       out$etasd <- eta
       out$etavr <- etavr
       out$epsilonsd <- eps
       out$epsilonvr <- epsvr
-    } else {
-      out <- list()
-      out$etasd <- eta
-      out$epsilonsd <- eps
-    }
   } 
   out
 }

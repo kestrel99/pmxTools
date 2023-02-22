@@ -48,9 +48,13 @@ get_probinfo <- function(x, sigdig=6, est.step=NULL){
                          estimation_title = unlist(x$nonmem$problem[[ind_est]]$estimation_title),
                          estimation_elapsed_time = unlist(x$nonmem$problem[[ind_est]]$estimation_elapsed_time),
                          termination_status = ifelse(as.numeric(unlist(x$nonmem$problem[[ind_est]]$termination_status))== 0,"SUCCESSFUL","TERMINATED"),
-                         condition_number = ifelse(min(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues))) != 0, 
-                                                   signif(abs(max(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues))))/abs(min(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues)))), sigdig),
-                                                   Inf))   ## ratio of absolute max and min eigenvalues
+                         condition_number=NA)
+  
+  if(!is.null(x$nonmem$problem[[ind_est]]$eigenvalues)) {
+    est_info$condition_number = ifelse(min(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues))) != 0, 
+                                       signif(abs(max(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues))))/abs(min(as.numeric(unlist(x$nonmem$problem[[ind_est]]$eigenvalues)))), sigdig),
+                                       Inf)   ## ratio of absolute max and min eigenvalues
+  }
   
  
   ## license information

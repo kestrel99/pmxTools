@@ -117,8 +117,8 @@ get_omega <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
       m2 <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$omegase))
       if (m2 == 1e+10) 
         m2 <- NA
-      oup <- signif(m1 + 1.96 * m2, sigdig)
-      olo <- signif(m1 - 1.96 * m2, sigdig)
+      oup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      olo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       o <- matrix(paste(olo, oup, sep = sep), dimnames = list("OMEGA1", 
                                                               "OMEGA1"))
     }
@@ -143,8 +143,8 @@ get_omega <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
       m2 <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$omegase))
       if (m2 == 1e+10) 
         m2 <- NA
-      oup <- signif(m1 + 1.96 * m2, sigdig)
-      olo <- signif(m1 - 1.96 * m2, sigdig)
+      oup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      olo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       out$Omega95CI <- paste(olo, oup, sep = sep)
       m <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$omegac))
       if (m == 1e+10) 
@@ -187,11 +187,12 @@ get_omega <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
     if (output == "95ci") {
       m1 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$omega, unlist))
       m2 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$omegase, unlist))
-      mup <- signif(m1 + 1.96 * m2, sigdig)
-      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      mup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      mlo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
                   ncol = ncol(m2), dimnames = dimnames(m1))
       o <- m
+      o[o=="---"] <- NA
     }
     if (output == "all") {
       out <- list()
@@ -206,8 +207,8 @@ get_omega <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
       out$OmegaRSE <- signif(m, sigdig)
       m1 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$omega, unlist))
       m2 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$omegase, unlist))
-      mup <- signif(m1 + 1.96 * m2, sigdig)
-      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      mup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      mlo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
                   ncol = ncol(m2), dimnames = dimnames(m1))
       out$Omega95CI <- m
@@ -215,6 +216,7 @@ get_omega <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
                                      sigdig)
       out$OmegaCorrelationSE <- signif(processMatrix(sapply(x$nonmem$problem[[ind_est]]$omegacse, unlist)), 
                                        sigdig)
+      out$Omega95CI[out$Omega95CI=="---"] <- NA
       o <- out
     }
   }

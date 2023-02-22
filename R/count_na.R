@@ -14,5 +14,9 @@
 #' @export
 
 count_na <- function(x) {
-  length(x[is.na(x)])
+  n_na  <- length(x[is.na(x)])
+  n_nan <- length(x[is.nan(x)])
+  if(n_nan==1) warning(paste(n_nan, "NaN value included in the NA count."))
+  if(n_nan>1) warning(paste(n_nan, "NaN values included in the NA count."))
+  n_na
 }

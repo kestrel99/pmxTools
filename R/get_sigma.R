@@ -172,8 +172,8 @@ get_sigma <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
     if (output == "95ci") {
       m1 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$sigma, unlist))
       m2 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$sigmase, unlist))
-      mup <- signif(m1 + 1.96 * m2, sigdig)
-      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      mup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      mlo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
                   ncol = ncol(m2), dimnames = dimnames(m1))
       o <- m
@@ -191,8 +191,8 @@ get_sigma <- function (x, output = "est", sigdig = 6, sep = "-", est.step=NULL)
       out$SigmaRSE <- signif(m, sigdig)
       m1 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$sigma, unlist))
       m2 <- processMatrix(sapply(x$nonmem$problem[[ind_est]]$sigmase, unlist))
-      mup <- signif(m1 + 1.96 * m2, sigdig)
-      mlo <- signif(m1 - 1.96 * m2, sigdig)
+      mup <- fmt_signif(m1 + 1.96 * m2, sigdig)
+      mlo <- fmt_signif(m1 - 1.96 * m2, sigdig)
       m <- matrix(paste(mlo, mup, sep = sep), nrow = nrow(m1), 
                   ncol = ncol(m2), dimnames = dimnames(m1))
       out$Sigma95CI <- m

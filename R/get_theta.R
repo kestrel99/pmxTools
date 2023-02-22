@@ -62,8 +62,8 @@ get_theta <- function(x, output="est", sigdig=6, sep="-", est.step=NULL) {
   if(output=="95ci") {
     est <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$theta))
     se  <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$thetase))
-    outup <- signif(est + 1.96*se, sigdig)
-    outlo <- signif(est - 1.96*se, sigdig)
+    outup <- fmt_signif(est + 1.96*se, digits=sigdig)
+    outlo <- fmt_signif(est - 1.96*se, digits=sigdig)
     out <- paste(outlo, outup, sep=sep)
     names(out) <- paste("THETA", 1:length(x$nonmem$problem[[ind_est]]$theta), sep="")
   }
@@ -84,8 +84,8 @@ get_theta <- function(x, output="est", sigdig=6, sep="-", est.step=NULL) {
 
     est <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$theta))
     se  <- as.numeric(unlist(x$nonmem$problem[[ind_est]]$thetase))
-    outup <- signif(est + 1.96*se, sigdig)
-    outlo <- signif(est - 1.96*se, sigdig)
+    outup <- fmt_signif(est + 1.96*se, digits=sigdig)
+    outlo <- fmt_signif(est - 1.96*se, digits=sigdig)
     out$Theta95CI <- paste(outlo, outup, sep=sep)
     names(out$Theta95CI) <- paste("THETA", 1:length(x$nonmem$problem[[ind_est]]$theta), sep="")
   }

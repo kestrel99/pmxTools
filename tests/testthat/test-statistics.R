@@ -22,3 +22,27 @@ test_that("gcv_convert", {
     fixed=TRUE
   )
 })
+
+test_that("gm", {
+  expect_equal(
+    gm(c(323, 5632, 342, 667, 2174)),
+    979.6148,tolerance = 1e-4,
+    info="The math is numerically accurate"
+  )
+})
+  
+test_that("pcv", {
+  expect_equal(
+    pcv(c(323, 5632, 342, 667, 2174)),
+    123.6015,tolerance = 1e-4,
+    info="The math is numerically accurate"
+  )
+})
+
+test_that("gcv", {
+  expect_equal(
+    gcv(c(323, 5632, 342, 667, 2174)),
+    1.920674,tolerance = 1e-4,
+    info="The math is numerically accurate"
+  )
+})

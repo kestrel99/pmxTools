@@ -1,8 +1,6 @@
 library(testthat)
 library(pmxTools)
 
-context("Miscellaneous functions")
-
 ### AUC
 
 test_that("AUC", {
@@ -19,3 +17,18 @@ test_that("AUC", {
   expect_equal(a, data.frame(ID=1:5, AUC=c(99.804, 114.530, 186.150, 137.950,  66.946)))
 })
 
+test_that("count_na", {
+  expect_equal(
+    count_na(c(0,5,7,NA,3,3,NA)),
+    2,
+    info="The function returns the expected answer"
+  )
+  expect_warning(out <- count_na(c(0,5,7,NA,3,3,NA,NaN,Inf,NaN)), "2 NaN values included in the NA count.")
+  expect_equal(out, 4)
+  
+})
+
+test_that("table_rtf", {
+  expect_snapshot(table_rtf(iris))
+  
+})

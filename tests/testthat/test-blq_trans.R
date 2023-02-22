@@ -1,17 +1,12 @@
-context("blq_trans")
-
 test_that("estimate_lloq works", {
   expect_equal(estimate_lloq(2), 2)
   expect_equal(estimate_lloq(c(NA, 2)), 2)
   expect_equal(estimate_lloq(c(NA, -1, 2)), 2)
-  expect_equal(
-    expect_warning(
-      estimate_lloq(c(NA, -1)),
+  expect_warning(out <- estimate_lloq(c(NA, -1)),
       regexp="No samples above the lloq, using 1",
       fixed=TRUE
-    ),
-    1
-  )
+    )
+  expect_equal(out, 1)
 })
 
 test_that("blq_trans forward and inverse", {

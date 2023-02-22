@@ -98,6 +98,7 @@ get_est_table <- function (x, thetaLabels = c(), omegaLabels = c(),
   shrCol <- c(rep("-", times = length(theta)), shrEta, shrEps)
   out <- data.frame(Parameter = labCol, Estimate = estCol, 
                     RSE = rseCol, CI95 = CI95Col, Shrinkage = shrCol)
+  out$CI95[out$CI95=="NA-NA"] <- NA
   out
   
 }

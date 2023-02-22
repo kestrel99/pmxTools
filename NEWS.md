@@ -10,9 +10,17 @@
 
 * Small fixes and enhancements to `read_nmtable_single()` and `read_nm_multi_table()` to ensure that stray text is properly handled while reading in NONMEM output files.
 
+* `count_na()` now throws a warning if `NaN` values are included in the `NA` count, and indicates how many of them there are.
+
+* Changed the significant digits functionality for 95% confidence intervals for `get_theta()`, `get_omega()` and `get_sigma()`, and all functions that apply these.
+
 * Replaced `gridExtra` with `patchwork`.
 
+* Numerous small fixes.
+
 * Removed some unnecessary dependencies.
+
+* Added many new unit tests, increasing test coverage considerably.
 
 # pmxTools 1.2.4
 

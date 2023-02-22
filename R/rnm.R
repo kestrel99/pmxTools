@@ -474,7 +474,7 @@ rnm <-
   } else {
   NM <-
     as.data.frame(scan(
-      file = paste(pathNM, "\\", name, extmod, sep = ""),
+      file = file.path(pathNM, paste(name, extmod, sep = "")),
       sep = "\n",
       what = character(),
       quiet = T
