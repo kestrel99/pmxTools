@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   pk-curves: pk-curves.html
-last_built: 2023-02-24T10:30Z
+last_built: 2023-02-24T10:38Z
 urls:
   reference: https://kestrel99.github.io/pmxTools/reference
   article: https://kestrel99.github.io/pmxTools/articles
