@@ -11,3 +11,4 @@ pmxTools.Rproj
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.github$
