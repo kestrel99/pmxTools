@@ -25,12 +25,12 @@
 #' @param verbose For \code{calc_derived()}, provide a message indicating the
 #'   type of model detected.
 #' @param ... Passed to the other \code{calc_derived_*()} functions.
-#' 
+#'
 #' @return Return a list of derived PK parameters for a 1-, 2-, or 3-compartment
 #'   linear model given provided clearances and volumes based on the
 #'   \code{type}. If a dose is provided, estimated non-compartmental analysis (NCA) parameters will
 #'   be provided as well, based on simulation of single-dose and (if `tau` is specified) steady-state time courses.
-#' \itemize{ 
+#' \itemize{
 #'   \item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (volume units, e.g. L); 1-, 2-, and 3-compartment
 #'   \item \code{k10}: First-order elimination rate, \eqn{k_{10}} (inverse time units, e.g. 1/h); 1-, 2-, and 3-compartment
 #'   \item \code{k12}: First-order rate of transfer from central to first peripheral compartment, \eqn{k_{12}} (inverse time units, e.g. 1/h); 2- and 3-compartment
@@ -53,7 +53,7 @@
 #'   \item \code{AUCtau}: Area under the concentration-time curve over the dosing interval at steady state
 #'   \item \code{Cmax}: Maximum concentration after a single dose
 #'   \item \code{Cmaxss}: Maximum concentration over the dosing interval at steady state
-#'   \item \code{Tmax}: Time after dose of maximum concentration 
+#'   \item \code{Tmax}: Time after dose of maximum concentration
 #'   \item \code{AUCinf_dose_normalized}: Dose-normalized area under the concentration-time curve to infinity (single dose)
 #'   \item \code{AUCtau_dose_normalized}: Dose-normalized area under the concentration-time curve over the dosing interval at steady state
 #'   \item \code{Cmax_dose_normalized}: Dose-normalized maximum concentration after a single dose
@@ -97,6 +97,23 @@ calc_derived <- function(..., verbose=FALSE) {
   }
 }
 
+update_tend <- function(tend, guess_tmax) {
+  mask_tend_tmax <- tend < guess_tmax
+  if (any(mask_tend_tmax)) {
+    tend[mask_tend_tmax] <-
+      tend * 2^ceiling(log2(guess_tmax[mask_tend_tmax]/tend[mask_tend_tmax]))
+  }
+  tend
+}
+
+maybe_warn_flipflop <- function(ka, k10) {
+  if(!is.null(ka)) {
+    if(any(ka < k10)) {
+      warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
+    }
+  }
+}
+
 #' @rdname calc_derived
 #' @examples
 #' params <- calc_derived_1cpt(CL=16, V=25)
@@ -113,7 +130,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
   trueA <- 1/V1
   thalf <- log(2)/k10
   alpha <- k10
-  
+
   AUCinf <- NULL
   AUCtau  <- NULL
   Cmax   <- NULL
@@ -123,23 +140,20 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
   AUCtau_dose_normalized <- NULL
   Cmax_dose_normalized   <- NULL
   Cmaxss_dose_normalized <- NULL
-  
+
   guess_tmax <- 0
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
-    
-  tend <- 24
-  while(tend<guess_tmax) {
-    tend <- tend*2
-  }
-  
+
+  tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
+
   if(!is.null(dose)) {
     message("dose present. NCA parameters will be estimated.")
     if(!is.null(tau)) message("tau present. Steady state NCA parameters will be estimated.")
     AUCinf <- dose/CL
     AUCinf_dose_normalized <- AUCinf/dose
-    
+
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("1-compartment bolus detected.")
@@ -157,7 +171,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
-    
+
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("1-compartment infusion detected.")
@@ -244,7 +258,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
   }
-  
+
   out <-
     list(
       k10=signif(CL/V1, sigdig),
@@ -273,7 +287,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       tinf=tinf,
       dose=dose
     )
-  
+
   if(type=="all") {
     o <- out
   } else {
@@ -283,12 +297,8 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
-  
-  if(!is.null(ka)) {
-    if(ka < k10) {
-      warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
-    }
-  }
+
+  maybe_warn_flipflop(ka = ka, k10 = k10)
   o
 }
 
@@ -309,21 +319,21 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # Use the preferred synonym
     Q2 <- Q
   }
-  
+
   ### variables
   k10   <- CL/V1
   k12   <- Q2/V1
   k21   <- Q2/V2
-  
+
   a0 <- k10 * k21
   a1 <- -(k10 + k12 + k21)
-  
+
   i1 <- (-a1 + sqrt(a1*a1-4*a0))/2
   i2 <- (-a1 - sqrt(a1*a1-4*a0))/2
-  
+
   c1 <- (k21 - i1)/(i2 - i1)/V1
   c2 <- (k21 - i2)/(i1 - i2)/V1
-  
+
   AUCinf <- NULL
   AUCtau  <- NULL
   Cmax   <- NULL
@@ -333,23 +343,20 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
   AUCtau_dose_normalized <- NULL
   Cmax_dose_normalized   <- NULL
   Cmaxss_dose_normalized <- NULL
-  
+
   guess_tmax <- 0
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
-  
-  tend <- 24
-  while(tend<guess_tmax) {
-    tend <- tend*2
-  }
-  
+
+  tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
+
   if(!is.null(dose)) {
     message("dose present. NCA parameters will be estimated.")
     if(!is.null(tau)) message("tau present. Steady state NCA parameters will be estimated.")
     AUCinf <- dose/CL
     AUCinf_dose_normalized <- AUCinf/dose
-    
+
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("2-compartment bolus detected.")
@@ -367,7 +374,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
-    
+
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("2-compartment infusion detected.")
@@ -454,7 +461,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
   }
-  
+
   out <-
     list(
       k10=signif(k10, sigdig),
@@ -491,7 +498,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       tinf=tinf,
       dose=dose
     )
-  
+
   if(type=="all") {
     o <- out
   } else {
@@ -501,13 +508,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
-  
-  if(!is.null(ka)) {
-    if(ka < k10) {
-      warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
-    }
-  }
-  
+
+  maybe_warn_flipflop(ka = ka, k10 = k10)
+
   o
 }
 
@@ -528,37 +531,37 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # Use the preferred synonym
     Q2 <- Q
   }
-  
+
   ### variables
   k10   <- CL/V1
   k12   <- Q2/V1
   k21   <- Q2/V2
   k13   <- Q3/V1
   k31   <- Q3/V3
-  
+
   a0 <- k10 * k21 * k31
   a1 <- (k10 * k31) + (k21 * k31) + (k21 * k13) + (k10 * k21) + (k31 * k12)
   a2 <- k10 + k12 + k13 + k21 + k31
-  
+
   p   <- a1 - (a2 * a2 / 3)
   q   <- (2 * a2 * a2 * a2 / 27) - (a1 * a2 / 3) + a0
   r1  <- sqrt(-(p * p * p)/27)
   phi <- acos((-q/2)/r1)/3
   r2  <- 2 * exp(log(r1)/3)
-  
+
   root1 <- -(cos(phi) * r2 - a2/3)
   root2 <- -(cos(phi + 2 * pi/3) * r2 - a2/3)
   root3 <- -(cos(phi + 4 * pi/3) * r2 - a2/3)
-  
+
   i1 <- pmax(root1, root2, root3)
   # There is no pmedian function
   i2 <- mapply(FUN=function(...) median(c(...)), root1, root2, root3)
   i3 <- pmin(root1, root2, root3)
-  
+
   c1 <- (k21 - i1) * (k31 - i1) / (i1 - i2) / (i1 - i3) / V1
   c2 <- (k21 - i2) * (k31 - i2) / (i2 - i1) / (i2 - i3) / V1
   c3 <- (k21 - i3) * (k31 - i3) / (i3 - i2) / (i3 - i1) / V1
-  
+
   AUCinf <- NULL
   AUCtau  <- NULL
   Cmax   <- NULL
@@ -568,23 +571,20 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
   AUCtau_dose_normalized <- NULL
   Cmax_dose_normalized   <- NULL
   Cmaxss_dose_normalized <- NULL
-  
+
   guess_tmax <- 0
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
-  
-  tend <- 24
-  while(tend<guess_tmax) {
-    tend <- tend*2
-  }
-  
+
+  tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
+
   if(!is.null(dose)) {
     message("dose present. NCA parameters will be estimated.")
     if(!is.null(tau)) message("tau present. Steady state NCA parameters will be estimated.")
     AUCinf <- dose/CL
     AUCinf_dose_normalized <- AUCinf/dose
-    
+
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("3-compartment bolus detected.")
@@ -602,7 +602,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
-    
+
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("3-compartment infusion detected.")
@@ -689,8 +689,8 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
   }
-  
-  
+
+
   out <-
     list(
       k10=signif(k10, sigdig),
@@ -698,21 +698,21 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       k21=signif(k21, sigdig),
       k13=signif(k13, sigdig),
       k31=signif(k31, sigdig),
-      
+
       Vss=signif(V1 + V2 + V3, sigdig),
-      
+
       thalf_alpha=signif(log(2)/i1, sigdig),
       thalf_beta =signif(log(2)/i2, sigdig),
       thalf_gamma=signif(log(2)/i3, sigdig),
-      
+
       alpha=signif(i1, sigdig),
       beta =signif(i2, sigdig),
       gamma=signif(i3, sigdig),
-      
+
       trueA=signif(c1, sigdig),
       trueB=signif(c2, sigdig),
       trueC=signif(c3, sigdig),
-      
+
       fracA=signif(c1*V1, sigdig),
       fracB=signif(c2*V1, sigdig),
       fracC=signif(c3*V1, sigdig),
@@ -749,12 +749,8 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     }
   }
   o[sapply(o, is.null)] <- NULL   # drops NULL values
-  
-  if(!is.null(ka)) {
-    if(ka < k10) {
-      warning("Flip-flop kinetics detected. ka is lower than k10, and half-life may therefore not be similar to the half-life calculated by typical NCA.\n")
-    }
-  }
-  
+
+  maybe_warn_flipflop(ka = ka, k10 = k10)
+
   o
 }

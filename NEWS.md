@@ -1,3 +1,7 @@
+# pmxTools (development version)
+
+* The calc_derived family of functions works with vector inputs (#29)
+
 # pmxTools 1.3
 
 * Added NCA parameter estimation to `calc_derived_1cpt()`, `calc_derived_2cpt()` and `calc_derived_3cpt()`, if dose and other required information (e.g. `tinf`, `dur`, `tau`) is provided.
