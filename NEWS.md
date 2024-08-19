@@ -1,3 +1,9 @@
+# pmxTools 1.4
+
+* `dgr_table()` now provides geometric means by default
+
+* `gm()` now provides options to strip `NA` values (`na.rm`) and non-positive values (`neg.rm`) before computation.
+
 # pmxTools 1.3
 
 * Added NCA parameter estimation to `calc_derived_1cpt()`, `calc_derived_2cpt()` and `calc_derived_3cpt()`, if dose and other required information (e.g. `tinf`, `dur`, `tau`) is provided.

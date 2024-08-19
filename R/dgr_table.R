@@ -8,6 +8,7 @@
 #' @param by The field to use for grouping (a string). If not \code{NULL} (the default), the summary table will contain columns for each unique value of this field, as well as a column summarizing across all fields.
 #' @param idvar The field in the dataset identifying each unique individual (defaults to "ID").
 #' @param navars A vector containing values that are to be interpreted as missing (defaults to "-99" and "-999"). `NA` values are always considered to be missing.
+#' @param mtype The type of mean to apply; `geomean`, the geometric mean (default) or `mean`, the arithmetic mean.
 #' 
 #' @return A data frame containing a summary of all the fields listed in \code{fields}, for each individual in the dataset (the dataset should not contain duplicated individuals), conditioned on the field in \code{by}. Continuous values are summarized as median, mean, range and number of missing values. Categorical values are summarized as count and relative percentage. 
 #' 
@@ -23,7 +24,7 @@
 #' @importFrom patchwork area 
 
 # generate summary table
-dgr_table <- function(dat, fields, names, cutoff=7, sig=3, by=NULL, idvar="ID", navars=c("-99","-999")) {
+dgr_table <- function(dat, fields, names, cutoff=7, sig=3, by=NULL, idvar="ID", navars=c("-99","-999"), mtype="geomean") {
   
   # get proportions (for summary tables)
   ptable <- function(x, sig=3) signif(as.numeric(prop.table(table(x)))*100, sig)
@@ -39,7 +40,11 @@ dgr_table <- function(dat, fields, names, cutoff=7, sig=3, by=NULL, idvar="ID", 
     }
     if(cont) {
       if(!is.null(by)) {
-        gm <- c(tapply(dat[[field]], dat[[by]], mean, na.rm=T), mean(dat[[field]], na.rm=T, neg.rm=T))
+        if(mtype=="geomean") {
+          gm <- c(tapply(dat[[field]], dat[[by]], gm, na.rm=T, neg.rm=T), gm(dat[[field]], na.rm=T, neg.rm=T))
+        } else {
+          gm <- c(tapply(dat[[field]], dat[[by]], mean, na.rm=T), mean(dat[[field]], na.rm=T))
+        }
         md <- c(tapply(dat[[field]], dat[[by]], median, na.rm=T), median(dat[[field]], na.rm=T))
         mx <- c(tapply(dat[[field]], dat[[by]], max, na.rm=T), max(dat[[field]], na.rm=T))
         mn <- c(tapply(dat[[field]], dat[[by]], min, na.rm=T), min(dat[[field]], na.rm=T))

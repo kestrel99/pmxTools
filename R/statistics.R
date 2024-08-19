@@ -1,6 +1,8 @@
 #' Calculate geometric mean
 #'
 #' @param x Numeric vector.
+#' @param na.rm Flag for removing \code{NA} values (defaults to \code{FALSE}).
+#' @param neg.rm Flag for removing negative or zero values (defaults to \code{FALSE}).
 #'  
 #' @return The geometric mean. \code{NA} is returned if there are any non-positive elements in \code{x}.
 #'
@@ -11,8 +13,14 @@
 #'
 #' @export
 
-gm <- function(x) {
+gm <- function(x, na.rm=FALSE, neg.rm=FALSE) {
   z <- x
+  if (na.rm) z <- z[!is.na(z)]
+  if (neg.rm) z <- z[z > 0]
+
+  if(any(is.na(z))) {
+    out <- as.numeric(NA)
+  }
   if(length(z[z<=0])>0) {
     out <- NA
   } else {
@@ -24,7 +32,7 @@ gm <- function(x) {
 #' Calculate percentage coefficient of variation
 #'
 #' @param x Numeric vector.
-#' @param na.rm A logical value indicating whether NA values should be stripped before the computation proceeds.
+#' @param na.rm A logical value indicating whether `NA` values should be stripped before the computation proceeds.
 #' 
 #' @return The percentage coefficient of variation.
 #'
