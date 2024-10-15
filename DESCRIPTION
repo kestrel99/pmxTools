@@ -38,7 +38,7 @@ Imports:
     magrittr,
     data.tree
 Depends:
-    R (>= 3.50),
+    R (>= 3.5.0),
     patchwork
 Suggests: 
     testthat,
