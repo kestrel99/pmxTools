@@ -134,12 +134,12 @@ Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl modu
 Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer intensive statistical methods for non-linear mixed effect modeling using NONMEM. Computer Methods and Programs in Biomedicine, 79(3), 241-257. \doi{10.1016/j.cmpb.2005.04.005}
 
 Other NONMEM reading: 
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

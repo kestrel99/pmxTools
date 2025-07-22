@@ -4,10 +4,14 @@
 \alias{gm}
 \title{Calculate geometric mean}
 \usage{
-gm(x)
+gm(x, na.rm = FALSE, neg.rm = FALSE)
 }
 \arguments{
 \item{x}{Numeric vector.}
+
+\item{na.rm}{Flag for removing \code{NA} values (defaults to \code{FALSE}).}
+
+\item{neg.rm}{Flag for removing negative or zero values (defaults to \code{FALSE}).}
 }
 \value{
 The geometric mean. \code{NA} is returned if there are any non-positive elements in \code{x}.

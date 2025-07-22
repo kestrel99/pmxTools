@@ -43,12 +43,12 @@ Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer
 
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
-\code{\link{read_nmtables}()},
-\code{\link{read_nm}()}
+\code{\link{read_nmtables}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

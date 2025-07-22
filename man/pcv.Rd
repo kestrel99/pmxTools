@@ -9,7 +9,7 @@ pcv(x, na.rm = FALSE)
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds.}
+\item{na.rm}{A logical value indicating whether `NA` values should be stripped before the computation proceeds.}
 }
 \value{
 The percentage coefficient of variation.
