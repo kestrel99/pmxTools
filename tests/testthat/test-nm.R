@@ -153,14 +153,16 @@ test_that("get_shrinkage", {
 })
 
 test_that("get_est_table", {
-  expect_snapshot(
+  expect_equal(
     get_est_table(nm1, thetaLabels = c("CL","V","KA"), omegaLabels = c("CL","V"), sigmaLabels = "Residual"),
+    readRDS("testData/get_est_table.RDS")
   )
 })
 
 test_that("get_probinfo", {
-  expect_snapshot(
+  expect_equal(
     get_probinfo(nm1),
+    readRDS("testData/get_probinfo.RDS")
   )
 })
 
