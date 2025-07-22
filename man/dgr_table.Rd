@@ -12,7 +12,8 @@ dgr_table(
   sig = 3,
   by = NULL,
   idvar = "ID",
-  navars = c("-99", "-999")
+  navars = c("-99", "-999"),
+  mtype = "geomean"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ dgr_table(
 \item{idvar}{The field in the dataset identifying each unique individual (defaults to "ID").}
 
 \item{navars}{A vector containing values that are to be interpreted as missing (defaults to "-99" and "-999"). `NA` values are always considered to be missing.}
+
+\item{mtype}{The type of mean to apply; `geomean`, the geometric mean (default) or `mean`, the arithmetic mean.}
 }
 \value{
 A data frame containing a summary of all the fields listed in \code{fields}, for each individual in the dataset (the dataset should not contain duplicated individuals), conditioned on the field in \code{by}. Continuous values are summarized as median, mean, range and number of missing values. Categorical values are summarized as count and relative percentage.
