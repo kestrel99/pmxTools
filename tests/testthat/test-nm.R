@@ -1,27 +1,32 @@
-library(testthat)
-
 test_that("read_nm", {
-  expect_snapshot(read_nm("testData/runR001.xml"))
-
+  expect_equal(
+    read_nm("testData/runR001.xml", quiet = TRUE),
+    readRDS("testData/read_nm.RDS")
+  )
 })
 
 test_that("rnm", {
-  expect_snapshot(rnm(index = "001", prefix="runR", pathNM = "testData", ext=".res", extmod = ".ctl"))
-  
+  expect_equal(
+    rnm(index = "001", prefix="runR", pathNM = "testData", ext=".res", extmod = ".ctl"),
+    readRDS("testData/rnm.RDS")
+  )
 })
 
 test_that("read_nmcov", {
-  expect_snapshot(read_nmcov("testData/runR001.cov"))
-  
+  expect_equal(
+    read_nmcov("testData/runR001.cov", quiet = TRUE),
+    readRDS("testData/nmcov.RDS")
+  )
 })
 
 test_that("read_nmext", {
-  expect_snapshot(read_nmext("testData/runR001.ext"))
-  
+  expect_equal(
+    read_nmext("testData/runR001.ext", quiet = TRUE),
+    readRDS("testData/nmext.RDS")
+  )
 })
 
-
-nm1 <- read_nm("testData/runR001.xml", quiet = T)
+nm1 <- read_nm("testData/runR001.xml", quiet = TRUE)
 
 test_that("get_theta", {
   expect_equal(
@@ -160,14 +165,22 @@ test_that("get_probinfo", {
 })
 
 test_that("sample_uncertainty", {
-  expect_snapshot(sample_uncert("testData/runR001.xml", n=50, seed=740727))
+  expect_equal(
+    suppressMessages(sample_uncert("testData/runR001.xml", n=50, seed=740727)),
+    readRDS("testData/sample_uncert.RDS")
+  )
 })
 
 test_that("sample_omega", {
-  expect_snapshot(sample_omega("testData/runR001.xml", n=50, seed=740727))
+  expect_equal(
+    suppressMessages(sample_omega("testData/runR001.xml", n=50, seed=740727)),
+    readRDS("testData/sample_omega.RDS")
+  )
 })
 
 test_that("sample_sigma", {
-  expect_snapshot(sample_sigma("testData/runR001.xml", n=50, seed=740727))
+  expect_equal(
+    suppressMessages(sample_sigma("testData/runR001.xml", n=50, seed=740727)),
+    readRDS("testData/sample_sigma.RDS")
+  )
 })
-

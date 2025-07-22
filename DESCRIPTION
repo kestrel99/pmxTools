@@ -44,7 +44,8 @@ Suggests:
     testthat (>= 3.0.0),
     vdiffr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    withr
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
