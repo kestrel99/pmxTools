@@ -41,7 +41,7 @@ Depends:
     R (>= 3.50),
     patchwork
 Suggests: 
-    testthat,
+    testthat (>= 3.0.0),
     vdiffr,
     knitr,
     rmarkdown
