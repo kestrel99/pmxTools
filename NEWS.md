@@ -1,10 +1,10 @@
 # pmxTools 1.5
 
-* `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes
+* `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes, and to make it more intuitive to interpret
 
 * Dependency `gghalves` has been removed
 
-* Many fixes to documentation
+* Many fixes and updates to documentation
 
 # pmxTools 1.4
 

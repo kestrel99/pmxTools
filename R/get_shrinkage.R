@@ -15,7 +15,7 @@
 #' \code{epsilon} returns EPSILON shrinkage, as reported by NONMEM.
 #' \code{all} returns both ETA and EPSILON shrinkage estimates as a list of vectors.
 #' 
-#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

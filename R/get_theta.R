@@ -18,7 +18,7 @@
 #' _95ci_ returns a vector of the asymptotic 95% confidence intervals for the elements of `THETA` (`est +/- 1.96*se`).
 #' _all_ returns all available `THETA` information as a list of named vectors.
 #' 
-#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @examples

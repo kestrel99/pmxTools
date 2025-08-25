@@ -116,7 +116,7 @@ procedure. It depends on the presence of \code{scmlog.txt} and \code{short_scmlo
 specified directory.
 }
 \details{
-This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}.
+This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{https://rich-iannone.github.io/DiagrammeR/}.
 }
 \examples{
 \dontrun{
@@ -125,7 +125,7 @@ scm <- plot_scm("E:/DrugX/ModelDevelopment/scm310")
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 
 GraphViz (\url{https://graphviz.org/Documentation.php})
 

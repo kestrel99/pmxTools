@@ -78,7 +78,7 @@ nmOutput <- rnm("run315.lst")
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 }
 \author{
 Rik Schoemaker, \email{rik.schoemaker@occams.com}

@@ -40,7 +40,7 @@ plot_nmprogress("run315", ".nmlst")
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

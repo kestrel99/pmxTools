@@ -38,7 +38,7 @@ Extract shrinkage estimates from a NONMEM output object.
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

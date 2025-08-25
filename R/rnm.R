@@ -32,7 +32,7 @@
 #' * _RunTime_: Run time.
 #' * _ConditionN_: Condition number.
 #' 
-#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' 
 #' @author Rik Schoemaker, \email{rik.schoemaker@@occams.com}
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}

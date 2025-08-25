@@ -35,7 +35,7 @@ scm <- read_scm("E:/DrugX/ModelDevelopment/scm310")
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 
 Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl module for NONMEM related programming. Computer Methods and Programs in Biomedicine, 75(2), 85-94. \doi{10.1016/j.cmpb.2003.11.003}
 

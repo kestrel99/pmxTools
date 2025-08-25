@@ -9,7 +9,7 @@
 #' 
 #' @return A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
 #' 
-#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
 #' @details Output options are as follows:

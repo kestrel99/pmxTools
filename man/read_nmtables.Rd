@@ -52,7 +52,7 @@ tables <- read_nmtables(runNo=315)
 
 }
 \references{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 
 Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
 pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput

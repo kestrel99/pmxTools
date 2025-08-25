@@ -40,9 +40,9 @@
 #' 
 #' @return A \code{grViz} object.
 #' 
-#' @details This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}. 
+#' @details This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{https://rich-iannone.github.io/DiagrammeR/}. 
 #' 
-#' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+#' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @seealso GraphViz (\url{https://graphviz.org/Documentation.php})
 #' 
 #' @seealso Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl module for NONMEM related programming. Computer Methods and Programs in Biomedicine, 75(2), 85-94. \doi{10.1016/j.cmpb.2003.11.003}
