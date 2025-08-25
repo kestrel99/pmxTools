@@ -35,11 +35,11 @@ NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

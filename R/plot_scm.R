@@ -35,12 +35,12 @@
 #' @param fontname Font for nodes. Options depend heavily on the local system - see the GraphViz documentation for further details.
 #' @param rankdir Direction of graph layout. Possible values are "TB" (the default), "LR", "BT", "RL", corresponding to directed graphs drawn from top to bottom, from left to right, from bottom to top, and from right to left, respectively. 
 #' @param layout Graph layout. Possible values are "dot" (the default), "neato", "twopi", and "circo". Note that of these, "dot" is the easiest to interpret and the others may produce odd results. 
-#' @param lookupDF A data frame containing a lookup table for node labels. By default, {plot_scm} will use the PSN model names. If a lookup table containing the fields `Model` and `Alias` is provided, model names in `Model` will be replaced in the output plots by mtaching labels in `Alias`.   
+#' @param lookupDF A data frame containing a lookup table for node labels. By default, this function will use the PSN model names. If a lookup table containing the fields `Model` and `Alias` is provided, model names in `Model` will be replaced in the output plots by attaching labels in `Alias`.   
 #' @param ... Additional parameters passed to the underlying \code{\link[data.tree]{SetNodeStyle}} and \code{\link[data.tree]{SetEdgeStyle}} functions, which in turn rely on \code{\link[DiagrammeR]{DiagrammeR}}.  
 #' 
 #' @return A \code{grViz} object.
 #' 
-#' @details This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to doucmentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}. 
+#' @details This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}. 
 #' 
 #' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @seealso GraphViz (\url{https://graphviz.org/Documentation.php})

@@ -20,18 +20,21 @@ get_sigma(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 }
 \value{
 A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
-
-\code{est} returns the estimated SIGMA variance-covariance matrix.
-\code{se} returns the standard errors for the estimated SIGMA variance-covariance matrix.
-\code{rse} returns the relative standard errors for the estimated SIGMA variance-covariance matrix (se/est*100).
-\code{cor} returns the correlation matrix matrix.
-\code{cse} returns the standard errors for the correlation matrix.
-\code{95ci} returns the asymptotic 95\% confidence intervals for the elements of the SIGMA variance-covariance
-matrix (est +/- 1.96*se).
-\code{all} returns all available SIGMA matrices.
 }
 \description{
 Extract residual variability parameter estimates from a NONMEM output object.
+}
+\details{
+Output options are as follows:
+\itemize{
+\item \emph{est} returns the estimated \code{SIGMA} variance-covariance matrix.
+\item \emph{se} returns the standard errors for the estimated \code{SIGMA} variance-covariance matrix.
+\item \emph{rse} returns the relative standard errors for the estimated \code{SIGMA} variance-covariance matrix (\code{se/est*100}).
+\item \emph{cor} returns the correlation matrix matrix.
+\item \emph{cse} returns the standard errors for the correlation matrix.
+\item \emph{95ci} returns the asymptotic 95\% confidence intervals for the elements of the \code{SIGMA} variance-covariance matrix (\verb{est +/- 1.96*se}).
+\item \emph{all} returns all available \code{SIGMA} matrices.
+}
 }
 \examples{
 \dontrun{

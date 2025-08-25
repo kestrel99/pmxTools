@@ -20,7 +20,7 @@ current directory.}
 }
 \value{
 NULL if the file does not exist or the value of
-  \code{read_nm_multi_table()} if it does exist.
+\code{read_nm_multi_table()} if it does exist.
 }
 \description{
 Read a standard NONMEM extension file

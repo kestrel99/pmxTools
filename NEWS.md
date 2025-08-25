@@ -1,3 +1,11 @@
+# pmxTools 1.5
+
+* `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes
+
+* Dependency `gghalves` has been removed
+
+* Many fixes to documentation
+
 # pmxTools 1.4
 
 * `dgr_table()` now provides geometric means by default

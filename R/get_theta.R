@@ -5,17 +5,18 @@
 #' @param output A flag specifying the matrix or matrices to be output. Valid flag values are \code{est} (the default),
 #'  \code{se}, \code{rse}, \code{95ci}, or \code{all}.
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
-#' @param sep Specifies the separator character to use for 95\% confidence intervals (default="-").
+#' @param sep Specifies the separator character to use for 95% confidence intervals (default="-").
 #' @param est.step Specifies which estimation step to return parameters from (default is the last).
 #'
 #' @return A named vector of NONMEM model parameter estimates, or in the case of \code{all},
 #' a list of named vectors.
 #'
-#' \code{est} returns a vector of THETA values.
-#' \code{se} returns a vector of THETA standard errors.
-#' \code{rse} returns a vector of THETA relative standard errors (se/est*100).
-#' \code{95ci} returns a vector of the asymptotic 95\% confidence intervals for the elements of THETA (est +/- 1.96*se).
-#' \code{all} returns all available THETA information as a list of named vectors.
+#' @details Output options are as follows:
+#' _est_ returns a vector of `THETA` values.
+#' _se_ returns a vector of `THETA` standard errors.
+#' _rse_ returns a vector of `THETA` relative standard errors (`se/est*100`).
+#' _95ci_ returns a vector of the asymptotic 95% confidence intervals for the elements of `THETA` (`est +/- 1.96*se`).
+#' _all_ returns all available `THETA` information as a list of named vectors.
 #' 
 #' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}

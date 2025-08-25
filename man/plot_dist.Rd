@@ -23,6 +23,10 @@ plot_dist(
   he_breaks = "Sturges",
   he_outline_bars = FALSE,
   he_point_interval = "median_qi",
+  he_point_alpha = 0.9,
+  he_point_fill = "#F8766D",
+  he_point_colour = "#F8766D",
+  he_point_size = 2,
   bxp_width = 0.12,
   bxp_outlier_col = NA,
   bxp_outlier_fill = NA,
@@ -33,10 +37,10 @@ plot_dist(
   bxp_alpha = 0.9,
   bxp_notch = FALSE,
   bxp_notchwidth = 0.5,
-  hp_range_scale = 0.4,
   hp_alpha = 0.25,
   hp_col = "#F8766D",
-  hp_transformation = position_jitter(),
+  hp_size = 1,
+  hp_shape = 16,
   na.rm = FALSE
 )
 }
@@ -45,7 +49,7 @@ plot_dist(
 
 \item{yvar}{The name of the field containing values to be plotted.}
 
-\item{xvar}{The name of the field containing the grouping variable (defaults to `NULL`).}
+\item{xvar}{The name of the field containing the grouping variable (defaults to \code{NULL}).}
 
 \item{ylim}{Limits for the y-axis. Defaults to \code{NULL}. If provided, should be a 2-element vector containing the upper and lower limits.}
 
@@ -77,6 +81,14 @@ plot_dist(
 
 \item{he_point_interval}{A function from the \code{\link[ggdist:point_interval]{ggdist::point_interval}} family (e.g., \code{median_qi}, \code{mean_qi}, \code{mode_hdi}, etc), or a string giving the name of a function from that family (e.g., \code{"median_qi"}, \code{"mean_qi"}, \code{"mode_hdi"}, etc. This function determines the point summary (typically mean, median, or mode) and interval type (quantile interval, \code{qi}; highest-density interval, \code{hdi}; or highest-density continuous interval, \code{hdci}). Output will be converted to the appropriate x- or y-based aesthetics depending on the value of orientation.}
 
+\item{he_point_alpha}{Alpha for the point.}
+
+\item{he_point_fill}{Fill colour for the point.}
+
+\item{he_point_colour}{Colour for the point.}
+
+\item{he_point_size}{Size for the point.}
+
 \item{bxp_width}{Width of the boxplot component (default 0.12).}
 
 \item{bxp_outlier_col}{Color for outliers in the boxplot component.}
@@ -97,13 +109,13 @@ plot_dist(
 
 \item{bxp_notchwidth}{For a notched box plot, width of the notch relative to the body (default 0.5).}
 
-\item{hp_range_scale}{If no `width` argument is specified in \code{hp_transformation}, used to determine the width of the jitter. Defaults to 0.75, which is half of the allotted space for the jitter-points, whereas 1 would use all of the alotted space.}
-
 \item{hp_alpha}{Alpha for the jitter.}
 
 \item{hp_col}{Color for the jitter.}
 
-\item{hp_transformation}{An evaluated \code{position_*()} function yielding a `Position` object with specified parameters to calculate the transformation of the points. Defaults to \code{\link[ggplot2:position_jitter]{ggplot2::position_jitter}}.}
+\item{hp_size}{Size for the jitter.}
+
+\item{hp_shape}{Shape for the jitter.}
 
 \item{na.rm}{If \code{FALSE}, the default, missing values are removed with a warning. If \code{TRUE}, missing values are silently removed.}
 }

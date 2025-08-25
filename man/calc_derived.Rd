@@ -107,43 +107,43 @@ compartment (volume per time units, e.g. L/h)}
 }
 \value{
 Return a list of derived PK parameters for a 1-, 2-, or 3-compartment
-  linear model given provided clearances and volumes based on the
-  \code{type}. If a dose is provided, estimated non-compartmental analysis (NCA) parameters will
-  be provided as well, based on simulation of single-dose and (if `tau` is specified) steady-state time courses.
-\itemize{ 
-  \item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (volume units, e.g. L); 1-, 2-, and 3-compartment
-  \item \code{k10}: First-order elimination rate, \eqn{k_{10}} (inverse time units, e.g. 1/h); 1-, 2-, and 3-compartment
-  \item \code{k12}: First-order rate of transfer from central to first peripheral compartment, \eqn{k_{12}} (inverse time units, e.g. 1/h); 2- and 3-compartment
-  \item \code{k21}: First-order rate of transfer from first peripheral to central compartment, \eqn{k_{21}} (inverse time units, e.g. 1/h); 2- and 3-compartment
-  \item \code{k13}: First-order rate of transfer from central to second peripheral compartment, \eqn{k_{13}} (inverse time units, e.g. 1/h); 3-compartment
-  \item \code{k31}: First-order rate of transfer from second peripheral to central compartment,\eqn{k_{31}} (inverse time units, e.g. 1/h); 3-compartment
-  \item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (time units, e.g. h); 1-, 2-, and 3-compartment
-  \item \code{thalf_beta}: \eqn{t_{1/2,\beta}} (time units, e.g. h); 2- and 3-compartment
-  \item \code{thalf_gamma}: \eqn{t_{1/2,\gamma}} (time units, e.g. h); 3-compartment
-  \item \code{alpha}: \eqn{\alpha}; 1-, 2-, and 3-compartment
-  \item \code{beta}: \eqn{\beta}; 2- and 3-compartment
-  \item \code{gamma}: \eqn{\beta}; 3-compartment
-  \item \code{trueA}: true A; 1-, 2-, and 3-compartment
-  \item \code{trueB}: true B; 2- and 3-compartment
-  \item \code{trueC}: true C; 3-compartment
-  \item \code{fracA}: fractional A; 1-, 2-, and 3-compartment
-  \item \code{fracB}: fractional B; 2- and 3-compartment
-  \item \code{fracC}: fractional C; 3-compartment
-  \item \code{AUCinf}: Area under the concentration-time curve to infinity (single dose)
-  \item \code{AUCtau}: Area under the concentration-time curve over the dosing interval at steady state
-  \item \code{Cmax}: Maximum concentration after a single dose
-  \item \code{Cmaxss}: Maximum concentration over the dosing interval at steady state
-  \item \code{Tmax}: Time after dose of maximum concentration 
-  \item \code{AUCinf_dose_normalized}: Dose-normalized area under the concentration-time curve to infinity (single dose)
-  \item \code{AUCtau_dose_normalized}: Dose-normalized area under the concentration-time curve over the dosing interval at steady state
-  \item \code{Cmax_dose_normalized}: Dose-normalized maximum concentration after a single dose
-  \item \code{Cmaxss_dose_normalized}: Dose-normalized maximum concentration over the dosing interval at steady state
-  \item \code{step}: Time increment used when estimating NCA parameters.
- }
+linear model given provided clearances and volumes based on the
+\code{type}. If a dose is provided, estimated non-compartmental analysis (NCA) parameters will
+be provided as well, based on simulation of single-dose and (if \code{tau} is specified) steady-state time courses.
+\itemize{
+\item \code{Vss}: Volume of distribution at steady state, \eqn{V_{ss}} (volume units, e.g. L); 1-, 2-, and 3-compartment
+\item \code{k10}: First-order elimination rate, \eqn{k_{10}} (inverse time units, e.g. 1/h); 1-, 2-, and 3-compartment
+\item \code{k12}: First-order rate of transfer from central to first peripheral compartment, \eqn{k_{12}} (inverse time units, e.g. 1/h); 2- and 3-compartment
+\item \code{k21}: First-order rate of transfer from first peripheral to central compartment, \eqn{k_{21}} (inverse time units, e.g. 1/h); 2- and 3-compartment
+\item \code{k13}: First-order rate of transfer from central to second peripheral compartment, \eqn{k_{13}} (inverse time units, e.g. 1/h); 3-compartment
+\item \code{k31}: First-order rate of transfer from second peripheral to central compartment,\eqn{k_{31}} (inverse time units, e.g. 1/h); 3-compartment
+\item \code{thalf_alpha}: \eqn{t_{1/2,\alpha}} (time units, e.g. h); 1-, 2-, and 3-compartment
+\item \code{thalf_beta}: \eqn{t_{1/2,\beta}} (time units, e.g. h); 2- and 3-compartment
+\item \code{thalf_gamma}: \eqn{t_{1/2,\gamma}} (time units, e.g. h); 3-compartment
+\item \code{alpha}: \eqn{\alpha}; 1-, 2-, and 3-compartment
+\item \code{beta}: \eqn{\beta}; 2- and 3-compartment
+\item \code{gamma}: \eqn{\beta}; 3-compartment
+\item \code{trueA}: true A; 1-, 2-, and 3-compartment
+\item \code{trueB}: true B; 2- and 3-compartment
+\item \code{trueC}: true C; 3-compartment
+\item \code{fracA}: fractional A; 1-, 2-, and 3-compartment
+\item \code{fracB}: fractional B; 2- and 3-compartment
+\item \code{fracC}: fractional C; 3-compartment
+\item \code{AUCinf}: Area under the concentration-time curve to infinity (single dose)
+\item \code{AUCtau}: Area under the concentration-time curve over the dosing interval at steady state
+\item \code{Cmax}: Maximum concentration after a single dose
+\item \code{Cmaxss}: Maximum concentration over the dosing interval at steady state
+\item \code{Tmax}: Time after dose of maximum concentration
+\item \code{AUCinf_dose_normalized}: Dose-normalized area under the concentration-time curve to infinity (single dose)
+\item \code{AUCtau_dose_normalized}: Dose-normalized area under the concentration-time curve over the dosing interval at steady state
+\item \code{Cmax_dose_normalized}: Dose-normalized maximum concentration after a single dose
+\item \code{Cmaxss_dose_normalized}: Dose-normalized maximum concentration over the dosing interval at steady state
+\item \code{step}: Time increment used when estimating NCA parameters.
+}
 
 The input parameters with standardized names (\code{dose}, \code{V1}, \code{V2},
 \code{V3}, \code{CL}, \code{Q2}, and \code{Q3}) are also returned in the
-list, and if provided, additional PK parameters of `ka`, `tlag`, `tinf` and `dur` are also
+list, and if provided, additional PK parameters of \code{ka}, \code{tlag}, \code{tinf} and \code{dur} are also
 returned in the list.  All inputs may be scalars or vectors.
 }
 \description{
@@ -160,8 +160,8 @@ params <- calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73)
 Shafer S. L. \code{CONVERT.XLS}
 
 Rowland M, Tozer TN. Clinical Pharmacokinetics and
-  Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams &
-  Wilkins, Philadelphia, 2010.
+Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams &
+Wilkins, Philadelphia, 2010.
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

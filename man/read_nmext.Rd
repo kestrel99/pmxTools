@@ -33,13 +33,13 @@ reported, the last will be reported by default).}
 }
 \value{
 A list of lists, containing 'Termination' (summary of NONMEM's
-  termination output, including shrinkages and ETABAR estimates), 'OFV' (the
-  objective function value), 'Thetas' (a vector of structural parameter
-  estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
-  matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
-  vector of standard errors for THETAs, 'seOmega', a list of lists containing
-  standard errors for the OMEGA matrix, and 'seSigma', a list of lists
-  containing standard errors for the SIGMA matrix.
+termination output, including shrinkages and ETABAR estimates), 'OFV' (the
+objective function value), 'Thetas' (a vector of structural parameter
+estimates, or THETAs), 'Omega', a list of lists containing the OMEGA
+matrix, 'Sigma', a list of lists containing the SIGMA matrix, 'seThetas', a
+vector of standard errors for THETAs, 'seOmega', a list of lists containing
+standard errors for the OMEGA matrix, and 'seSigma', a list of lists
+containing standard errors for the SIGMA matrix.
 }
 \description{
 \code{read_nmext} returns a summary of a given NONMEM run, including
@@ -57,11 +57,11 @@ NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

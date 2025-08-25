@@ -24,16 +24,16 @@ Read all NONMEM files for a single NONMEM run.
 \details{
 The filename for loading is constructed as \code{paste(run_prefix,
   runNo)}.  To load a nonstandard file, simply set one of those values to
-  \code{NULL}.
+\code{NULL}.
 }
 \seealso{
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \concept{NONMEM reading}

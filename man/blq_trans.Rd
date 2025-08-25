@@ -21,7 +21,7 @@ estimation.}
 \code{lloq*multiplier} for display.}
 
 \item{lloq_text}{The text to use on the axis to indicate values \code{<
-lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
+  lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
 missing.}
 
 \item{base}{The base for the logarithm}

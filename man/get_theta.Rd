@@ -22,16 +22,18 @@ get_theta(x, output = "est", sigdig = 6, sep = "-", est.step = NULL)
 \value{
 A named vector of NONMEM model parameter estimates, or in the case of \code{all},
 a list of named vectors.
-
-\code{est} returns a vector of THETA values.
-\code{se} returns a vector of THETA standard errors.
-\code{rse} returns a vector of THETA relative standard errors (se/est*100).
-\code{95ci} returns a vector of the asymptotic 95\% confidence intervals for the elements of THETA (est +/- 1.96*se).
-\code{all} returns all available THETA information as a list of named vectors.
 }
 \description{
 Extract structural model parameter estimates and associated information
 from a NONMEM output object.
+}
+\details{
+Output options are as follows:
+\emph{est} returns a vector of \code{THETA} values.
+\emph{se} returns a vector of \code{THETA} standard errors.
+\emph{rse} returns a vector of \code{THETA} relative standard errors (\code{se/est*100}).
+\emph{95ci} returns a vector of the asymptotic 95\% confidence intervals for the elements of \code{THETA} (\verb{est +/- 1.96*se}).
+\emph{all} returns all available \code{THETA} information as a list of named vectors.
 }
 \examples{
 \dontrun{

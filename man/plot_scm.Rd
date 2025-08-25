@@ -103,7 +103,7 @@ plot_scm(
 
 \item{layout}{Graph layout. Possible values are "dot" (the default), "neato", "twopi", and "circo". Note that of these, "dot" is the easiest to interpret and the others may produce odd results.}
 
-\item{lookupDF}{A data frame containing a lookup table for node labels. By default, {plot_scm} will use the PSN model names. If a lookup table containing the fields `Model` and `Alias` is provided, model names in `Model` will be replaced in the output plots by mtaching labels in `Alias`.}
+\item{lookupDF}{A data frame containing a lookup table for node labels. By default, this function will use the PSN model names. If a lookup table containing the fields \code{Model} and \code{Alias} is provided, model names in \code{Model} will be replaced in the output plots by attaching labels in \code{Alias}.}
 
 \item{...}{Additional parameters passed to the underlying \code{\link[data.tree]{SetNodeStyle}} and \code{\link[data.tree]{SetEdgeStyle}} functions, which in turn rely on \code{\link[DiagrammeR]{DiagrammeR}}.}
 }
@@ -116,7 +116,7 @@ procedure. It depends on the presence of \code{scmlog.txt} and \code{short_scmlo
 specified directory.
 }
 \details{
-This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to doucmentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}.
+This function parses PsN SCM output and displays it as a GraphViz graph (effectively, an HTML widget). It is built on \code{\link[data.tree]{plot.Node}} - please refer to documentation for this function for a more detailed overview of what is possible (a lot). For more specific details, see \url{http://rich-iannone.github.io/DiagrammeR/docs.html}.
 }
 \examples{
 \dontrun{
@@ -134,12 +134,12 @@ Lindbom L, Ribbing J & Jonsson EN (2004). Perl-speaks-NONMEM (PsN) - A Perl modu
 Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer intensive statistical methods for non-linear mixed effect modeling using NONMEM. Computer Methods and Programs in Biomedicine, 79(3), 241-257. \doi{10.1016/j.cmpb.2005.04.005}
 
 Other NONMEM reading: 
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

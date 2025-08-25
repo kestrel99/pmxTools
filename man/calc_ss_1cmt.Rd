@@ -35,7 +35,7 @@ calc_ss_1cmt_linear_oral_1(tad, tau, dose, ...)
 
 \item{tinf}{Duration of infusion (h)}
 
-\item{...}{Passed to `calc_derived_1cpt()`}
+\item{...}{Passed to \code{calc_derived_1cpt()}}
 }
 \value{
 Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.

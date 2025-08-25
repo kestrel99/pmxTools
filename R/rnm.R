@@ -15,26 +15,22 @@
 #'
 #' @return A list containing information extracted from the NONMEM output.
 #' @details The output list is composed of the following objects:
-#' \itemize{
-#'  \item{"Theta"}{A data frame describing the structural (fixed-effect) parameters, containing parameter name, estimated value, standard error (SE), coefficient of variation (CV), lower and upper confidence limits (CIL and CIU, based on \code{Pci}), and P-value, calculated as \code{2 * (1 - pnorm(abs(theta/theta.se)))}.}
-#'  \item{"Eta"}{A data frame describing the interindividual random-effects parameters, containing estimated value, standard error (SE), coefficient of variation (CV, calculated as \code{abs(100*(SE/OMEGA))}), coefficient of variation (EtaCV, calculated as \code{100*sqrt(OMEGA)}), and shrinkage.}
-#'  \item{"Epsilon"}{A data frame describing the residual random-effects parameters, containing estimated value, standard error (SE), coefficient of variation (CV, calculated as \code{abs(100*(SE/OMEGA))}), coefficient of variation (EtaCV, calculated as \code{100*sqrt(SIGMA)}), and shrinkage.}
-#'  \item{"CorTheta"}{A data frame containing the correlation matrix for fixed effects (\code{"THETA"}).}
-#'  \item{"CorOmega"}{A data frame containing the correlation matrix for interindividual random effects (\code{"OMEGA"}).}
-#'  \item{"CorSigma"}{A data frame containing the correlation matrix for residual random effects (\code{"OMEGA"}).}
-#'  \item{"OmegaMatrix"}{A data frame containing the \code{"OMEGA"} matrix.}
-#'  \item{"SigmaMatrix"}{A data frame containing the \code{"OMEGA"} matrix.}
-#'  \item{"CovMatrixTheta"}{A data frame containing the variance-covariance matrix for structural parameters (\code{THETA}).}
-#'  \item{"CovMatrix"}{A data frame containing the complete variance-covariance matrix.}
-#'  \item{"OFV"}{The objective function value.}
-#'  \item{"ThetaString"}{A data frame containing all relevant fixed-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate, standard error, coefficient of variation, combined estimate and asymptotic confidence interval, and P-value.}
-#'  \item{"EtaString"}{A data frame containing all relevant interindivudal random-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate (variance), standard error, coefficient of variation, percentage value (calculated as \code{100*sqrt(OMEGA)}), and shrinkage.}
-#'  \item{"EpsString"}{A data frame containing all relevant residual random-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate (variance), standard error, coefficient of variation, percentage value (calculated as \code{100*sqrt(SIGMA)}), and shrinkage.}
-#'  \item{"RunTime"}{Run time.}
-#'  \item{"ConditionN"}{Condition number.}
-#'  
-#'  
-#' }
+#' * _Theta_: A data frame describing the structural (fixed-effect) parameters, containing parameter name, estimated value, standard error (SE), coefficient of variation (CV), lower and upper confidence limits (CIL and CIU, based on `Pci`), and P-value, calculated as `2\*(1-pnorm(abs(theta/theta.se)))`.
+#' * _Eta_: A data frame describing the interindividual random-effects parameters, containing estimated value, standard error (SE), coefficient of variation (CV, calculated as `abs(100*(SE/OMEGA))`), coefficient of variation (EtaCV, calculated as `100*sqrt(OMEGA)`), and shrinkage.
+#' * _Epsilon_: A data frame describing the residual random-effects parameters, containing estimated value, standard error (SE), coefficient of variation (CV, calculated as `abs(100*(SE/OMEGA))`), coefficient of variation (EtaCV, calculated as `100*sqrt(SIGMA)`), and shrinkage.
+#' * _CorTheta_: A data frame containing the correlation matrix for fixed effects (`THETA`).
+#' * _CorOmega_: A data frame containing the correlation matrix for interindividual random effects (`OMEGA`).
+#' * _CorSigma_: A data frame containing the correlation matrix for residual random effects (`SIGMA`).
+#' * _OmegaMatrix_: A data frame containing the `OMEGA` matrix.
+#' * _SigmaMatrix_: A data frame containing the `SIGMA` matrix.
+#' * _CovMatrixTheta_: A data frame containing the variance-covariance matrix for structural parameters (`THETA`).
+#' * _CovMatrix_: A data frame containing the complete variance-covariance matrix.
+#' * _OFV_: The objective function value.
+#' * _ThetaString_: A data frame containing all relevant fixed-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate, standard error, coefficient of variation, combined estimate and asymptotic confidence interval, and P-value.
+#' * _EtaString_: A data frame containing all relevant interindivudal random-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate (variance), standard error, coefficient of variation, percentage value (calculated as `100*sqrt(OMEGA)`), and shrinkage.
+#' * _EpsString_: A data frame containing all relevant residual random-effects parameter information, suitable for use in a table of parameter estimates. Contains parameter name, estimate (variance), standard error, coefficient of variation, percentage value (calculated as `100*sqrt(SIGMA)`), and shrinkage.
+#' * _RunTime_: Run time.
+#' * _ConditionN_: Condition number.
 #' 
 #' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' 

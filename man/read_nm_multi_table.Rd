@@ -24,7 +24,7 @@ a list of data.frames?}
 }
 \value{
 A list of data.frames, or if only one is present and simplify=TRUE, a
-  data.frame.
+data.frame.
 }
 \description{
 Read (single or) multiple NONMEM tables from a single file
@@ -37,11 +37,11 @@ read_nm_multi_table("run1.cov", row.names=1)
 \seealso{
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
 \code{\link{read_nmtables}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

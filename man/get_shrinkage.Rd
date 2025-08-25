@@ -12,7 +12,7 @@ get_shrinkage(x, output = "eta", type = "sd", sigdig = 3, est.step = NULL)
 \item{output}{A flag specifying the shrinkage estimates to be output. Valid flag
 values are \code{eta} (the default), \code{epsilon}, or \code{all}.}
 
-\item{type}{Specifies the type of shrinkage to report. Valid values are \code{sd} 
+\item{type}{Specifies the type of shrinkage to report. Valid values are \code{sd}
 (standard deviation, the default) or \code{vr} (variance, if present in the XML output).}
 
 \item{sigdig}{Specifies the number of significant digits to be provided (default=3).}

@@ -37,7 +37,7 @@ merged or a "list" of data.frames.}
 }
 \value{
 A data.frame or list of data.frames depending on the
-  \code{output_type} argument.
+\code{output_type} argument.
 }
 \description{
 Reads NONMEM output tables.
@@ -55,17 +55,17 @@ tables <- read_nmtables(runNo=315)
 NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 
 Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
-  pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
-  Methods Programs Biomed. 1999 Jan;58(1):51-64
+pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
+Methods Programs Biomed. 1999 Jan;58(1):51-64
 }
 \seealso{
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
-\code{\link{read_nm}()},
 \code{\link{read_scm}()}
 }
 \author{

@@ -4,7 +4,7 @@
 #' @param output A flag specifying the matrix or matrices to be output. Valid flag values are \code{est} (the default),
 #'  \code{se}, \code{rse}, \code{cor}, \code{cse}, \code{95ci}, or \code{all}.
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
-#' @param sep Specifies the separator character to use for 95\% confidence intervals (default="-").
+#' @param sep Specifies the separator character to use for 95% confidence intervals (default="-").
 #' @param est.step Specifies which estimation step to return parameters from (default is the last).
 #' 
 #' @return A symmetrical matrix, or a list of symmetrical matrices if \code{all} is specified.
@@ -12,14 +12,14 @@
 #' @seealso NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' 
-#' \code{est} returns the estimated OMEGA variance-covariance matrix.
-#' \code{se} returns the standard errors for the estimated OMEGA variance-covariance matrix.
-#' \code{rse} returns the relative standard errors for the estimated OMEGA variance-covariance matrix (se/est*100).
-#' \code{cor} returns the correlation matrix matrix.
-#' \code{cse} returns the standard errors for the correlation matrix.
-#' \code{95ci} returns the asymptotic 95\% confidence intervals for the elements of the OMEGA variance-covariance
-#' matrix (est +/- 1.96*se).
-#' \code{all} returns all available OMEGA matrices.
+#' @details Output options are as follows:
+#' * _est_ returns the estimated `OMEGA` variance-covariance matrix.
+#' * _se_ returns the standard errors for the estimated `OMEGA` variance-covariance matrix.
+#' * _rse_ returns the relative standard errors for the estimated `OMEGA` variance-covariance matrix (`se/est*100`).
+#' * _cor_ returns the correlation matrix matrix.
+#' * _cse_ returns the standard errors for the correlation matrix.
+#' * _95ci_ returns the asymptotic 95% confidence intervals for the elements of the `OMEGA` variance-covariance matrix (`est +/- 1.96*se`).
+#' * _all_ returns all available `OMEGA` matrices.
 #'
 #' @examples
 #' \dontrun{

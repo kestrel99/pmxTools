@@ -13,15 +13,15 @@ read_scm(dir, startPhase = "forward")
 }
 \value{
 A list of data frames, containing
-  \item{forward}{all models evaluated during the forward inclusion step of
-  covariate model building}
-  \item{forwardSummary}{the covariate relationships selected at each forward
-  step}
-  \item{forwardP}{the P-value used for inclusion during the forward inclusion step}
-  \item{backward}{all models evaluated during the backward elimination step of covariate
-  model building}
-  \item{backwardSummary}{the covariate relationships eliminated at each backward step}
-  \item{backwardP}{the P-value used for exclusion during the backward elimination step}
+\item{forward}{all models evaluated during the forward inclusion step of
+covariate model building}
+\item{forwardSummary}{the covariate relationships selected at each forward
+step}
+\item{forwardP}{the P-value used for inclusion during the forward inclusion step}
+\item{backward}{all models evaluated during the backward elimination step of covariate
+model building}
+\item{backwardSummary}{the covariate relationships eliminated at each backward step}
+\item{backwardP}{the P-value used for exclusion during the backward elimination step}
 }
 \description{
 \code{read_scm} returns a summary of a Perl-speaks-NONMEM (PsN, \url{https://uupharmacometrics.github.io/PsN/}) SCM (stepwise covariate modeling)
@@ -43,12 +43,12 @@ Lindbom L, Pihlgren P & Jonsson N (2005). PsN-Toolkit - A collection of computer
 
 Other NONMEM reading: 
 \code{\link{plot_scm}()},
+\code{\link{read_nm}()},
 \code{\link{read_nm_all}()},
 \code{\link{read_nm_multi_table}()},
 \code{\link{read_nmcov}()},
 \code{\link{read_nmext}()},
-\code{\link{read_nmtables}()},
-\code{\link{read_nm}()}
+\code{\link{read_nmtables}()}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

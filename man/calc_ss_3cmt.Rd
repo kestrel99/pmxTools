@@ -35,7 +35,7 @@ calc_ss_3cmt_linear_oral_1(tad, tau, dose, ...)
 
 \item{tinf}{Duration of infusion (h)}
 
-\item{...}{Passed to `calc_derived_3cpt()`}
+\item{...}{Passed to \code{calc_derived_3cpt()}}
 }
 \value{
 Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.

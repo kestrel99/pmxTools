@@ -33,7 +33,7 @@ calc_sd_3cmt_linear_oral_1(t, dose, ...)
 
 \item{tinf}{Duration of infusion (h)}
 
-\item{...}{Passed to `calc_derived_3cpt()`}
+\item{...}{Passed to \code{calc_derived_3cpt()}}
 }
 \value{
 Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
