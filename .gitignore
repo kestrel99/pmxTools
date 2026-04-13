@@ -4,3 +4,8 @@
 .Ruserdata
 inst/doc
 docs
+AGENTS.md
+tests/testthat/_snaps
+*.gz
+pmxTools.Rcheck
+.DS_Store

@@ -1,7 +1,7 @@
 Package: pmxTools
 Type: Package
 Title: Pharmacometric and Pharmacokinetic Toolkit
-Version: 1.5
+Version: 1.6
 Authors@R: c(person("Justin", "Wilkins", email = "justin.wilkins@occams.com", role = c("aut", "cre"), comment=c(ORCID="0000-0002-7099-9396")),
              person("Bill", "Denney", email="wdenney@humanpredictions.com", role="aut", comment=c(ORCID="0000-0002-5759-428X")),
              person("Rik", "Schoemaker", email="rik.schoemaker@occams.com", role="aut"),
@@ -22,14 +22,16 @@ License: GPL-2
 URL: https://github.com/kestrel99/pmxTools,
     https://kestrel99.github.io/pmxTools/
 BugReports: https://github.com/kestrel99/pmxTools/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Imports:
     ggplot2,
     chron,
     xml2,
     dplyr (>= 1.0.0),
+    purrr,
     tibble,
+    tidyr,
     ggdist,
     scales,
     MASS,
@@ -48,4 +50,3 @@ Suggests:
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-
