@@ -1,0 +1,203 @@
+# Package index
+
+## All functions
+
+- [`blq_trans()`](https://kestrel99.github.io/pmxTools/reference/blq_trans.md)
+  [`blq_log_trans()`](https://kestrel99.github.io/pmxTools/reference/blq_trans.md)
+  : A transform for ggplot2 with data that may be below the lower limit
+  of quantification
+
+- [`breaks_blq_general()`](https://kestrel99.github.io/pmxTools/reference/breaks_blq_general.md)
+  : Generate breaks for measurements below the limit of quantification
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  [`calc_derived_1cpt()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  [`calc_derived_2cpt()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  [`calc_derived_3cpt()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  : Calculate derived pharmacokinetic parameters for a 1-, 2-, or
+  3-compartment linear model.
+
+- [`calc_sd_1cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  [`calc_sd_1cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md)
+  : Calculate C(t) for a 1-compartment linear model
+
+- [`calc_sd_2cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  [`calc_sd_2cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md)
+  : Calculate C(t) for a 2-compartment linear model
+
+- [`calc_sd_3cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  [`calc_sd_3cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md)
+  : Calculate C(t) for a 3-compartment linear model
+
+- [`calc_ss_1cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  [`calc_ss_1cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md)
+  : Calculate C(t) for a 1-compartment linear model at steady-state
+
+- [`calc_ss_2cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  [`calc_ss_2cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  : Calculate C(t) for a 2-compartment linear model at steady-state
+
+- [`calc_ss_3cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_bolus()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_oral_1_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_infusion()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_oral_0()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_oral_0_lag()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  [`calc_ss_3cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  : Calculate C(t) for a 3-compartment linear model at steady-state
+
+- [`count_na()`](https://kestrel99.github.io/pmxTools/reference/count_na.md)
+  : Count the number of NA values in a vector.
+
+- [`cut_quantile()`](https://kestrel99.github.io/pmxTools/reference/cut_quantile.md)
+  : Create quantile-based bins for continuous variables
+
+- [`datamap()`](https://kestrel99.github.io/pmxTools/reference/datamap.md)
+  : Create a data map showing individual dosing and observation records
+  over time
+
+- [`dgr_table()`](https://kestrel99.github.io/pmxTools/reference/dgr_table.md)
+  : Generate a summary table of descriptive data for every individual in
+  a dataset suitable for tabulation in a report.
+
+- [`estimate_lloq()`](https://kestrel99.github.io/pmxTools/reference/estimate_lloq.md)
+  : Estimate the lower limit of quantification (LLOQ) from a vector
+
+- [`fmt_signif()`](https://kestrel99.github.io/pmxTools/reference/fmt_signif.md)
+  : Format a number with the correct number of significant digits and
+  trailing zeroes.
+
+- [`ftrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/ftrans_blq_linear.md)
+  [`ftrans_blq_log()`](https://kestrel99.github.io/pmxTools/reference/ftrans_blq_linear.md)
+  : Forward transformation for linear BLQ data
+
+- [`gcv()`](https://kestrel99.github.io/pmxTools/reference/gcv.md) :
+  Calculate a geometric coefficient of variation.
+
+- [`gcv_convert()`](https://kestrel99.github.io/pmxTools/reference/gcv_convert.md)
+  : Convert geometric variance or standard deviation to a geometric
+  coefficient of variation
+
+- [`get_auc()`](https://kestrel99.github.io/pmxTools/reference/get_auc.md)
+  :
+
+  Calculate the area under the curve (AUC) for each subject over the
+  time interval for dependent variables (`dv`) using the trapezoidal
+  rule.
+
+- [`get_est_table()`](https://kestrel99.github.io/pmxTools/reference/get_est_table.md)
+  : Create a table of model parameter estimates from a NONMEM output
+  object.
+
+- [`get_omega()`](https://kestrel99.github.io/pmxTools/reference/get_omega.md)
+  : Extract variability parameter estimates from a NONMEM output object.
+
+- [`get_probinfo()`](https://kestrel99.github.io/pmxTools/reference/get_probinfo.md)
+  : Extract problem and estimation information from a NONMEM output
+  object.
+
+- [`get_shrinkage()`](https://kestrel99.github.io/pmxTools/reference/get_shrinkage.md)
+  : Extract shrinkage estimates from a NONMEM output object.
+
+- [`get_sigma()`](https://kestrel99.github.io/pmxTools/reference/get_sigma.md)
+  : Extract residual variability parameter estimates from a NONMEM
+  output object.
+
+- [`get_theta()`](https://kestrel99.github.io/pmxTools/reference/get_theta.md)
+  : Extract structural model parameter estimates and associated
+  information from a NONMEM output object.
+
+- [`gm()`](https://kestrel99.github.io/pmxTools/reference/gm.md) :
+  Calculate geometric mean
+
+- [`itrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/itrans_blq_linear.md)
+  [`itrans_blq_log()`](https://kestrel99.github.io/pmxTools/reference/itrans_blq_linear.md)
+  : Inverse transformation for linear BLQ data
+
+- [`label_blq()`](https://kestrel99.github.io/pmxTools/reference/label_blq.md)
+  : Label axes with censoring labels for BLQ
+
+- [`pcv()`](https://kestrel99.github.io/pmxTools/reference/pcv.md) :
+  Calculate percentage coefficient of variation
+
+- [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
+  : Provide concentration-time curves.
+
+- [`plot_dist()`](https://kestrel99.github.io/pmxTools/reference/plot_dist.md)
+  : Plot a distribution as a hybrid containing a halfeye, a boxplot and
+  jittered points.
+
+- [`plot_nmprogress()`](https://kestrel99.github.io/pmxTools/reference/plot_nmprogress.md)
+  : Plot NONMEM parameter estimation by iteration.
+
+- [`plot_scm()`](https://kestrel99.github.io/pmxTools/reference/plot_scm.md)
+  : Visualize PsN SCM output.
+
+- [`read_nm()`](https://kestrel99.github.io/pmxTools/reference/read_nm.md)
+  : Read NONMEM 7.2+ output into a list of lists.
+
+- [`read_nm_all()`](https://kestrel99.github.io/pmxTools/reference/read_nm_all.md)
+  : Read all NONMEM files for a single NONMEM run.
+
+- [`read_nm_multi_table()`](https://kestrel99.github.io/pmxTools/reference/read_nm_multi_table.md)
+  : Read (single or) multiple NONMEM tables from a single file
+
+- [`read_nm_std_ext()`](https://kestrel99.github.io/pmxTools/reference/read_nm_std_ext.md)
+  : Read a standard NONMEM extension file
+
+- [`read_nmcov()`](https://kestrel99.github.io/pmxTools/reference/read_nmcov.md)
+  : Read in the NONMEM variance-covariance matrix.
+
+- [`read_nmext()`](https://kestrel99.github.io/pmxTools/reference/read_nmext.md)
+  : Read NONMEM output into a list.
+
+- [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
+  : Reads NONMEM output tables.
+
+- [`read_scm()`](https://kestrel99.github.io/pmxTools/reference/read_scm.md)
+  : Read PsN SCM output into a format suitable for further use.
+
+- [`rnm()`](https://kestrel99.github.io/pmxTools/reference/rnm.md) :
+  Read NONMEM 7.2+ output into an R object.
+
+- [`sample_omega()`](https://kestrel99.github.io/pmxTools/reference/sample_omega.md)
+  : Sample from the multivariate normal distribution using the OMEGA
+  variance-covariance matrix to generate new sets of simulated ETAs from
+  NONMEM output.
+
+- [`sample_sigma()`](https://kestrel99.github.io/pmxTools/reference/sample_sigma.md)
+  : Sample from the multivariate normal distribution using the SIGMA
+  variance-covariance matrix to generate new sets of simulated EPSILONs
+  from NONMEM output.
+
+- [`sample_uncert()`](https://kestrel99.github.io/pmxTools/reference/sample_uncert.md)
+  : Sample from the multivariate normal distribution to generate new
+  sets of parameters from NONMEM output.
+
+- [`table_rtf()`](https://kestrel99.github.io/pmxTools/reference/table_rtf.md)
+  : Read NONMEM output into a list.
