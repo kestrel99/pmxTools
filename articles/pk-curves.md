@@ -1,6 +1,7 @@
 # Drawing PK curves with pmxTools
 
 ``` r
+
 library(pmxTools)
 library(patchwork)
 ```
@@ -28,38 +29,39 @@ Models take dose, time and PK parameters as inputs. Names for some PK
 parameters, especially volumes and intercompartmental clearances, vary
 by model type.
 
-| Parameter       | Description                                      | Used for                           |
-|-----------------|--------------------------------------------------|------------------------------------|
-| `t`             | Time                                             | Single-dose                        |
-| `tad`           | Time after last dose                             | Steady state                       |
-| `dose`          | Dose                                             | All                                |
-| `CL`            | Clearance                                        | All                                |
-| `V`, `V1`       | Central volume of distribution                   | All                                |
-| `V2`            | First peripheral volume of distribution          | Two- and three-compartment models  |
-| `V3`            | Second peripheral volume of distribution         | Three-compartment models           |
-| `Q`, `Q1`, `Q2` | Intercompartmental clearance (between V1 and V2) | Two- and three-compartment models  |
-| `Q3`            | Intercompartmental clearance (between V1 and V3) | Three-compartment models           |
-| `tlag`          | Lag time                                         | Models with lag time               |
-| `tinf`          | Duration of infusion                             | Models with infusion               |
-| `dur`           | Duration of zero-order absorption                | Models with zero-order absorption  |
-| `ka`            | First-order absorption rate                      | Models with first-order absorption |
+| Parameter | Description | Used for |
+|----|----|----|
+| `t` | Time | Single-dose |
+| `tad` | Time after last dose | Steady state |
+| `dose` | Dose | All |
+| `CL` | Clearance | All |
+| `V`, `V1` | Central volume of distribution | All |
+| `V2` | First peripheral volume of distribution | Two- and three-compartment models |
+| `V3` | Second peripheral volume of distribution | Three-compartment models |
+| `Q`, `Q1`, `Q2` | Intercompartmental clearance (between V1 and V2) | Two- and three-compartment models |
+| `Q3` | Intercompartmental clearance (between V1 and V3) | Three-compartment models |
+| `tlag` | Lag time | Models with lag time |
+| `tinf` | Duration of infusion | Models with infusion |
+| `dur` | Duration of zero-order absorption | Models with zero-order absorption |
+| `ka` | First-order absorption rate | Models with first-order absorption |
 
 ## One-compartment, single dose
 
 Available functions include:
 
-| Model         | Variant                                                | Call                                                        |
-|---------------|--------------------------------------------------------|-------------------------------------------------------------|
-| 1-compartment | Single-dose, bolus                                     | `calc_sd_1cmt_linear_bolus(t, dose, CL, V)`                 |
-|               | Single-dose, infusion                                  | `calc_sd_1cmt_linear_infusion(t, dose, CL, V, tinf)`        |
-|               | Single-dose, zero-order oral absorption                | `calc_sd_1cmt_linear_oral_0(t, dose, CL, V, dur)`           |
-|               | Single-dose, zero-order oral absorption with lag time  | `calc_sd_1cmt_linear_oral_0_lag(t, dose, CL, V, dur, tlag)` |
-|               | Single-dose, first-order oral absorption               | `calc_sd_1cmt_linear_oral_1(t, dose, CL, V, ka)`            |
-|               | Single-dose, first-order oral absorption with lag time | `calc_sd_1cmt_linear_oral_1_lag(t, dose, CL, V, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 1-compartment | Single-dose, bolus | `calc_sd_1cmt_linear_bolus(t, dose, CL, V)` |
+|   | Single-dose, infusion | `calc_sd_1cmt_linear_infusion(t, dose, CL, V, tinf)` |
+|   | Single-dose, zero-order oral absorption | `calc_sd_1cmt_linear_oral_0(t, dose, CL, V, dur)` |
+|   | Single-dose, zero-order oral absorption with lag time | `calc_sd_1cmt_linear_oral_0_lag(t, dose, CL, V, dur, tlag)` |
+|   | Single-dose, first-order oral absorption | `calc_sd_1cmt_linear_oral_1(t, dose, CL, V, ka)` |
+|   | Single-dose, first-order oral absorption with lag time | `calc_sd_1cmt_linear_oral_1_lag(t, dose, CL, V, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 library(ggplot2)
 
@@ -106,18 +108,19 @@ p1.1 + p1.2 + p1.3 + p1.4 + p1.5 + p1.6 + plot_layout(nrow=3)
 
 Available functions include:
 
-| Model         | Variant                                                 | Call                                                               |
-|---------------|---------------------------------------------------------|--------------------------------------------------------------------|
-| 1-compartment | Steady state, bolus                                     | `calc_ss_1cmt_linear_bolus(tad, tau, dose, CL, V)`                 |
-|               | Steady state, infusion                                  | `calc_ss_1cmt_linear_infusion(tad, tau, dose, CL, V, tinf)`        |
-|               | Steady state, zero-order oral absorption                | `calc_ss_1cmt_linear_oral_0(tad, tau, dose, CL, V, dur)`           |
-|               | Steady state, zero-order oral absorption with lag time  | `calc_ss_1cmt_linear_oral_0_lag(tad, tau, dose, CL, V, dur, tlag)` |
-|               | Steady state, first-order oral absorption               | `calc_ss_1cmt_linear_oral_1(tad, tau, dose, CL, V, ka)`            |
-|               | Steady state, first-order oral absorption with lag time | `calc_ss_1cmt_linear_oral_1_lag(tad, tau, dose, CL, V, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 1-compartment | Steady state, bolus | `calc_ss_1cmt_linear_bolus(tad, tau, dose, CL, V)` |
+|   | Steady state, infusion | `calc_ss_1cmt_linear_infusion(tad, tau, dose, CL, V, tinf)` |
+|   | Steady state, zero-order oral absorption | `calc_ss_1cmt_linear_oral_0(tad, tau, dose, CL, V, dur)` |
+|   | Steady state, zero-order oral absorption with lag time | `calc_ss_1cmt_linear_oral_0_lag(tad, tau, dose, CL, V, dur, tlag)` |
+|   | Steady state, first-order oral absorption | `calc_ss_1cmt_linear_oral_1(tad, tau, dose, CL, V, ka)` |
+|   | Steady state, first-order oral absorption with lag time | `calc_ss_1cmt_linear_oral_1_lag(tad, tau, dose, CL, V, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 t <- seq(0, 24, by=0.1)
 
@@ -162,18 +165,19 @@ p1.1ss + p1.2ss + p1.3ss + p1.4ss + p1.5ss + p1.6ss + plot_layout(nrow=3)
 
 Available functions include:
 
-| Model         | Variant                                                | Call                                                                |
-|---------------|--------------------------------------------------------|---------------------------------------------------------------------|
-| 2-compartment | Single-dose, bolus                                     | `calc_sd_2cmt_linear_bolus(t, dose, CL, V1, V2, Q)`                 |
-|               | Single-dose, infusion                                  | `calc_sd_2cmt_linear_infusion(t, dose, CL, V1, V2, Q, tinf)`        |
-|               | Single-dose, zero-order oral absorption                | `calc_sd_2cmt_linear_oral_0(t, dose, CL, V1, V2, Q, dur)`           |
-|               | Single-dose, zero-order oral absorption with lag time  | `calc_sd_2cmt_linear_oral_0_lag(t, dose, CL, V1, V2, Q, dur, tlag)` |
-|               | Single-dose, first-order oral absorption               | `calc_sd_2cmt_linear_oral_1(t, dose, CL, V1, V2, Q, ka)`            |
-|               | Single-dose, first-order oral absorption with lag time | `calc_sd_2cmt_linear_oral_1_lag(t, dose, CL, V1, V2, Q, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 2-compartment | Single-dose, bolus | `calc_sd_2cmt_linear_bolus(t, dose, CL, V1, V2, Q)` |
+|   | Single-dose, infusion | `calc_sd_2cmt_linear_infusion(t, dose, CL, V1, V2, Q, tinf)` |
+|   | Single-dose, zero-order oral absorption | `calc_sd_2cmt_linear_oral_0(t, dose, CL, V1, V2, Q, dur)` |
+|   | Single-dose, zero-order oral absorption with lag time | `calc_sd_2cmt_linear_oral_0_lag(t, dose, CL, V1, V2, Q, dur, tlag)` |
+|   | Single-dose, first-order oral absorption | `calc_sd_2cmt_linear_oral_1(t, dose, CL, V1, V2, Q, ka)` |
+|   | Single-dose, first-order oral absorption with lag time | `calc_sd_2cmt_linear_oral_1_lag(t, dose, CL, V1, V2, Q, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 t <- seq(0, 24, by=0.1)
 
@@ -218,18 +222,19 @@ p2.1 + p2.2 + p2.3 + p2.4 + p2.5 + p2.6 + plot_layout(nrow=3)
 
 Available functions include:
 
-| Model         | Variant                                                 | Call                                                                       |
-|---------------|---------------------------------------------------------|----------------------------------------------------------------------------|
-| 2-compartment | Steady state, bolus                                     | `calc_ss_2cmt_linear_bolus(tad, tau, dose, CL, V1, V2, Q)`                 |
-|               | Steady state, infusion                                  | `calc_ss_2cmt_linear_infusion(tad, tau, dose, CL, V1, V2, Q, tinf)`        |
-|               | Steady state, zero-order oral absorption                | `calc_ss_2cmt_linear_oral_0(tad, tau, dose, CL, V1, V2, Q, dur)`           |
-|               | Steady state, zero-order oral absorption with lag time  | `calc_ss_2cmt_linear_oral_0_lag(tad, tau, dose, CL, V1, V2, Q, dur, tlag)` |
-|               | Steady state, first-order oral absorption               | `calc_ss_2cmt_linear_oral_1(tad, tau, dose, CL, V1, V2, Q, ka)`            |
-|               | Steady state, first-order oral absorption with lag time | `calc_ss_2cmt_linear_oral_1_lag(tad, tau, dose, CL, V1, V2, Q, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 2-compartment | Steady state, bolus | `calc_ss_2cmt_linear_bolus(tad, tau, dose, CL, V1, V2, Q)` |
+|   | Steady state, infusion | `calc_ss_2cmt_linear_infusion(tad, tau, dose, CL, V1, V2, Q, tinf)` |
+|   | Steady state, zero-order oral absorption | `calc_ss_2cmt_linear_oral_0(tad, tau, dose, CL, V1, V2, Q, dur)` |
+|   | Steady state, zero-order oral absorption with lag time | `calc_ss_2cmt_linear_oral_0_lag(tad, tau, dose, CL, V1, V2, Q, dur, tlag)` |
+|   | Steady state, first-order oral absorption | `calc_ss_2cmt_linear_oral_1(tad, tau, dose, CL, V1, V2, Q, ka)` |
+|   | Steady state, first-order oral absorption with lag time | `calc_ss_2cmt_linear_oral_1_lag(tad, tau, dose, CL, V1, V2, Q, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 t <- seq(0, 24, by=0.1)
 
@@ -274,18 +279,19 @@ p2.1ss + p2.2ss + p2.3ss + p2.4ss + p2.5ss + p2.6ss + plot_layout(nrow=3)
 
 Available functions include:
 
-| Model         | Variant                                                | Call                                                                         |
-|---------------|--------------------------------------------------------|------------------------------------------------------------------------------|
-| 3-compartment | Single-dose, bolus                                     | `calc_sd_3cmt_linear_bolus(t, dose, CL, V1, V2, V3, Q2, Q3)`                 |
-|               | Single-dose, infusion                                  | `calc_sd_3cmt_linear_infusion(t, dose, CL, V1, V2, V3, Q2, Q3, tinf)`        |
-|               | Single-dose, zero-order oral absorption                | `calc_sd_3cmt_linear_oral_0(t, dose, CL, V1, V2, V3, Q2, Q3, dur)`           |
-|               | Single-dose, zero-order oral absorption with lag time  | `calc_sd_3cmt_linear_oral_0_lag(t, dose, CL, V1, V2, V3, Q2, Q3, dur, tlag)` |
-|               | Single-dose, first-order oral absorption               | `calc_sd_3cmt_linear_oral_1(t, dose, CL, V1, V2, V3, Q2, Q3, ka)`            |
-|               | Single-dose, first-order oral absorption with lag time | `calc_sd_3cmt_linear_oral_1_lag(t, dose, CL, V1, V2, V3, Q2, Q3, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 3-compartment | Single-dose, bolus | `calc_sd_3cmt_linear_bolus(t, dose, CL, V1, V2, V3, Q2, Q3)` |
+|   | Single-dose, infusion | `calc_sd_3cmt_linear_infusion(t, dose, CL, V1, V2, V3, Q2, Q3, tinf)` |
+|   | Single-dose, zero-order oral absorption | `calc_sd_3cmt_linear_oral_0(t, dose, CL, V1, V2, V3, Q2, Q3, dur)` |
+|   | Single-dose, zero-order oral absorption with lag time | `calc_sd_3cmt_linear_oral_0_lag(t, dose, CL, V1, V2, V3, Q2, Q3, dur, tlag)` |
+|   | Single-dose, first-order oral absorption | `calc_sd_3cmt_linear_oral_1(t, dose, CL, V1, V2, V3, Q2, Q3, ka)` |
+|   | Single-dose, first-order oral absorption with lag time | `calc_sd_3cmt_linear_oral_1_lag(t, dose, CL, V1, V2, V3, Q2, Q3, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 t <- seq(0, 24, by=0.1)
 
@@ -330,18 +336,19 @@ p3.1 + p3.2 + p3.3 + p3.4 + p3.5 + p3.6  + plot_layout(nrow=3)
 
 Available functions include:
 
-| Model         | Variant                                                | Call                                                                                |
-|---------------|--------------------------------------------------------|-------------------------------------------------------------------------------------|
-| 3-compartment | Single-dose, bolus                                     | `calc_ss_3cmt_linear_bolus(tad, tau, dose, CL, V1, V2, V3, Q2, Q3)`                 |
-|               | Single-dose, infusion                                  | `calc_ss_3cmt_linear_infusion(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, tinf)`        |
-|               | Single-dose, zero-order oral absorption                | `calc_ss_3cmt_linear_oral_0(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, dur)`           |
-|               | Single-dose, zero-order oral absorption with lag time  | `calc_ss_3cmt_linear_oral_0_lag(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, dur, tlag)` |
-|               | Single-dose, first-order oral absorption               | `calc_ss_3cmt_linear_oral_1(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, ka)`            |
-|               | Single-dose, first-order oral absorption with lag time | `calc_ss_3cmt_linear_oral_1_lag(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, ka, tlag)`  |
+| Model | Variant | Call |
+|----|----|----|
+| 3-compartment | Single-dose, bolus | `calc_ss_3cmt_linear_bolus(tad, tau, dose, CL, V1, V2, V3, Q2, Q3)` |
+|   | Single-dose, infusion | `calc_ss_3cmt_linear_infusion(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, tinf)` |
+|   | Single-dose, zero-order oral absorption | `calc_ss_3cmt_linear_oral_0(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, dur)` |
+|   | Single-dose, zero-order oral absorption with lag time | `calc_ss_3cmt_linear_oral_0_lag(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, dur, tlag)` |
+|   | Single-dose, first-order oral absorption | `calc_ss_3cmt_linear_oral_1(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, ka)` |
+|   | Single-dose, first-order oral absorption with lag time | `calc_ss_3cmt_linear_oral_1_lag(tad, tau, dose, CL, V1, V2, V3, Q2, Q3, ka, tlag)` |
 
 For example -
 
 ``` r
+
 
 t <- seq(0, 24, by=0.1)
 
@@ -393,6 +400,7 @@ function makes this straightforward by using the principle of
 superposition.
 
 ``` r
+
 
 dfcurve1 <- pk_curve(t=seq(0,168,by=0.1), model="3cmt_oral", ii=24, addl=12,
                      params=list(CL=1.5, V1=25, V2=2, V3=5, Q2=0.5, Q3=0.25, ka=1))

@@ -2,13 +2,6 @@
 
 Pharmacometric Tools for Modeling & Simulation
 
-[![Build
-Status](https://app.travis-ci.com/kestrel99/pmxTools.png?branch=master)](https://app.travis-ci.com/kestrel99/pmxTools)
-[![contributions
-welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/kestrel99/pmxTools/issues)
-[![](https://www.r-pkg.org/badges/version/pmxTools?color=green)](https://cran.r-project.org/package=pmxTools)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/pmxTools?color=blue)](https://cran.r-project.org/package=pmxTools)
-
 Developed by **Justin Wilkins**, **Bill Denney** and **Rik Schoemaker**,
 with contributions from a host of others.
 
