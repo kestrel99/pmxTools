@@ -1,6 +1,3 @@
 url: https://kestrel99.github.io/pmxTools/
 template:
   bootstrap: 5
-
-development:
-  mode: auto
