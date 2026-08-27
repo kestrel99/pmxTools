@@ -8,6 +8,8 @@
 
 * Added dependencies `purrr` and `tidyr`.
 
+* Fixed `read_nm()`, which passed the file extension to `xml2::read_xml()` as an encoding rather than appending it to the file name, and read the unresolved file name instead of the one located on disk. The `directory` argument and file names given without the `.xml` extension were therefore ignored, and macOS reported an `Unsupported encoding: .xml` warning.
+
 * Removed the blanket `stats` and `utils` imports, which caused a `replacing previous import 'stats::filter' by 'dplyr::filter'` warning when the package was loaded.
 
 # pmxTools 1.5
