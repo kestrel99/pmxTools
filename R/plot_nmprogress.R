@@ -202,7 +202,7 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
     seSigma = seSigmaList
   )
 
-  pdata <- reshape(extData, idvar = "ITERATION", direction="long", varying = list(names(extData)[2:(length(extData))]))
+  pdata <- stats::reshape(extData, idvar = "ITERATION", direction="long", varying = list(names(extData)[2:(length(extData))]))
   pdata$Parameter <- rep(names(extData)[2:(length(extData))], each=nrow(extData))
   pdata <- pdata[pdata$ITERATION >=0,]
   pdata$Parameter <- ordered(pdata$Parameter, unique(pdata$Parameter))

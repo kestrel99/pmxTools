@@ -190,12 +190,12 @@ read_scm <- function(dir, startPhase="forward") {
   if(exists("scmf")){
     out$forward <- scmf
     out$forwardSummary <- fwdSummary
-    out$forwardP <- signif(1-pchisq(unique(abs(scmf$Goal)), df=1),2)
+    out$forwardP <- signif(1-stats::pchisq(unique(abs(scmf$Goal)), df=1),2)
   }
   if(exists("scmb")){
     out$backward <- scmb
     out$backwardSummary <- bwdSummary
-    out$backwardP <- signif(1-pchisq(unique(abs(scmb$Goal)), df=1),2)
+    out$backwardP <- signif(1-stats::pchisq(unique(abs(scmb$Goal)), df=1),2)
   }
 
   out

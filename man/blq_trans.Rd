@@ -21,7 +21,7 @@ estimation.}
 \code{lloq*multiplier} for display.}
 
 \item{lloq_text}{The text to use on the axis to indicate values \code{<
-  lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
+lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
 missing.}
 
 \item{base}{The base for the logarithm}
@@ -54,11 +54,11 @@ ggplot(data=data.frame(x=1:10, y=1:10), aes(x=x, y=y)) +
 }
 }
 \seealso{
-Other BLQ Transformation: 
-\code{\link{breaks_blq_general}()},
-\code{\link{estimate_lloq}()},
-\code{\link{ftrans_blq_linear}()},
-\code{\link{itrans_blq_linear}()},
-\code{\link{label_blq}()}
+Other BLQ Transformation:
+\code{\link[=breaks_blq_general]{breaks_blq_general()}},
+\code{\link[=estimate_lloq]{estimate_lloq()}},
+\code{\link[=ftrans_blq_linear]{ftrans_blq_linear()}},
+\code{\link[=itrans_blq_linear]{itrans_blq_linear()}},
+\code{\link[=label_blq]{label_blq()}}
 }
 \concept{BLQ Transformation}

@@ -7,6 +7,7 @@ Pharmacometric Tools for Modeling &amp; Simulation
 [![](https://www.r-pkg.org/badges/version/pmxTools?color=green)](https://cran.r-project.org/package=pmxTools)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/pmxTools?color=blue)](https://cran.r-project.org/package=pmxTools)
 [![Codecov test coverage](https://codecov.io/gh/kestrel99/pmxTools/graph/badge.svg)](https://app.codecov.io/gh/kestrel99/pmxTools)
+[![R-CMD-check](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 <!--[![HitCount](http://hits.dwyl.io/kestrel99/pmxTools.svg)](http://hits.dwyl.io/kestrel99/pmxTools)-->

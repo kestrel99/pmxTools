@@ -399,8 +399,8 @@ rnm <-
                      shrink = shrink, epsshrink = epsshrink, conditionN = conditionN)
   }
   
-  ncrit <- qnorm((1 - (1 - Pci / 100) / 2))
-  ncrit90 <- qnorm((1 - (1 - 90 / 100) / 2))
+  ncrit <- stats::qnorm((1 - (1 - Pci / 100) / 2))
+  ncrit90 <- stats::qnorm((1 - (1 - 90 / 100) / 2))
   
   fres <-
     as.data.frame(scan(
@@ -538,7 +538,7 @@ rnm <-
     f$cvthetas     <- abs((f$sethetas / f$thetas) * 100)
     f$cithetasl     <- f$thetas - ncrit * f$sethetas
     f$cithetasu     <- f$thetas + ncrit * f$sethetas
-    f$pvalue <- 2 * (1 - pnorm(abs(f$thetas / f$sethetas)))
+    f$pvalue <- 2 * (1 - stats::pnorm(abs(f$thetas / f$sethetas)))
     
     THETAs <-
       data.frame(

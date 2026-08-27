@@ -49,9 +49,9 @@ read_nmtables <- function(tableFiles = NULL,
     
   tabFiles <-
     if (is.null(directory)) {
-      setNames(tabFiles, tabFiles)
+      stats::setNames(tabFiles, tabFiles)
     } else {
-      setNames(
+      stats::setNames(
         file.path(directory, tabFiles),
         tabFiles
       )

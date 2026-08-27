@@ -48,7 +48,6 @@
 #' @importFrom dplyr n_distinct bind_rows
 #' @importFrom tibble tibble as_tibble
 #' @importFrom tidyr starts_with
-#' @importFrom stats quantile
 #' @importFrom purrr map_lgl
 #' @export
 cut_quantile <- function(dat,
@@ -258,7 +257,7 @@ cut_single <- function(dat,
     )
   } else {
     valid_vals <- clean_vals[!is.na(clean_vals) & clean_vals > 0 & !clean_vals %in% missing_codes]
-    qtiles <- quantile(valid_vals, probs = seq(0, 1, length.out = n_groups + 1))
+    qtiles <- stats::quantile(valid_vals, probs = seq(0, 1, length.out = n_groups + 1))
 
     zero_range <- which(diff(qtiles) == 0)
     if (length(zero_range) > 0) {

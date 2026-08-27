@@ -89,48 +89,60 @@ export(sample_sigma)
 export(sample_uncert)
 export(table_rtf)
 import(ggplot2)
-import(stats)
 import(utils)
 importFrom(MASS,mvrnorm)
 importFrom(PKNCA,pk.calc.auc.all)
-importFrom(data.tree,GetDefaultTooltip)
-importFrom(data.tree,SetEdgeStyle)
-importFrom(data.tree,SetGraphStyle)
-importFrom(data.tree,SetNodeStyle)
-importFrom(data.tree,as.Node)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,group_by_at)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n_distinct)
-importFrom(dplyr,pull)
-importFrom(dplyr,relocate)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,slice)
-importFrom(dplyr,summarize)
-importFrom(dplyr,ungroup)
+importFrom(data.tree,
+  GetDefaultTooltip,
+  SetEdgeStyle,
+  SetGraphStyle,
+  SetNodeStyle,
+  as.Node
+)
+importFrom(dplyr,
+  bind_rows,
+  filter,
+  group_by,
+  group_by_at,
+  left_join,
+  mutate,
+  n_distinct,
+  pull,
+  relocate,
+  rename,
+  select,
+  slice,
+  summarize,
+  ungroup
+)
 importFrom(ggdist,stat_halfeye)
 importFrom(magrittr,`%>%`)
 importFrom(patchwork,area)
-importFrom(purrr,map)
-importFrom(purrr,map_chr)
-importFrom(purrr,map_depth)
-importFrom(purrr,map_dfr)
-importFrom(purrr,map_lgl)
-importFrom(purrr,pmap)
-importFrom(scales,breaks_extended)
-importFrom(scales,breaks_log)
-importFrom(scales,trans_new)
-importFrom(stats,quantile)
-importFrom(stringr,str_extract)
-importFrom(stringr,str_replace)
-importFrom(stringr,str_replace_all)
-importFrom(stringr,str_split)
-importFrom(tibble,as_tibble)
-importFrom(tibble,tibble)
+importFrom(purrr,
+  map,
+  map_chr,
+  map_depth,
+  map_dfr,
+  map_lgl,
+  pmap
+)
+importFrom(scales,
+  breaks_extended,
+  breaks_log,
+  trans_new
+)
+importFrom(stringr,
+  str_extract,
+  str_replace,
+  str_replace_all,
+  str_split
+)
+importFrom(tibble,
+  as_tibble,
+  tibble
+)
 importFrom(tidyr,starts_with)
-importFrom(xml2,as_list)
-importFrom(xml2,read_xml)
+importFrom(xml2,
+  as_list,
+  read_xml
+)
