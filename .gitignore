@@ -7,5 +7,6 @@ docs
 AGENTS.md
 *.gz
 pmxTools.Rcheck
-.DS_Storetests/testthat/_problems
+.DS_Store
+tests/testthat/_problems
 tests/testthat/testthat-problems.rds
