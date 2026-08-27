@@ -172,9 +172,11 @@ test_that("sample_uncertainty", {
 
   expect_named(samp, paste0("V", 1:7))
   expect_equal(nrow(samp), n)
-  # Zero variance in the covariance matrix, so every draw is the estimate.
-  expect_equal(unique(samp$V4), mu[4])
-  expect_equal(unique(samp$V6), mu[6])
+  # Zero variance in the covariance matrix, so every draw is the estimate. The
+  # eigendecomposition leaves rounding noise around 1e-10 on macOS, so compare
+  # with a tolerance rather than requiring a single unique value.
+  expect_equal(samp$V4, rep(mu[4], n), tolerance = 1e-6)
+  expect_equal(samp$V6, rep(mu[6], n), tolerance = 1e-6)
   # Ratios rather than raw values so that the tolerance applies per parameter
   # rather than being swamped by V2, which is three orders of magnitude larger.
   varies <- sigma > 0
