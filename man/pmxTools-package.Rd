@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Justin Wilkins \email{justin.wilkins@occams.com} (\href{https://orcid.org/0000-0002-7099-9396}{ORCID})
   \item Bill Denney \email{wdenney@humanpredictions.com} (\href{https://orcid.org/0000-0002-5759-428X}{ORCID})
   \item Rik Schoemaker \email{rik.schoemaker@occams.com}
 }

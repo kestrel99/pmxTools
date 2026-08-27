@@ -94,7 +94,7 @@ pk_curve <- function(t, model = "1cmt_oral", params=list(ka=2.77, CL=2.5, V=25),
     for (n in 1:addl) {
       zeroes <- rep(0, times=length(t[t<(ii*n)]))
       addCurve <- c(zeroes, baseCurve)
-      addCurve <- head(addCurve, length(t))
+      addCurve <- utils::head(addCurve, length(t))
       out$cp <- out$cp + addCurve
     }
   }

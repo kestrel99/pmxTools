@@ -87,7 +87,7 @@ datamap <- function(dat,
   )
 
   for (name in names(events)) {
-    events[[name]] <- modifyList(default_event, events[[name]])
+    events[[name]] <- utils::modifyList(default_event, events[[name]])
     if (is.null(events[[name]]$value)) {
       stop("Event '", name, "' must have a 'value' specified")
     }

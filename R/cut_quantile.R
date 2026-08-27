@@ -48,7 +48,6 @@
 #' @importFrom dplyr n_distinct bind_rows
 #' @importFrom tibble tibble as_tibble
 #' @importFrom tidyr starts_with
-#' @importFrom stats quantile
 #' @importFrom purrr map_lgl
 #' @export
 cut_quantile <- function(dat,
@@ -168,7 +167,7 @@ check_and_prepare_id <- function(dat, vars, id, missing_codes) {
         "Variable '", v, "' has conflicting values across records for ",
         nrow(id_check), " subject(s). ",
         "Use aggregate function or provide pre-processed data.\n",
-        "Affected IDs: ", paste(head(id_check[[id]], 5), collapse = ", "),
+        "Affected IDs: ", paste(utils::head(id_check[[id]], 5), collapse = ", "),
         if (nrow(id_check) > 5) "..." else ""
       )
     }
@@ -258,7 +257,7 @@ cut_single <- function(dat,
     )
   } else {
     valid_vals <- clean_vals[!is.na(clean_vals) & clean_vals > 0 & !clean_vals %in% missing_codes]
-    qtiles <- quantile(valid_vals, probs = seq(0, 1, length.out = n_groups + 1))
+    qtiles <- stats::quantile(valid_vals, probs = seq(0, 1, length.out = n_groups + 1))
 
     zero_range <- which(diff(qtiles) == 0)
     if (length(zero_range) > 0) {

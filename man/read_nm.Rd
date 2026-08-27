@@ -30,14 +30,14 @@ nmOutput <- read_nm("run315.xml")
 \seealso{
 NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 
-Other NONMEM reading: 
-\code{\link{plot_scm}()},
-\code{\link{read_nm_all}()},
-\code{\link{read_nm_multi_table}()},
-\code{\link{read_nmcov}()},
-\code{\link{read_nmext}()},
-\code{\link{read_nmtables}()},
-\code{\link{read_scm}()}
+Other NONMEM reading:
+\code{\link[=plot_scm]{plot_scm()}},
+\code{\link[=read_nm_all]{read_nm_all()}},
+\code{\link[=read_nm_multi_table]{read_nm_multi_table()}},
+\code{\link[=read_nmcov]{read_nmcov()}},
+\code{\link[=read_nmext]{read_nmext()}},
+\code{\link[=read_nmtables]{read_nmtables()}},
+\code{\link[=read_scm]{read_scm()}}
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

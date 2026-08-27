@@ -552,7 +552,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
   
   i1 <- pmax(root1, root2, root3)
   # There is no pmedian function
-  i2 <- mapply(FUN=function(...) median(c(...)), root1, root2, root3)
+  i2 <- mapply(FUN=function(...) stats::median(c(...)), root1, root2, root3)
   i3 <- pmin(root1, root2, root3)
   
   c1 <- (k21 - i1) * (k31 - i1) / (i1 - i2) / (i1 - i3) / V1

@@ -19,7 +19,7 @@ read_nm_all <- function(runNo, run_prefix="run", directory=NULL, quiet=FALSE, ..
     cov=read_nmcov(fileName=paste0(run_prefix, runNo), quiet=quiet, directory=directory, ...),
     extra_files=
       lapply(
-        X=setNames(nm=c("ext", "phi", "ets", "phm")),
+        X=stats::setNames(nm=c("ext", "phi", "ets", "phm")),
         FUN=read_nm_std_ext,
         fileName=paste0(run_prefix, runNo),
         directory=directory

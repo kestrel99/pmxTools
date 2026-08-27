@@ -15,7 +15,6 @@
 #' \dontrun{
 #' nmVcov <- read_nmcov("run315")
 #' }
-#' @import utils
 #' @family NONMEM reading
 #' @export
 read_nmcov <- function(fileName, quiet=FALSE, directory=NULL, ...) {

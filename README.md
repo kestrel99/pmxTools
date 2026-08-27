@@ -2,7 +2,7 @@
 Pharmacometric Tools for Modeling &amp; Simulation
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml/badge.svghttps://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml/badge.svghttps://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kestrel99/pmxTools/actions/workflows/R-CMD-check.yaml)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/kestrel99/pmxTools/issues)
 [![](https://www.r-pkg.org/badges/version/pmxTools?color=green)](https://cran.r-project.org/package=pmxTools)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/pmxTools?color=blue)](https://cran.r-project.org/package=pmxTools)
