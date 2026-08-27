@@ -167,7 +167,7 @@ check_and_prepare_id <- function(dat, vars, id, missing_codes) {
         "Variable '", v, "' has conflicting values across records for ",
         nrow(id_check), " subject(s). ",
         "Use aggregate function or provide pre-processed data.\n",
-        "Affected IDs: ", paste(head(id_check[[id]], 5), collapse = ", "),
+        "Affected IDs: ", paste(utils::head(id_check[[id]], 5), collapse = ", "),
         if (nrow(id_check) > 5) "..." else ""
       )
     }

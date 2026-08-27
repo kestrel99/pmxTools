@@ -1,3 +1,15 @@
+# pmxTools 1.6
+
+* Added `cut_quantile()`, which creates quantile-based bins for one or more continuous variables, with per-variable control over the number of groups.
+
+* Added `datamap()`, which plots individual dosing and observation records over time.
+
+* `dgr_table()` now takes `fields` as a named character vector mapping column names to display labels. The separate `names` argument is deprecated, but unnamed `fields` with `names` continues to work.
+
+* Added dependencies `purrr` and `tidyr`.
+
+* Removed the blanket `stats` and `utils` imports, which caused a `replacing previous import 'stats::filter' by 'dplyr::filter'` warning when the package was loaded.
+
 # pmxTools 1.5
 
 * `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes, and to make it more intuitive to interpret

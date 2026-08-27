@@ -23,7 +23,7 @@
 #' plot_nmprogress("run315", ".nmlst")
 #' }
 #'
-#' @import utils ggplot2
+#' @import ggplot2
 #' @export
 
 plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
@@ -58,7 +58,7 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
       ".\n"
     ))
   } else {
-    extData <- read.table(extFileName, skip = 1, header = T)
+    extData <- utils::read.table(extFileName, skip = 1, header = T)
   }
 
   ofv          <- extData$OBJ[extData$ITERATION == -1e+09]
