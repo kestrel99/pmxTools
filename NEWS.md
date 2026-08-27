@@ -12,6 +12,8 @@
 
 * Removed the blanket `stats` and `utils` imports, which caused a `replacing previous import 'stats::filter' by 'dplyr::filter'` warning when the package was loaded.
 
+* `calc_derived()` and the `calc_derived_*()` functions now return `AUCtau` and `AUCtau_dose_normalized` as plain numbers.  PKNCA 0.12.1.9000 attaches a `method` attribute to the AUC it returns, which propagated into the derived-parameter list and broke comparisons against plain numeric values.
+
 # pmxTools 1.5
 
 * `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes, and to make it more intuitive to interpret

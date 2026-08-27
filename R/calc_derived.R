@@ -1,3 +1,21 @@
+#' Area under the concentration-time curve over a dosing interval
+#'
+#' A thin wrapper around [PKNCA::pk.calc.auc.all()] that returns a bare
+#' numeric value.  PKNCA attaches a `method` attribute to the AUC it returns
+#' (describing the interpolation used, e.g. `"AUC: lin up/log down"`), and
+#' that attribute propagates through the arithmetic used to derive
+#' `AUCtau_dose_normalized`.  The `calc_derived_*()` functions document their
+#' outputs as plain numbers, so drop the attribute here rather than letting it
+#' leak into the returned list.
+#'
+#' @param conc Concentrations over the dosing interval
+#' @param time Times matching `conc`
+#' @returns The AUC as a numeric value with no attributes
+#' @noRd
+calc_auc_tau <- function(conc, time) {
+  as.numeric(PKNCA::pk.calc.auc.all(conc = conc, time = time))
+}
+
 #' Calculate derived pharmacokinetic parameters for a 1-, 2-, or 3-compartment
 #' linear model.
 #'
@@ -153,7 +171,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -171,7 +189,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tinf=tinf)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -188,7 +206,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -205,7 +223,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, tlag=tlag)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -222,7 +240,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -239,7 +257,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tau, by=step)
       C <- calc_ss_1cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -363,7 +381,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -381,7 +399,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tinf=tinf)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -398,7 +416,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -415,7 +433,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -432,7 +450,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -449,7 +467,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tau, by=step)
       C <- calc_ss_2cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -598,7 +616,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -616,7 +634,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf=tinf)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -633,7 +651,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -650,7 +668,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -667,7 +685,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -684,7 +702,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tau, by=step)
       C <- calc_ss_3cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
-      AUCtau  <- PKNCA::pk.calc.auc.all(conc = C, time = t)
+      AUCtau  <- calc_auc_tau(conc = C, time = t)
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
