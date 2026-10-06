@@ -17,8 +17,8 @@ plot_nmprogress(
 
 \item{fileExt}{The file extension for NONMEM output, set to '.lst' by default.}
 
-\item{metric}{What to show in the plot. Allowed options are 'est' (the actual 
-estimate) or 'perc' (the percentage change in the estimated or OFV since estimation began). 
+\item{metric}{What to show in the plot. Allowed options are 'est' (the actual
+estimate) or 'perc' (the percentage change in the estimated or OFV since estimation began).
 Default is 'perc'.}
 
 \item{lineCol}{Line color. Default is '#902C10'.}
@@ -29,7 +29,7 @@ Default is 'perc'.}
 A set of plots.
 }
 \description{
-\code{plot_nmprogress} returns a plot or set of plots showing the evolution of 
+\code{plot_nmprogress} returns a plot or set of plots showing the evolution of
 parameter estimates by iteration.
 }
 \examples{
@@ -40,7 +40,7 @@ plot_nmprogress("run315", ".nmlst")
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

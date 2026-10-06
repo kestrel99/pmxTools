@@ -20,7 +20,7 @@ scalar}
 }
 \value{
 A function of \code{x} that replaces \code{x < lloq} with
-  \code{lloq*multiplier}
+\code{lloq*multiplier}
 }
 \description{
 For ggplot2 scales.

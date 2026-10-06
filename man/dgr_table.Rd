@@ -7,20 +7,23 @@
 dgr_table(
   dat,
   fields,
-  names,
+  names = NULL,
   cutoff = 7,
   sig = 3,
   by = NULL,
   idvar = "ID",
-  navars = c("-99", "-999")
+  navars = c("-99", "-999"),
+  mtype = "geomean"
 )
 }
 \arguments{
 \item{dat}{An input data frame, with one row per unique individual.}
 
-\item{fields}{A vector of strings containing the names of the fields to be included in the summary table.}
+\item{fields}{A named character vector where names are column names and values are
+descriptive labels. For backward compatibility, can also be an unnamed character
+vector with separate \code{names} argument.}
 
-\item{names}{A vector of strings containing descriptive names for the fields to be included in the summary table.}
+\item{names}{Deprecated. Use a named vector for \code{fields} instead.}
 
 \item{cutoff}{An integer defining the maximum number of unique values a variable should have to be considered categorical. Fields with more than this number of unique values are considered continuous for the purposes of the summary table (defaults to 7).}
 
@@ -30,7 +33,9 @@ dgr_table(
 
 \item{idvar}{The field in the dataset identifying each unique individual (defaults to "ID").}
 
-\item{navars}{A vector containing values that are to be interpreted as missing (defaults to "-99" and "-999"). `NA` values are always considered to be missing.}
+\item{navars}{A vector containing values that are to be interpreted as missing (defaults to "-99" and "-999"). \code{NA} values are always considered to be missing.}
+
+\item{mtype}{The type of mean to apply; \code{geomean}, the geometric mean (default) or \code{mean}, the arithmetic mean.}
 }
 \value{
 A data frame containing a summary of all the fields listed in \code{fields}, for each individual in the dataset (the dataset should not contain duplicated individuals), conditioned on the field in \code{by}. Continuous values are summarized as median, mean, range and number of missing values. Categorical values are summarized as count and relative percentage.
@@ -39,9 +44,14 @@ A data frame containing a summary of all the fields listed in \code{fields}, for
 Generate a summary table of descriptive data for every individual in a dataset suitable for tabulation in a report.
 }
 \examples{
-\dontrun{
- count_na(c(0,5,7,NA,3,3,NA))
-}
+dat <- data.frame(
+  ID = 1:10,
+  AGE = c(45, 52, 38, 61, 29, 55, 43, 67, 33, 48),
+  SEX = c("M", "F", "M", "M", "F", "F", "M", "F", "M", "F")
+)
+
+dgr_table(dat, c(AGE = "Age (years)", SEX = "Sex"))
+dgr_table(dat, c(AGE = "Age (years)"), by = "SEX")
 
 }
 \author{

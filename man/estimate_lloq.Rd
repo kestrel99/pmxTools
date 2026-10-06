@@ -11,7 +11,7 @@ estimate_lloq(x)
 }
 \value{
 The lowest, nonzero value from \code{x}.  If all are \code{NA} or
-  zero, 1 is returned, and a warning is issued.
+zero, 1 is returned, and a warning is issued.
 }
 \description{
 Nonnegative values are considered to be above the LLOQ. \code{NA} values are

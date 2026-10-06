@@ -20,7 +20,7 @@ were not present.}
 }
 \value{
 A function for calculating breaks with arguments \code{x} and
-  \code{n}
+\code{n}
 }
 \description{
 Breaks that are \code{< lloq} are removed.  If the lowest break is removed if

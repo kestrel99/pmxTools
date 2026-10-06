@@ -12,3 +12,4 @@ pmxTools.Rproj
 ^docs$
 ^pkgdown$
 ^\.github$
+^codecov\.yml$

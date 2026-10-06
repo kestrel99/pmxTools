@@ -28,7 +28,7 @@ Sample from the multivariate normal distribution using the OMEGA variance-covari
 
 }
 \seealso{
-NONMEM (\url{https://www.iconplc.com/innovation/nonmem/})
+NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 }
 \author{
 Justin Wilkins, \email{justin.wilkins@occams.com}

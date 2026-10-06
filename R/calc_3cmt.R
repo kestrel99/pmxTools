@@ -9,7 +9,7 @@
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @author Bill Denney, \email{wdenney@@humanpredictions.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
+#' implemented in the Monolix software. \url{https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf}
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_sd_3cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
@@ -174,7 +174,7 @@ calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @references Bertrand J & Mentre F (2008). Mathematical Expressions of the Pharmacokinetic and Pharmacodynamic Models
-#' implemented in the Monolix software. \url{http://lixoft.com/wp-content/uploads/2016/03/PKPDlibrary.pdf}
+#' implemented in the Monolix software. \url{https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf}
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_ss_3cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {

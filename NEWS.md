@@ -2,6 +2,20 @@
 
 * The calc_derived family of functions works with vector inputs (#29)
 
+# pmxTools 1.5
+
+* `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes, and to make it more intuitive to interpret
+
+* Dependency `gghalves` has been removed
+
+* Many fixes and updates to documentation
+
+# pmxTools 1.4
+
+* `dgr_table()` now provides geometric means by default
+
+* `gm()` now provides options to strip `NA` values (`na.rm`) and non-positive values (`neg.rm`) before computation.
+
 # pmxTools 1.3
 
 * Added NCA parameter estimation to `calc_derived_1cpt()`, `calc_derived_2cpt()` and `calc_derived_3cpt()`, if dose and other required information (e.g. `tinf`, `dur`, `tau`) is provided.
