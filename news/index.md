@@ -26,18 +26,24 @@
   unresolved file name instead of the one located on disk. The
   `directory` argument and file names given without the `.xml` extension
   were therefore ignored, and macOS reported an
-  `Unsupported encoding: .xml` warning.
+  `Unsupported encoding: .xml` warning
+  ([\#36](https://github.com/kestrel99/pmxTools/issues/36)).
 
 - Removed the blanket `stats` and `utils` imports, which caused a
   `replacing previous import 'stats::filter' by 'dplyr::filter'` warning
-  when the package was loaded.
+  when the package was loaded
+  ([\#36](https://github.com/kestrel99/pmxTools/issues/36)).
 
 - [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
   and the `calc_derived_*()` functions now return `AUCtau` and
   `AUCtau_dose_normalized` as plain numbers. PKNCA 0.12.1.9000 attaches
   a `method` attribute to the AUC it returns, which propagated into the
   derived-parameter list and broke comparisons against plain numeric
-  values.
+  values ([\#37](https://github.com/kestrel99/pmxTools/issues/37)).
+
+- Test snapshots are now committed, the CI workflows have been
+  refreshed, and the documentation has been regenerated with roxygen2
+  8.1.0 ([\#36](https://github.com/kestrel99/pmxTools/issues/36)).
 
 ## pmxTools 1.5
 
