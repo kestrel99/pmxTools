@@ -21,7 +21,10 @@ expired.
 
 ## Reverse dependencies
 
-pmxTools has three reverse dependencies, all in Suggests: PKNCA, mrgsolve and
-rxode2.
+We checked all 3 reverse dependencies (PKNCA, mrgsolve and rxode2; all list
+pmxTools in Suggests) against pmxTools 1.6 and found no new problems:
 
-TODO: record revdep check results before submitting.
+* PKNCA 0.12.1 and mrgsolve 2.0.1: R CMD check, no problems related to
+  pmxTools.
+* rxode2 5.1.7.1: its tests that compare against pmxTools' closed-form
+  solutions (test-solComp.R, run with NOT_CRAN=true) all pass.
