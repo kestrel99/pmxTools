@@ -98,6 +98,9 @@ blq_log_trans <- function(lloq, x, multiplier=0.5, base=10, lloq_text) {
 #' @return A function of \code{x} that replaces \code{x < lloq} with
 #'   \code{lloq*multiplier}
 #' @family BLQ Transformation
+#' @examples
+#' ftrans_blq_linear(lloq=1, multiplier=0.5)(c(0.2, 1, 5))
+#' ftrans_blq_log(lloq=1, multiplier=0.5)(c(0.2, 1, 5))
 #' @export
 ftrans_blq_linear <- function(lloq, multiplier) {
   force(lloq)
@@ -114,6 +117,9 @@ ftrans_blq_linear <- function(lloq, multiplier) {
 #' @inheritParams blq_trans
 #' @return A function of \code{x} that replaces \code{x < lloq} with \code{lloq}
 #' @family BLQ Transformation
+#' @examples
+#' itrans_blq_linear(lloq=1)(c(0.5, 1, 5))
+#' itrans_blq_log(lloq=1, base=10)(c(-0.3, 0, 1))
 #' @export
 itrans_blq_linear <- function(lloq) {
   force(lloq)
@@ -220,6 +226,8 @@ breaks_blq_general <- function(lloq, breakfun, trans=identity, ...) {
 #' @inheritParams blq_trans
 #' @return A function of \code{x} which returns the formatted values.
 #' @family BLQ Transformation
+#' @examples
+#' label_blq(lloq=1)(c(1, 2, 5))
 #' @export
 label_blq <- function(lloq, lloq_text) {
   force(lloq)

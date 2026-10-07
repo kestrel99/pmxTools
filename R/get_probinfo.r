@@ -4,8 +4,13 @@
 #' @param sigdig Specifies the number of significant digits to be provided (default=6).
 #' @param est.step Specifies which estimation step to return parameters from (default is the last).
 #' 
+#' @return A list with elements \code{prob_title}, \code{prog_info},
+#'   \code{lic_info}, \code{prob_times} (data frame of start, stop and elapsed
+#'   times), \code{prob_info} (data frame of data set and model dimensions) and
+#'   \code{est_info} (data frame of estimation results for \code{est.step}).
+#'
 #' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
-#' 
+#'
 #' @examples
 #' \dontrun{
 #'  nmOutput <- read_nm("run315.xml")

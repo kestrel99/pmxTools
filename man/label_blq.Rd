@@ -20,6 +20,9 @@ A function of \code{x} which returns the formatted values.
 \description{
 For ggplot2 scales.
 }
+\examples{
+label_blq(lloq=1)(c(1, 2, 5))
+}
 \seealso{
 Other BLQ Transformation:
 \code{\link[=blq_trans]{blq_trans()}},
