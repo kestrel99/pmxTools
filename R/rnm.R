@@ -155,7 +155,7 @@ rnm <-
         )
       TableLines <- max(grep("TABLE NO.", extfile))
       
-      rawres <- read.table(rawfile, skip = TableLines, header = T)
+      rawres <- utils::read.table(rawfile, skip = TableLines, header = T)
     }
     
     ## Extract OFV
@@ -319,7 +319,7 @@ rnm <-
         )
       TableLines <- max(grep("TABLE NO.", extfile))
       
-      rawres <- read.table(rawfile, skip = TableLines, header = T)
+      rawres <- utils::read.table(rawfile, skip = TableLines, header = T)
       cormat <-
         as.matrix.data.frame(rawres[1:length(thetas), 2:(length(thetas) + 1)])
       
@@ -353,7 +353,7 @@ rnm <-
           quote = ""
         )
       TableLines <- max(grep("TABLE NO.", extfile))
-      rawres <- read.table(rawfile, skip = TableLines, header = T)
+      rawres <- utils::read.table(rawfile, skip = TableLines, header = T)
       covmat <- as.matrix.data.frame(rawres[1:length(thetas), 2:(length(thetas) + 1)])
       fcovmat <- as.matrix.data.frame(rawres[1:nrow(rawres), 2:(nrow(rawres)+1)])
     }
@@ -379,7 +379,7 @@ rnm <-
           quote = ""
         )
       TableLines <- max(grep("TABLE NO.", extfile))
-      rawres <- read.table(rawfile, skip = TableLines, header = TRUE)
+      rawres <- utils::read.table(rawfile, skip = TableLines, header = TRUE)
       shkmat <- as.matrix.data.frame(rawres)
       shkmat <- rawres
       
@@ -399,8 +399,8 @@ rnm <-
                      shrink = shrink, epsshrink = epsshrink, conditionN = conditionN)
   }
   
-  ncrit <- qnorm((1 - (1 - Pci / 100) / 2))
-  ncrit90 <- qnorm((1 - (1 - 90 / 100) / 2))
+  ncrit <- stats::qnorm((1 - (1 - Pci / 100) / 2))
+  ncrit90 <- stats::qnorm((1 - (1 - 90 / 100) / 2))
   
   fres <-
     as.data.frame(scan(
@@ -538,7 +538,7 @@ rnm <-
     f$cvthetas     <- abs((f$sethetas / f$thetas) * 100)
     f$cithetasl     <- f$thetas - ncrit * f$sethetas
     f$cithetasu     <- f$thetas + ncrit * f$sethetas
-    f$pvalue <- 2 * (1 - pnorm(abs(f$thetas / f$sethetas)))
+    f$pvalue <- 2 * (1 - stats::pnorm(abs(f$thetas / f$sethetas)))
     
     THETAs <-
       data.frame(

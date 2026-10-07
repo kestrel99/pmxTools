@@ -5,7 +5,12 @@
 inst/doc
 docs
 AGENTS.md
-tests/testthat/_snaps
 *.gz
 pmxTools.Rcheck
 .DS_Store
+<<<<<<< Updated upstream
+tests/testthat/_problems
+tests/testthat/testthat-problems.rds
+=======
+.positai
+>>>>>>> Stashed changes

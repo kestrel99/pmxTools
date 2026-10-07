@@ -29,12 +29,12 @@ read_nm <- function(fileName, directory=NULL, quiet=FALSE, ...) {
     message("Reading ", fileName_read)
   }
   
-  testFile <- readLines(fileName)
+  testFile <- readLines(fileName_read)
   if(testFile[length(testFile)] != "</nm:output>") {
-    warning("Invalid XML: ", fileName)
+    warning("Invalid XML: ", fileName_read)
     return(NULL)    
   } else {
-    nmFile <- xml2::read_xml(fileName, ".xml", sep = "")
+    nmFile <- xml2::read_xml(fileName_read)
     xml2::as_list(nmFile)$output
   }
   

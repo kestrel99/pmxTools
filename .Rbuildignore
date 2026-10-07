@@ -12,4 +12,9 @@ pmxTools.Rproj
 ^docs$
 ^pkgdown$
 ^\.github$
+<<<<<<< Updated upstream
 ^codecov\.yml$
+=======
+^\.positai$
+^\.claude$
+>>>>>>> Stashed changes

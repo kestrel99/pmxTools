@@ -23,7 +23,7 @@
 #' plot_nmprogress("run315", ".nmlst")
 #' }
 #'
-#' @import utils ggplot2
+#' @import ggplot2
 #' @export
 
 plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
@@ -58,7 +58,7 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
       ".\n"
     ))
   } else {
-    extData <- read.table(extFileName, skip = 1, header = T)
+    extData <- utils::read.table(extFileName, skip = 1, header = T)
   }
 
   ofv          <- extData$OBJ[extData$ITERATION == -1e+09]
@@ -202,7 +202,7 @@ plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",
     seSigma = seSigmaList
   )
 
-  pdata <- reshape(extData, idvar = "ITERATION", direction="long", varying = list(names(extData)[2:(length(extData))]))
+  pdata <- stats::reshape(extData, idvar = "ITERATION", direction="long", varying = list(names(extData)[2:(length(extData))]))
   pdata$Parameter <- rep(names(extData)[2:(length(extData))], each=nrow(extData))
   pdata <- pdata[pdata$ITERATION >=0,]
   pdata$Parameter <- ordered(pdata$Parameter, unique(pdata$Parameter))

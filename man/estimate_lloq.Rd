@@ -21,11 +21,11 @@ ignored.
 estimate_lloq(c(NA, 0, 2, 5))
 }
 \seealso{
-Other BLQ Transformation: 
-\code{\link{blq_trans}()},
-\code{\link{breaks_blq_general}()},
-\code{\link{ftrans_blq_linear}()},
-\code{\link{itrans_blq_linear}()},
-\code{\link{label_blq}()}
+Other BLQ Transformation:
+\code{\link[=blq_trans]{blq_trans()}},
+\code{\link[=breaks_blq_general]{breaks_blq_general()}},
+\code{\link[=ftrans_blq_linear]{ftrans_blq_linear()}},
+\code{\link[=itrans_blq_linear]{itrans_blq_linear()}},
+\code{\link[=label_blq]{label_blq()}}
 }
 \concept{BLQ Transformation}

@@ -31,11 +31,11 @@ For ggplot2 scales.
 
 }}
 \seealso{
-Other BLQ Transformation: 
-\code{\link{blq_trans}()},
-\code{\link{breaks_blq_general}()},
-\code{\link{estimate_lloq}()},
-\code{\link{itrans_blq_linear}()},
-\code{\link{label_blq}()}
+Other BLQ Transformation:
+\code{\link[=blq_trans]{blq_trans()}},
+\code{\link[=breaks_blq_general]{breaks_blq_general()}},
+\code{\link[=estimate_lloq]{estimate_lloq()}},
+\code{\link[=itrans_blq_linear]{itrans_blq_linear()}},
+\code{\link[=label_blq]{label_blq()}}
 }
 \concept{BLQ Transformation}

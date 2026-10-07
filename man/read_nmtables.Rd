@@ -59,14 +59,14 @@ pharmacokinetic/pharmacodynamic model building aid for NONMEM. Comput
 Methods Programs Biomed. 1999 Jan;58(1):51-64
 }
 \seealso{
-Other NONMEM reading: 
-\code{\link{plot_scm}()},
-\code{\link{read_nm}()},
-\code{\link{read_nm_all}()},
-\code{\link{read_nm_multi_table}()},
-\code{\link{read_nmcov}()},
-\code{\link{read_nmext}()},
-\code{\link{read_scm}()}
+Other NONMEM reading:
+\code{\link[=plot_scm]{plot_scm()}},
+\code{\link[=read_nm]{read_nm()}},
+\code{\link[=read_nm_all]{read_nm_all()}},
+\code{\link[=read_nm_multi_table]{read_nm_multi_table()}},
+\code{\link[=read_nmcov]{read_nmcov()}},
+\code{\link[=read_nmext]{read_nmext()}},
+\code{\link[=read_scm]{read_scm()}}
 }
 \author{
 Bill Denney, Justin Wilkins, Niclas Jonsson, Andrew Hooker

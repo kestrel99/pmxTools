@@ -3,13 +3,13 @@ parse_fields <- function(fields, names = NULL) {
   if (!is.null(names)) {
     if (!is.null(names(fields))) {
       warning("Both 'fields' and 'names' provided. Using 'fields' names.")
-      return(list(fields = setNames(unname(fields), names(fields)), labels = names))
+      return(list(fields = stats::setNames(unname(fields), names(fields)), labels = names))
     }
     if (length(fields) != length(names)) {
       stop("'fields' and 'names' must have the same length")
     }
     warning("The 'names' argument is deprecated. Use a named vector: dgr_table(dat, c(FIELD = 'Label'))")
-    return(list(fields = setNames(fields, names), labels = names))
+    return(list(fields = stats::setNames(fields, names), labels = names))
   }
   
   if (is.null(names(fields))) {
@@ -64,7 +64,7 @@ summarize_continuous <- function(dat, field, label, cutoff, sig, by, navars, mty
         } else {
           mean(.data[[field]], na.rm = TRUE)
         },
-        md = median(.data[[field]], na.rm = TRUE),
+        md = stats::median(.data[[field]], na.rm = TRUE),
         mn = min(.data[[field]], na.rm = TRUE),
         mx = max(.data[[field]], na.rm = TRUE),
         n_miss = sum(is.na(.data[[field]])),
@@ -73,7 +73,7 @@ summarize_continuous <- function(dat, field, label, cutoff, sig, by, navars, mty
     
     total_stats <- tibble(
       gm = if (mtype == "geomean") gm(x, na.rm = TRUE) else mean(x, na.rm = TRUE),
-      md = median(x, na.rm = TRUE),
+      md = stats::median(x, na.rm = TRUE),
       mn = min(x, na.rm = TRUE),
       mx = max(x, na.rm = TRUE),
       n_miss = n_miss
@@ -98,7 +98,7 @@ summarize_continuous <- function(dat, field, label, cutoff, sig, by, navars, mty
     
   } else {
     result <- list(Total = format_cell(
-      median(x, na.rm = TRUE),
+      stats::median(x, na.rm = TRUE),
       if (mtype == "geomean") gm(x, na.rm = TRUE) else mean(x, na.rm = TRUE),
       min(x, na.rm = TRUE),
       max(x, na.rm = TRUE),
@@ -130,7 +130,7 @@ summarize_categorical <- function(dat, field, label, cutoff, sig, by, navars, mt
     by_levels <- c(by_vals, "Total")
     
     rows <- list()
-    rows[[1]] <- c(Variable = label, setNames(rep("", length(by_levels)), by_levels))
+    rows[[1]] <- c(Variable = label, stats::setNames(rep("", length(by_levels)), by_levels))
     
     for (j in seq_along(lvls)) {
       lvl <- lvls[j]
@@ -147,7 +147,7 @@ summarize_categorical <- function(dat, field, label, cutoff, sig, by, navars, mt
         if (is.na(cnt)) cnt <- 0
         format_cat_value(cnt, grp_total)
       })
-      rows[[j + 1]] <- c(Variable = lvl_val, setNames(row_vals, by_levels))
+      rows[[j + 1]] <- c(Variable = lvl_val, stats::setNames(row_vals, by_levels))
       names(rows)[j + 1] <- NULL
     }
     
@@ -254,7 +254,7 @@ dgr_table <- function(dat, fields, names = NULL, cutoff = 7, sig = 3,
     by_levels <- c(by_vals, "Total")
     n_by <- tapply(dat[[idvar]], dat[[by]], length)
     n_total <- nrow(dat)
-    n_row <- tibble(Variable = "N", !!!setNames(c(as.list(n_by), list(n_total)), by_levels))
+    n_row <- tibble(Variable = "N", !!!stats::setNames(c(as.list(n_by), list(n_total)), by_levels))
   } else {
     n_row$Total <- as.character(nrow(dat))
   }

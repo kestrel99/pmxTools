@@ -17,7 +17,6 @@
 #'  AUCs <- get_auc(myAUCdata)
 #' }
 #'
-#' @import stats 
 #' @importFrom magrittr `%>%`
 #' @importFrom dplyr group_by_at
 #' @export
@@ -33,7 +32,7 @@ get_auc <- function (data, time = "TIME", id = "ID", dv = "DV")
     data$dAUC <- data$diff * data$meanDV
     data <- data[order(data[[id]], data[[time]]), ]
     data <- data[duplicated(data[[id]]), ]
-    AUC <- aggregate.data.frame(data$dAUC, by = list(data[[id]]),
+    AUC <- stats::aggregate.data.frame(data$dAUC, by = list(data[[id]]),
                                 FUN = sum)
     names(AUC) <- c(id, "AUC")
     return(AUC)

@@ -44,7 +44,7 @@ gm <- function(x, na.rm=FALSE, neg.rm=FALSE) {
 #' @export
 
 pcv <- function(x, na.rm=FALSE) {
-  sd(x, na.rm=na.rm)/mean(x, na.rm=na.rm)*100 
+  stats::sd(x, na.rm=na.rm)/mean(x, na.rm=na.rm)*100 
 }
 
 #' Convert geometric variance or standard deviation to a geometric coefficient of variation
@@ -99,7 +99,7 @@ gcv <- function(x, na.rm=F, neg.rm=F) {
   if(any(xx<=0)) {
     out <- NA
   } else {
-    out <- sqrt(exp(sd(log(xx[!is.na(xx)]))^2) - 1)
+    out <- sqrt(exp(stats::sd(log(xx[!is.na(xx)]))^2) - 1)
   }
   out
 }
