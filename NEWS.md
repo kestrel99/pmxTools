@@ -16,6 +16,8 @@
 
 * Test snapshots are now committed, the CI workflows have been refreshed, and the documentation has been regenerated with roxygen2 8.1.0 (#36).
 
+* `calc_derived()` and the `calc_derived_*()` functions now work with vector inputs (#29).
+
 # pmxTools 1.5
 
 * `plot_dist` has been rewritten to adapt to `ggplot2` 4.0.0 changes, and to make it more intuitive to interpret

@@ -214,3 +214,43 @@ test_that("PK curves", {
                         params=list(CL=0.25, V1=25, V2=50, V3=100, Q2=1, Q3=0.1, tinf=3)))
 })
 
+test_that("calc_derived_xxx works with vector inputs (#29)", {
+  mydata <-
+    data.frame(
+      CL = c(0.25, 0.5),
+      Vcentral = c(1, 1),
+      Vperiph1 = c(0.25, 0.25),
+      Vperiph2 = c(0.25, 0.25),
+      Qcp1 = c(0.25, 0.25),
+      Qcp2 = c(0.25, 0.25),
+      Ka = c(1, 1)
+    )
+
+  expect_type(
+    calc_derived_1cpt(
+      CL=mydata$CL, V1=mydata$Vcentral,
+      ka=mydata$Ka,
+      sigdig=Inf
+    ),
+    "list"
+  )
+  expect_type(
+    calc_derived_2cpt(
+      CL=mydata$CL, V1=mydata$Vcentral,
+      V2=mydata$Vperiph1, Q2=mydata$Qcp1,
+      ka=mydata$Ka,
+      sigdig=Inf
+    ),
+    "list"
+  )
+  expect_type(
+    calc_derived_3cpt(
+      CL=mydata$CL, V1=mydata$Vcentral,
+      V2=mydata$Vperiph1, Q2=mydata$Qcp1,
+      V3=mydata$Vperiph2, Q3=mydata$Qcp2,
+      ka=mydata$Ka,
+      sigdig=Inf
+    ),
+    "list"
+  )
+})
