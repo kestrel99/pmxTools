@@ -29,23 +29,28 @@
 #'   - `CONCQ4CC`: continuous factor with intervals
 #'
 #' @examples
-#' \dontrun{
+#' set.seed(1)
+#' dat <- data.frame(
+#'   SUBJID = rep(1:20, each = 3),
+#'   AGE = rep(round(runif(20, 20, 80)), each = 3),
+#'   CONC = c(0, round(rlnorm(59, 2, 1), 2))
+#' )
+#'
 #' # Single variable, quartiles
-#' dat <- cut_quantile(dat, "AGE", n_groups = 4)
+#' head(cut_quantile(dat, "AGE", n_groups = 4))
 #'
 #' # Multiple cuts on same variable
-#' dat <- cut_quantile(dat, "AGE", n_groups = c(4, 3))
+#' head(cut_quantile(dat, "AGE", n_groups = c(4, 3)))
 #'
-#' # With longitudinal data
-#' dat <- cut_quantile(dat, list(CONC = 4, AGE = 4), id = "SUBJID")
+#' # With longitudinal data, quantiles use one row per subject
+#' head(cut_quantile(dat, "AGE", n_groups = 4, id = "SUBJID"))
 #'
 #' # Verbose output
 #' result <- cut_quantile(dat, list(CONC = c(4, 3), AGE = 4), verbose = TRUE)
-#' }
 #'
 #' @import ggplot2
 #' @importFrom dplyr mutate select group_by summarize ungroup filter pull left_join slice
-#' @importFrom dplyr n_distinct bind_rows
+#' @importFrom dplyr n_distinct bind_rows any_of
 #' @importFrom tibble tibble as_tibble
 #' @importFrom tidyr starts_with
 #' @importFrom purrr map_lgl
@@ -88,7 +93,7 @@ cut_quantile <- function(dat,
 
     result <- cut_single(
       dat_subj, v, ng, mc, u, blq_label,
-      verbose = FALSE, n_id = n_id
+      verbose = verbose, n_id = n_id
     )
 
     dat_subj <- result$data
@@ -183,7 +188,8 @@ map_cuts_to_original <- function(dat, dat_subj, id, cuts) {
     prefix <- get_prefix(ng)
     q_col <- paste0(v, prefix, ng, "Q")
     char_col <- paste0(v, prefix, ng, "C")
-    subj_cols_to_join <- c(subj_cols_to_join, q_col, char_col)
+    c_col <- paste0(v, prefix, ng, "CC")
+    subj_cols_to_join <- c(subj_cols_to_join, q_col, char_col, c_col)
   }
   subj_cols_to_join <- unique(subj_cols_to_join)
 
@@ -299,11 +305,24 @@ cut_single <- function(dat,
   binned_char <- ifelse(
     is.na(binned),
     blq_label,
-    paste0(prefix, n_groups, binned, unit_suffix)
+    paste0(prefix, binned)
+  )
+
+  intervals <- cut(
+    clean_vals,
+    breaks = qtiles,
+    include.lowest = TRUE,
+    right = FALSE
+  )
+  interval_levels <- paste0(levels(intervals), unit_suffix)
+  binned_interval <- factor(
+    ifelse(is.na(intervals), blq_label, interval_levels[intervals]),
+    levels = c(blq_label, interval_levels)
   )
 
   dat[[q_col]] <- binned
   dat[[char_col]] <- binned_char
+  dat[[c_col]] <- binned_interval
 
   bin_counts <- table(binned, useNA = "always")
   bin_df <- tibble(
@@ -330,7 +349,7 @@ cut_single <- function(dat,
     data = dat,
     summary = summary,
     skipped = NULL,
-    new_cols = c(q_col, char_col)
+    new_cols = c(q_col, char_col, c_col)
   )
 }
 
@@ -342,7 +361,7 @@ print_verbose_output <- function(summary_df, skipped_df, n_id) {
   if (nrow(summary_df) > 0) {
     summary_df <- summary_df %>%
       mutate(cuts = paste0(get_prefix(n_groups), n_groups), .before = 1) %>%
-      select(-n_id)
+      select(-any_of("n_id"))
     print(summary_df, n = Inf, width = Inf)
   } else {
     message("No cuts applied.")

@@ -61,18 +61,23 @@ Output columns added (for var = "CONC", n_groups = 4):
 Create quantile-based bins for continuous variables
 }
 \examples{
-\dontrun{
+set.seed(1)
+dat <- data.frame(
+  SUBJID = rep(1:20, each = 3),
+  AGE = rep(round(runif(20, 20, 80)), each = 3),
+  CONC = c(0, round(rlnorm(59, 2, 1), 2))
+)
+
 # Single variable, quartiles
-dat <- cut_quantile(dat, "AGE", n_groups = 4)
+head(cut_quantile(dat, "AGE", n_groups = 4))
 
 # Multiple cuts on same variable
-dat <- cut_quantile(dat, "AGE", n_groups = c(4, 3))
+head(cut_quantile(dat, "AGE", n_groups = c(4, 3)))
 
-# With longitudinal data
-dat <- cut_quantile(dat, list(CONC = 4, AGE = 4), id = "SUBJID")
+# With longitudinal data, quantiles use one row per subject
+head(cut_quantile(dat, "AGE", n_groups = 4, id = "SUBJID"))
 
 # Verbose output
 result <- cut_quantile(dat, list(CONC = c(4, 3), AGE = 4), verbose = TRUE)
-}
 
 }

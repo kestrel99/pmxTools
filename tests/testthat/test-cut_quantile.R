@@ -62,7 +62,10 @@ test_that("cut_quantile skips zero-range bins with warning", {
     stringsAsFactors = FALSE
   )
 
-  result <- cut_quantile(dat, "VAL", n_groups = 4)
+  expect_warning(
+    result <- cut_quantile(dat, "VAL", n_groups = 4),
+    "Zero-range bins"
+  )
   # Should skip the cut due to zero-range bins
   # The original column should still be there but no binning columns added
   expect_false("VALQ4Q" %in% names(result))
@@ -123,4 +126,75 @@ test_that("cut_quantile handles named list input", {
   expect_true("AGEQ4Q" %in% names(result))
   expect_true("AGET3Q" %in% names(result))
   expect_true("WTQ4Q" %in% names(result))
+})
+
+test_that("cut_quantile verbose summary has one row per applied cut", {
+  dat <- data.frame(
+    ID = 1:100,
+    AGE = seq(20, 80, length.out = 100),
+    stringsAsFactors = FALSE
+  )
+
+  result <- suppressMessages(
+    cut_quantile(dat, list(AGE = c(4, 3)), verbose = TRUE)
+  )
+
+  expect_equal(nrow(result$summary), 2)
+  expect_equal(result$summary$n_groups, c(4L, 3L))
+})
+
+test_that("cut_quantile character labels are prefix and bin number", {
+  dat <- data.frame(
+    ID = 1:10,
+    VAL = c(0, 1:9),
+    stringsAsFactors = FALSE
+  )
+
+  result <- cut_quantile(dat, "VAL", n_groups = c(4, 3))
+
+  expect_setequal(result$VALQ4C, c("BLQ", "Q1", "Q2", "Q3", "Q4"))
+  expect_setequal(result$VALT3C, c("BLQ", "T1", "T2", "T3"))
+})
+
+test_that("cut_quantile adds an interval factor column with units", {
+  dat <- data.frame(
+    ID = 1:10,
+    VAL = c(0, 1:9),
+    stringsAsFactors = FALSE
+  )
+
+  result <- cut_quantile(dat, "VAL", n_groups = 4, unit = "mg/L")
+
+  expect_s3_class(result$VALQ4CC, "factor")
+  expect_equal(
+    levels(result$VALQ4CC),
+    c("BLQ", "[1,3) mg/L", "[3,5) mg/L", "[5,7) mg/L", "[7,9] mg/L")
+  )
+  expect_equal(as.character(result$VALQ4CC[1:2]), c("BLQ", "[1,3) mg/L"))
+})
+
+test_that("cut_quantile with id maps the interval column to all records", {
+  dat <- data.frame(
+    SUBJID = rep(1:8, each = 2),
+    AGE = rep(seq(20, 90, by = 10), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  result <- cut_quantile(dat, "AGE", n_groups = 4, id = "SUBJID")
+
+  expect_true("AGEQ4CC" %in% names(result))
+  expect_false(anyNA(result$AGEQ4CC))
+})
+
+test_that("cut_quantile verbose output does not warn", {
+  dat <- data.frame(
+    ID = 1:100,
+    AGE = seq(20, 80, length.out = 100),
+    stringsAsFactors = FALSE
+  )
+
+  expect_no_condition(
+    suppressMessages(cut_quantile(dat, "AGE", n_groups = 4, verbose = TRUE)),
+    class = "lifecycle_warning_deprecated"
+  )
 })

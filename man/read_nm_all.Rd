@@ -18,6 +18,12 @@ current directory.}
 
 \item{...}{Passed to each of the read functions (ignored in the functions).}
 }
+\value{
+A list with elements \code{xml} (from \code{read_nm()}), \code{ext}
+(from \code{read_nmext()}), \code{cov} (from \code{read_nmcov()}),
+\code{extra_files} (a list of the \code{.ext}, \code{.phi}, \code{.ets} and
+\code{.phm} files) and \code{tables} (from \code{read_nmtables()}).
+}
 \description{
 Read all NONMEM files for a single NONMEM run.
 }
@@ -25,6 +31,11 @@ Read all NONMEM files for a single NONMEM run.
 The filename for loading is constructed as \code{paste(run_prefix,
   runNo)}.  To load a nonstandard file, simply set one of those values to
 \code{NULL}.
+}
+\examples{
+\dontrun{
+run315 <- read_nm_all(315)
+}
 }
 \seealso{
 Other NONMEM reading:

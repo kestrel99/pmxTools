@@ -10,6 +10,14 @@
 #'   current directory.
 #' @param quiet Flag for displaying intermediate output.
 #' @param ... Passed to each of the read functions (ignored in the functions).
+#' @return A list with elements \code{xml} (from \code{read_nm()}), \code{ext}
+#'   (from \code{read_nmext()}), \code{cov} (from \code{read_nmcov()}),
+#'   \code{extra_files} (a list of the \code{.ext}, \code{.phi}, \code{.ets} and
+#'   \code{.phm} files) and \code{tables} (from \code{read_nmtables()}).
+#' @examples
+#' \dontrun{
+#' run315 <- read_nm_all(315)
+#' }
 #' @family NONMEM reading
 #' @export
 read_nm_all <- function(runNo, run_prefix="run", directory=NULL, quiet=FALSE, ...) {

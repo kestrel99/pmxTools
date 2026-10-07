@@ -26,6 +26,10 @@ For ggplot2 scales.
 \item \code{itrans_blq_log()}: Log-scale inverse transform
 
 }}
+\examples{
+itrans_blq_linear(lloq=1)(c(0.5, 1, 5))
+itrans_blq_log(lloq=1, base=10)(c(-0.3, 0, 1))
+}
 \seealso{
 Other BLQ Transformation:
 \code{\link[=blq_trans]{blq_trans()}},

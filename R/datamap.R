@@ -40,18 +40,14 @@
 #' )
 #'
 #' # Default: dose and PK observations
-#' \dontrun{
 #' datamap(sample_data)
-#' }
 #'
 #' # With custom events
 #' events <- list(
 #'   dose = list(value = 1, label = "Dose", color = "#902C10", shape = 3, size = 1.5),
 #'   pk = list(value = 0, label = "PK", color = "#333333", shape = 1, size = 1)
 #' )
-#' \dontrun{
 #' datamap(sample_data, events = events)
-#' }
 #'
 #' @import ggplot2
 #' @export
