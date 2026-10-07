@@ -84,17 +84,54 @@ Output columns added (for var = "CONC", n_groups = 4):
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+set.seed(1)
+dat <- data.frame(
+  SUBJID = rep(1:20, each = 3),
+  AGE = rep(round(runif(20, 20, 80)), each = 3),
+  CONC = c(0, round(rlnorm(59, 2, 1), 2))
+)
+
 # Single variable, quartiles
-dat <- cut_quantile(dat, "AGE", n_groups = 4)
+head(cut_quantile(dat, "AGE", n_groups = 4))
+#>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC
+#> 1      1  36  0.00      1     Q1 [24,40.5)
+#> 2      1  36 33.51      1     Q1 [24,40.5)
+#> 3      1  36 10.91      1     Q1 [24,40.5)
+#> 4      2  42  3.97      2     Q2 [40.5,56)
+#> 5      2  42  0.81      2     Q2 [40.5,56)
+#> 6      2  42 22.76      2     Q2 [40.5,56)
 
 # Multiple cuts on same variable
-dat <- cut_quantile(dat, "AGE", n_groups = c(4, 3))
+head(cut_quantile(dat, "AGE", n_groups = c(4, 3)))
+#>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC AGET3Q AGET3C AGET3CC
+#> 1      1  36  0.00      1     Q1 [24,40.5)      1     T1 [24,43)
+#> 2      1  36 33.51      1     Q1 [24,40.5)      1     T1 [24,43)
+#> 3      1  36 10.91      1     Q1 [24,40.5)      1     T1 [24,43)
+#> 4      2  42  3.97      2     Q2 [40.5,56)      1     T1 [24,43)
+#> 5      2  42  0.81      2     Q2 [40.5,56)      1     T1 [24,43)
+#> 6      2  42 22.76      2     Q2 [40.5,56)      1     T1 [24,43)
 
-# With longitudinal data
-dat <- cut_quantile(dat, list(CONC = 4, AGE = 4), id = "SUBJID")
+# With longitudinal data, quantiles use one row per subject
+head(cut_quantile(dat, "AGE", n_groups = 4, id = "SUBJID"))
+#>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC
+#> 1      1  36  0.00      1     Q1 [24,40.5)
+#> 2      1  36 33.51      1     Q1 [24,40.5)
+#> 3      1  36 10.91      1     Q1 [24,40.5)
+#> 4      2  42  3.97      2     Q2 [40.5,56)
+#> 5      2  42  0.81      2     Q2 [40.5,56)
+#> 6      2  42 22.76      2     Q2 [40.5,56)
 
 # Verbose output
 result <- cut_quantile(dat, list(CONC = c(4, 3), AGE = 4), verbose = TRUE)
-} # }
+#> 
+#> ============================================================
+#> cut_quantile summary
+#> ============================================================
+#> # A tibble: 3 × 8
+#>   cuts  var   n_groups n_total n_valid n_missing n_blq bins            
+#>   <chr> <chr>    <int>   <int>   <int>     <int> <int> <list>          
+#> 1 Q4    CONC         4      60      59         0     1 <tibble [5 × 2]>
+#> 2 T3    CONC         3      60      59         0     1 <tibble [4 × 2]>
+#> 3 Q4    AGE          4      60      60         0     0 <tibble [5 × 2]>
+#> ------------------------------------------------------------
 ```

@@ -131,16 +131,16 @@ sample_data <- data.frame(
 )
 
 # Default: dose and PK observations
-if (FALSE) { # \dontrun{
 datamap(sample_data)
-} # }
+
 
 # With custom events
 events <- list(
   dose = list(value = 1, label = "Dose", color = "#902C10", shape = 3, size = 1.5),
   pk = list(value = 0, label = "PK", color = "#333333", shape = 1, size = 1)
 )
-if (FALSE) { # \dontrun{
 datamap(sample_data, events = events)
-} # }
+#> `geom_line()`: Each group consists of only one observation.
+#> ℹ Do you need to adjust the group aesthetic?
+
 ```

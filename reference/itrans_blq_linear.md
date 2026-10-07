@@ -36,3 +36,12 @@ Other BLQ Transformation:
 [`estimate_lloq()`](https://kestrel99.github.io/pmxTools/reference/estimate_lloq.md),
 [`ftrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/ftrans_blq_linear.md),
 [`label_blq()`](https://kestrel99.github.io/pmxTools/reference/label_blq.md)
+
+## Examples
+
+``` r
+itrans_blq_linear(lloq=1)(c(0.5, 1, 5))
+#> [1] 1 1 5
+itrans_blq_log(lloq=1, base=10)(c(-0.3, 0, 1))
+#> [1]  1  1 10
+```

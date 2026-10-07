@@ -31,3 +31,10 @@ Other BLQ Transformation:
 [`estimate_lloq()`](https://kestrel99.github.io/pmxTools/reference/estimate_lloq.md),
 [`ftrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/ftrans_blq_linear.md),
 [`itrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/itrans_blq_linear.md)
+
+## Examples
+
+``` r
+label_blq(lloq=1)(c(1, 2, 5))
+#> [1] "<1" "2"  "5" 
+```

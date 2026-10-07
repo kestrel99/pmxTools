@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Justin Wilkins**. Author, maintainer.
+- **Justin Wilkins**. Author, maintainer, copyright holder.
   [](https://orcid.org/0000-0002-7099-9396)
 
 - **Bill Denney**. Author. [](https://orcid.org/0000-0002-5759-428X)

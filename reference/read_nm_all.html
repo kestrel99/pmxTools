@@ -72,6 +72,13 @@ current directory.</p></dd>
 
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A list with elements <code>xml</code> (from <code><a href="read_nm.html">read_nm()</a></code>), <code>ext</code>
+(from <code><a href="read_nmext.html">read_nmext()</a></code>), <code>cov</code> (from <code><a href="read_nmcov.html">read_nmcov()</a></code>),
+<code>extra_files</code> (a list of the <code>.ext</code>, <code>.phi</code>, <code>.ets</code> and
+<code>.phm</code> files) and <code>tables</code> (from <code><a href="read_nmtables.html">read_nmtables()</a></code>).</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The filename for loading is constructed as <code>paste(run_prefix,
   runNo)</code>.  To load a nonstandard file, simply set one of those values to
@@ -89,6 +96,13 @@ current directory.</p></dd>
 <code><a href="read_scm.html">read_scm()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">run315</span> <span class="op">&lt;-</span> <span class="fu">read_nm_all</span><span class="op">(</span><span class="fl">315</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

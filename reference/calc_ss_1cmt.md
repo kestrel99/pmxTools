@@ -79,7 +79,7 @@ provided set of parameters and variables.
 Bertrand J & Mentre F (2008). Mathematical Expressions of the
 Pharmacokinetic and Pharmacodynamic Models implemented in the Monolix
 software.
-<https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf>
+<https://web.archive.org/web/20231002021707/https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf>
 
 Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics:
 Concepts and Applications (4th). Lippincott Williams & Wilkins,

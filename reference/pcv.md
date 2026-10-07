@@ -31,5 +31,5 @@ Justin Wilkins, <justin.wilkins@occams.com>
 
 ``` r
 pcv(rnorm(50, 5, 7.56))
-#> [1] 189.4419
+#> [1] 116.0729
 ```

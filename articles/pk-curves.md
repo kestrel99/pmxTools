@@ -12,7 +12,7 @@ using PK parameters and microconstants. The underlying solutions are
 based on Julie Bertrand and France Mentré’s [Mathematical Expressions of
 the Pharmacokinetic and Pharmacodynamic Models implemented in the
 Monolix
-software](https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf),
+software](https://web.archive.org/web/20231002021707/https://www.facm.ucl.ac.be/cooperation/Vietnam/WBI-Vietnam-October-2011/Modelling/Monolix32_PKPD_library.pdf),
 published in 2008.
 
 The options available are by necessity confined to one-, two- and

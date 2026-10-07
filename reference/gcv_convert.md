@@ -25,7 +25,7 @@ Geometric coefficient of variation
 
 ## References
 
-[http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html](http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.md)
+<https://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html>
 
 ## Author
 

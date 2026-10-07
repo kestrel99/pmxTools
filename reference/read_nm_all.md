@@ -31,6 +31,18 @@ read_nm_all(runNo, run_prefix = "run", directory = NULL, quiet = FALSE, ...)
 
   Passed to each of the read functions (ignored in the functions).
 
+## Value
+
+A list with elements `xml` (from
+[`read_nm()`](https://kestrel99.github.io/pmxTools/reference/read_nm.md)),
+`ext` (from
+[`read_nmext()`](https://kestrel99.github.io/pmxTools/reference/read_nmext.md)),
+`cov` (from
+[`read_nmcov()`](https://kestrel99.github.io/pmxTools/reference/read_nmcov.md)),
+`extra_files` (a list of the `.ext`, `.phi`, `.ets` and `.phm` files)
+and `tables` (from
+[`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)).
+
 ## Details
 
 The filename for loading is constructed as `paste(run_prefix, runNo)`.
@@ -46,3 +58,11 @@ Other NONMEM reading:
 [`read_nmext()`](https://kestrel99.github.io/pmxTools/reference/read_nmext.md),
 [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md),
 [`read_scm()`](https://kestrel99.github.io/pmxTools/reference/read_scm.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+run315 <- read_nm_all(315)
+} # }
+```

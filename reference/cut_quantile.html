@@ -111,19 +111,56 @@ If <code>verbose = TRUE</code>: returns a list with:</p><ul><li><p><code>data</c
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  SUBJID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  AGE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">20</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  CONC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="fl">59</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Single variable, quartiles</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"AGE"</span>, n_groups <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"AGE"</span>, n_groups <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1  36  0.00      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1  36 33.51      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1  36 10.91      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      2  42  3.97      2     Q2 [40.5,56)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      2  42  0.81      2     Q2 [40.5,56)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      2  42 22.76      2     Q2 [40.5,56)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Multiple cuts on same variable</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"AGE"</span>, n_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"AGE"</span>, n_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC AGET3Q AGET3C AGET3CC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1  36  0.00      1     Q1 [24,40.5)      1     T1 [24,43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1  36 33.51      1     Q1 [24,40.5)      1     T1 [24,43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1  36 10.91      1     Q1 [24,40.5)      1     T1 [24,43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      2  42  3.97      2     Q2 [40.5,56)      1     T1 [24,43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      2  42  0.81      2     Q2 [40.5,56)      1     T1 [24,43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      2  42 22.76      2     Q2 [40.5,56)      1     T1 [24,43)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># With longitudinal data</span></span></span>
-<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CONC <span class="op">=</span> <span class="fl">4</span>, AGE <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, id <span class="op">=</span> <span class="st">"SUBJID"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># With longitudinal data, quantiles use one row per subject</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"AGE"</span>, n_groups <span class="op">=</span> <span class="fl">4</span>, id <span class="op">=</span> <span class="st">"SUBJID"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   SUBJID AGE  CONC AGEQ4Q AGEQ4C   AGEQ4CC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      1  36  0.00      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1  36 33.51      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1  36 10.91      1     Q1 [24,40.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      2  42  3.97      2     Q2 [40.5,56)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      2  42  0.81      2     Q2 [40.5,56)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      2  42 22.76      2     Q2 [40.5,56)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Verbose output</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">cut_quantile</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CONC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span>, AGE <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ============================================================</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> cut_quantile summary</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ============================================================</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   cuts  var   n_groups n_total n_valid n_missing n_blq bins            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Q4    CONC         4      60      59         0     1 <span style="color: #949494;">&lt;tibble [5 × 2]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> T3    CONC         3      60      59         0     1 <span style="color: #949494;">&lt;tibble [4 × 2]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Q4    AGE          4      60      60         0     0 <span style="color: #949494;">&lt;tibble [5 × 2]&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
