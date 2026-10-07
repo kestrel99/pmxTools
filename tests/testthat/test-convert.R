@@ -158,3 +158,29 @@ test_that("automatic detection works", {
     fixed=TRUE
   )
 })
+
+test_that("derived AUCtau values carry no attributes from PKNCA", {
+  # PKNCA >= 0.12.1.9000 attaches a `method` attribute to the AUC it returns,
+  # which propagates through AUCtau/dose.  The derived-parameter list is
+  # documented as plain numbers, so nothing may leak through.
+  suppressMessages(
+    t1 <- calc_derived_1cpt(CL=1.6, V=25, dose=2000, tau=6, ka=0.25)
+  )
+  expect_null(attributes(t1$AUCtau))
+  expect_null(attributes(t1$AUCtau_dose_normalized))
+
+  suppressMessages(
+    t2 <- calc_derived_2cpt(CL=16, V1=25, V2=50, Q=0.5, dose=2000, tau=6, ka=2)
+  )
+  expect_null(attributes(t2$AUCtau))
+  expect_null(attributes(t2$AUCtau_dose_normalized))
+
+  suppressMessages(
+    t3 <- calc_derived_3cpt(
+      CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73,
+      dose=2000, tau=6, ka=5
+    )
+  )
+  expect_null(attributes(t3$AUCtau))
+  expect_null(attributes(t3$AUCtau_dose_normalized))
+})
