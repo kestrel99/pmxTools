@@ -24,7 +24,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/kestrel99/pmxTools/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/kestrel99/pmxTools/blob/v1.6/DESCRIPTION)
 
 Wilkins J, Denney B, Schoemaker R (2026). *pmxTools: Pharmacometric and
 Pharmacokinetic Toolkit*. R package version 1.6,
