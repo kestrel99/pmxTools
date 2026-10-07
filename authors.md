@@ -24,16 +24,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/kestrel99/pmxTools/blob/v1.6/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/kestrel99/pmxTools/blob/master/DESCRIPTION)
 
 Wilkins J, Denney B, Schoemaker R (2026). *pmxTools: Pharmacometric and
-Pharmacokinetic Toolkit*. R package version 1.6,
+Pharmacokinetic Toolkit*. R package version 1.6.0.9000,
 <https://github.com/kestrel99/pmxTools>.
 
     @Manual{,
       title = {pmxTools: Pharmacometric and Pharmacokinetic Toolkit},
       author = {Justin Wilkins and Bill Denney and Rik Schoemaker},
       year = {2026},
-      note = {R package version 1.6},
+      note = {R package version 1.6.0.9000},
       url = {https://github.com/kestrel99/pmxTools},
     }
