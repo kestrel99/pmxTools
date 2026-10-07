@@ -1,5 +1,44 @@
 # Changelog
 
+## pmxTools 1.6
+
+- Added
+  [`cut_quantile()`](https://kestrel99.github.io/pmxTools/reference/cut_quantile.md),
+  which creates quantile-based bins for one or more continuous
+  variables, with per-variable control over the number of groups.
+
+- Added
+  [`datamap()`](https://kestrel99.github.io/pmxTools/reference/datamap.md),
+  which plots individual dosing and observation records over time.
+
+- [`dgr_table()`](https://kestrel99.github.io/pmxTools/reference/dgr_table.md)
+  now takes `fields` as a named character vector mapping column names to
+  display labels. The separate `names` argument is deprecated, but
+  unnamed `fields` with `names` continues to work.
+
+- Added dependencies `purrr` and `tidyr`.
+
+- Fixed
+  [`read_nm()`](https://kestrel99.github.io/pmxTools/reference/read_nm.md),
+  which passed the file extension to
+  [`xml2::read_xml()`](http://xml2.r-lib.org/reference/read_xml.md) as
+  an encoding rather than appending it to the file name, and read the
+  unresolved file name instead of the one located on disk. The
+  `directory` argument and file names given without the `.xml` extension
+  were therefore ignored, and macOS reported an
+  `Unsupported encoding: .xml` warning.
+
+- Removed the blanket `stats` and `utils` imports, which caused a
+  `replacing previous import 'stats::filter' by 'dplyr::filter'` warning
+  when the package was loaded.
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions now return `AUCtau` and
+  `AUCtau_dose_normalized` as plain numbers. PKNCA 0.12.1.9000 attaches
+  a `method` attribute to the AUC it returns, which propagated into the
+  derived-parameter list and broke comparisons against plain numeric
+  values.
+
 ## pmxTools 1.5
 
 CRAN release: 2025-08-25

@@ -28,6 +28,9 @@ Useful links:
 
 Authors:
 
+- Justin Wilkins <justin.wilkins@occams.com>
+  ([ORCID](https://orcid.org/0000-0002-7099-9396))
+
 - Bill Denney <wdenney@humanpredictions.com>
   ([ORCID](https://orcid.org/0000-0002-5759-428X))
 
