@@ -1,3 +1,5 @@
+# pmxTools (development version)
+
 # pmxTools 1.6
 
 * Added `cut_quantile()`, which creates quantile-based bins for one or more continuous variables, with per-variable control over the number of groups.
