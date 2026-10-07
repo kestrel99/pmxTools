@@ -11,7 +11,7 @@ label_blq(lloq, lloq_text)
 scalar}
 
 \item{lloq_text}{The text to use on the axis to indicate values \code{<
-  lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
+lloq}.  It will be automatically set to \code{paste0("<", lloq)} if
 missing.}
 }
 \value{
@@ -21,11 +21,11 @@ A function of \code{x} which returns the formatted values.
 For ggplot2 scales.
 }
 \seealso{
-Other BLQ Transformation: 
-\code{\link{blq_trans}()},
-\code{\link{breaks_blq_general}()},
-\code{\link{estimate_lloq}()},
-\code{\link{ftrans_blq_linear}()},
-\code{\link{itrans_blq_linear}()}
+Other BLQ Transformation:
+\code{\link[=blq_trans]{blq_trans()}},
+\code{\link[=breaks_blq_general]{breaks_blq_general()}},
+\code{\link[=estimate_lloq]{estimate_lloq()}},
+\code{\link[=ftrans_blq_linear]{ftrans_blq_linear()}},
+\code{\link[=itrans_blq_linear]{itrans_blq_linear()}}
 }
 \concept{BLQ Transformation}

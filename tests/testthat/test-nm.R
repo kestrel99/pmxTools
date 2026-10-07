@@ -160,7 +160,36 @@ test_that("get_probinfo", {
 })
 
 test_that("sample_uncertainty", {
-  expect_snapshot(sample_uncert("testData/runR001.xml", n=50, seed=740727))
+  # `sample_uncert()` draws via `MASS::mvrnorm()`, which eigendecomposes the
+  # covariance matrix. THETA4 and OMEGA(2,1) are fixed, so that matrix is
+  # singular and the eigenvectors spanning its null space are LAPACK-dependent:
+  # the individual draws differ between Linux, macOS and Windows for the same
+  # seed. Pin down the distribution being sampled from instead of the draws.
+  mu <- c(3.98013, 68.2194, 0.199472, 1, 0.0715555, 0, 0.0921585)
+  sigma <- sqrt(diag(read_nmcov("testData/runR001.cov", quiet = TRUE)))
+  n <- 5000
+  samp <- sample_uncert("testData/runR001.xml", n = n, seed = 740727)
+
+  expect_named(samp, paste0("V", 1:7))
+  expect_equal(nrow(samp), n)
+  # Zero variance in the covariance matrix, so every draw is the estimate. The
+  # eigendecomposition leaves rounding noise around 1e-10 on macOS, so compare
+  # with a tolerance rather than requiring a single unique value.
+  expect_equal(samp$V4, rep(mu[4], n), tolerance = 1e-6)
+  expect_equal(samp$V6, rep(mu[6], n), tolerance = 1e-6)
+  # Ratios rather than raw values so that the tolerance applies per parameter
+  # rather than being swamped by V2, which is three orders of magnitude larger.
+  varies <- sigma > 0
+  expect_equal(
+    unname(colMeans(samp)[varies] / mu[varies]),
+    rep(1, sum(varies)),
+    tolerance = 0.02
+  )
+  expect_equal(
+    unname(apply(samp, 2, stats::sd)[varies] / sigma[varies]),
+    rep(1, sum(varies)),
+    tolerance = 0.05
+  )
 })
 
 test_that("sample_omega", {

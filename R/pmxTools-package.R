@@ -4,7 +4,7 @@
 ## usethis namespace: start
 ## usethis namespace: end
 
-globalVariables("pdf")
-globalVariables("cdf")
+utils::globalVariables("pdf")
+utils::globalVariables("cdf")
 
 NULL

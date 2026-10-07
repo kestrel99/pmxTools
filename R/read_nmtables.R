@@ -23,7 +23,6 @@
 #' tables <- read_nmtables(runNo=315)
 #' }
 #'
-#' @import utils
 #' @export
 read_nmtables <- function(tableFiles = NULL,
                           runNo      = NULL,
@@ -49,9 +48,9 @@ read_nmtables <- function(tableFiles = NULL,
     
   tabFiles <-
     if (is.null(directory)) {
-      setNames(tabFiles, tabFiles)
+      stats::setNames(tabFiles, tabFiles)
     } else {
-      setNames(
+      stats::setNames(
         file.path(directory, tabFiles),
         tabFiles
       )
@@ -126,7 +125,7 @@ read_nmtable_single <- function(filename, quiet) {
 
   ## Check if we have unequal number of fields in the file
   ## used for multiple simulations
-  fields.per.line      <- count.fields(filename)
+  fields.per.line      <- utils::count.fields(filename)
   fields.in.first.line <- fields.per.line[1]
   fields.in.rest       <- fields.per.line[-1]
   if((length(unique(fields.in.rest)) != 1) ||
@@ -145,17 +144,17 @@ read_nmtable_single <- function(filename, quiet) {
       inds  <- inds[c(2:length(inds))]
       inds2 <- inds+1
       ret <-
-        read.table(
+        utils::read.table(
           textConnection(tmp[-c(inds, inds2)]),
           skip=2, header=TRUE, sep=sep.char
         )
     } else {
       ret <-
-        read.table(filename, skip=2, header=TRUE, sep=sep.char)
+        utils::read.table(filename, skip=2, header=TRUE, sep=sep.char)
     }
   } else {
     ret <-
-      read.table(filename, skip=1, header=TRUE, sep=sep.char)
+      utils::read.table(filename, skip=1, header=TRUE, sep=sep.char)
   }
   # scan to ensure no remaining column headers or other text pollution
 
@@ -200,7 +199,7 @@ read_nm_multi_table <- function(fileName, header=TRUE, ..., simplify=TRUE, table
       }
     current_table_name <- file_data[new_tables[idx]]
     
-    tmptab <- read.table(
+    tmptab <- utils::read.table(
       textConnection(file_data[start_line:end_line]),
       header=header, ...
     )

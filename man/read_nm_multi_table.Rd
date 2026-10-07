@@ -35,14 +35,14 @@ read_nm_multi_table("run1.cov", row.names=1)
 }
 }
 \seealso{
-Other NONMEM reading: 
-\code{\link{plot_scm}()},
-\code{\link{read_nm}()},
-\code{\link{read_nm_all}()},
-\code{\link{read_nmcov}()},
-\code{\link{read_nmext}()},
-\code{\link{read_nmtables}()},
-\code{\link{read_scm}()}
+Other NONMEM reading:
+\code{\link[=plot_scm]{plot_scm()}},
+\code{\link[=read_nm]{read_nm()}},
+\code{\link[=read_nm_all]{read_nm_all()}},
+\code{\link[=read_nmcov]{read_nmcov()}},
+\code{\link[=read_nmext]{read_nmext()}},
+\code{\link[=read_nmtables]{read_nmtables()}},
+\code{\link[=read_scm]{read_scm()}}
 }
 \author{
 Bill Denney
