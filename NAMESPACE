@@ -99,6 +99,7 @@ importFrom(data.tree,
   as.Node
 )
 importFrom(dplyr,
+  any_of,
   bind_rows,
   filter,
   group_by,
