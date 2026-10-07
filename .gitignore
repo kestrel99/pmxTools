@@ -8,5 +8,9 @@ AGENTS.md
 *.gz
 pmxTools.Rcheck
 .DS_Store
+<<<<<<< Updated upstream
 tests/testthat/_problems
 tests/testthat/testthat-problems.rds
+=======
+.positai
+>>>>>>> Stashed changes
