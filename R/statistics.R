@@ -64,7 +64,7 @@ pcv <- function(x, na.rm=FALSE) {
 #' gcv_convert(gsd=0.2)
 #' @references 
 #' 
-#' \url{http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
+#' \url{https://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
 #' @export
 
 gcv_convert <- function(gvar=gsd^2, gsd) {

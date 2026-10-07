@@ -23,7 +23,7 @@ gcv_convert(0.2)
 gcv_convert(gsd=0.2)
 }
 \references{
-\url{http://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
+\url{https://onbiostatistics.blogspot.com/2008/07/geometric-statistics-geometric-cv-vs.html}
 }
 \author{
 Bill Denney
