@@ -46,6 +46,7 @@
 <li><p>Removed the blanket <code>stats</code> and <code>utils</code> imports, which caused a <code>replacing previous import 'stats::filter' by 'dplyr::filter'</code> warning when the package was loaded (<a href="https://github.com/kestrel99/pmxTools/issues/36" class="external-link">#36</a>).</p></li>
 <li><p><code><a href="../reference/calc_derived.html">calc_derived()</a></code> and the <code>calc_derived_*()</code> functions now return <code>AUCtau</code> and <code>AUCtau_dose_normalized</code> as plain numbers. PKNCA 0.12.1.9000 attaches a <code>method</code> attribute to the AUC it returns, which propagated into the derived-parameter list and broke comparisons against plain numeric values (<a href="https://github.com/kestrel99/pmxTools/issues/37" class="external-link">#37</a>).</p></li>
 <li><p>Test snapshots are now committed, the CI workflows have been refreshed, and the documentation has been regenerated with roxygen2 8.1.0 (<a href="https://github.com/kestrel99/pmxTools/issues/36" class="external-link">#36</a>).</p></li>
+<li><p><code><a href="../reference/calc_derived.html">calc_derived()</a></code> and the <code>calc_derived_*()</code> functions now work with vector inputs (<a href="https://github.com/kestrel99/pmxTools/issues/29" class="external-link">#29</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.5" id="pmxtools-15">pmxTools 1.5<a class="anchor" aria-label="anchor" href="#pmxtools-15"></a></h2><p class="text-muted">CRAN release: 2025-08-25</p>

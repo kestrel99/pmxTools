@@ -45,6 +45,10 @@
   refreshed, and the documentation has been regenerated with roxygen2
   8.1.0 ([\#36](https://github.com/kestrel99/pmxTools/issues/36)).
 
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions now work with vector inputs
+  ([\#29](https://github.com/kestrel99/pmxTools/issues/29)).
+
 ## pmxTools 1.5
 
 CRAN release: 2025-08-25
