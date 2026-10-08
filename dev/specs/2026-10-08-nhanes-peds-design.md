@@ -34,8 +34,10 @@ Built by `data-raw/nhanes_peds.R` (excluded from the package build), which:
    | 2021-23 | 2021 | L      |
 
 2. Joins on `SEQN`; keeps children aged 2-17 whole years at examination
-   (`floor(RIDEXAGM / 12)`), sex 1 or 2, and rows with finite positive `BMXWT`,
-   `BMXHT` and `WTMEC2YR`.
+   (`floor(RIDEXAGM / 12)`), sex 1 or 2, finite positive `WTMEC2YR`, and at
+   least one of `BMXWT` / `BMXHT` measured. A missing weight or height is kept
+   as `NA`; records are **not** dropped because one measure is missing. Only
+   children with neither measure are excluded.
 3. Saves `data/nhanes_peds.rda` (xz compression).
 
 `haven` is used only by the data-raw script; it is not a package dependency.
@@ -51,12 +53,16 @@ Columns (one row per child):
 | `AGE_MONTHS` | numeric   | Age in months at examination (`RIDEXAGM`)    |
 | `AGE`        | integer   | Whole years, `floor(AGE_MONTHS / 12)`        |
 | `SEX`        | character | `"Male"` or `"Female"` (`RIAGENDR`)          |
-| `WT`         | numeric   | Body weight, kg (`BMXWT`)                    |
-| `HT`         | numeric   | Standing height, cm (`BMXHT`)                |
+| `WT`         | numeric   | Body weight, kg (`BMXWT`); `NA` if not measured |
+| `HT`         | numeric   | Standing height, cm (`BMXHT`); `NA` if not measured |
 | `MEC_WT`     | numeric   | Two-year MEC exam weight (`WTMEC2YR`)        |
 
-Documented in `R/data.R`: source URLs, variable definitions, exclusions (and
-how many children were dropped for missing height), public-domain status, and a
+Probe of the source files (2026-10-08): all four cycles have `RIDEXAGM`,
+`WTMEC2YR`, `BMXWT` and `BMXHT`; 11,323 children aged 2-17, of whom 11,071
+have both weight and height.
+
+Documented in `R/data.R`: source URLs, variable definitions, exclusions, the
+number of children with weight or height missing, public-domain status, and a
 statement that the equal cycle mixture used by the simulator is a modelling
 choice, not an official pooled NHANES weight.
 
@@ -69,6 +75,7 @@ sample_nhanes_peds(
   n = 500,
   ages = 2:17,
   sex = c("Male", "Female"),
+  vars = c("WT", "HT"),
   cycles = NULL,
   bandwidth_factor = 1,
   seed = NULL,
@@ -77,6 +84,11 @@ sample_nhanes_peds(
 ```
 
 - `n`: simulated children per age/sex stratum.
+- `vars`: which measures to simulate: `"WT"`, `"HT"`, or both (default).
+  Only children with **all** requested measures present are eligible as
+  donors, so a child missing height is still used when only weight is
+  requested. Both requested: joint 2-D kernel. One requested: 1-D kernel
+  (identical to the script's method for `"WT"`).
 - `ages`: whole years; must all be present in `data`.
 - `sex`: subset of `"Male"`, `"Female"`.
 - `cycles`: `NULL` uses every cycle in `data`; otherwise a subset of
@@ -89,50 +101,60 @@ sample_nhanes_peds(
 
 ### Method (per AGE x SEX stratum)
 
-1. Sampling probability of each child:
+Let `d = length(vars)` (1 or 2). Donors are the stratum's children with every
+requested measure present.
+
+1. Sampling probability of each donor:
    `p_i = MEC_WT_i / sum(MEC_WT in its cycle) * 1 / n_cycles`, then normalised
    to sum to 1 within the stratum. This is the script's equal cycle mixture:
    no cycle dominates because of a larger total MEC weight.
-2. Work on `y = (log WT, log HT)`.
+2. Work on `y = log(vars)` (one or two columns).
 3. For each dimension `j`: weighted SD `s_j`, weighted IQR `q_j`, robust scale
    `sigma_j = min(s_j, q_j / 1.349)`, falling back to `s_j` and then to 0 when
    not finite or not positive (the script's fallbacks).
-4. Weighted correlation `r` of the two log variables (0 if either scale is 0).
+4. If `d = 2`: weighted correlation `r` of the two log variables (0 if either
+   scale is 0); `R = [[1, r], [r, 1]]`. If `d = 1`: `R = 1`.
 5. Kish effective sample size `n_eff = sum(p)^2 / sum(p^2)`.
 6. Bandwidth matrix
-   `H = (bandwidth_factor * 0.9)^2 * n_eff^(-1/3) * S %*% R %*% S`, with
-   `S = diag(sigma)` and `R = [[1, r], [r, 1]]`. The `n_eff^(-1/3)` factor is
-   Silverman's rule of thumb for d = 2 (bandwidth SD `n^(-1/6) * sigma`,
-   constant `(4 / (d + 2))^(1 / (d + 4)) = 1`); the 0.9 multiplier is carried
-   over from the script's robust 1-D rule (`h = 0.9 * scale * n_eff^(-1/5)`).
+   `H = (bandwidth_factor * 0.9)^2 * n_eff^(-2 / (d + 4)) * S %*% R %*% S`,
+   with `S = diag(sigma)`. For `d = 1` this is exactly the script's
+   `h = 0.9 * scale * n_eff^(-1/5)` (squared). For `d = 2` the exponent is
+   Silverman's rule of thumb (constant `(4 / (d + 2))^(1 / (d + 4)) = 1`),
+   keeping the script's 0.9 multiplier.
 7. Draw `n` donor indices with `sample.int(prob = p, replace = TRUE)`, add
-   `MASS::mvrnorm(n, c(0, 0), H)` noise to the donors' `y`, and exponentiate.
+   `MASS::mvrnorm(n, rep(0, d), H)` noise to the donors' `y`, and
+   exponentiate.
 
 ### Return value
 
 A tibble ordered by AGE, SEX with columns `ID`, `AGE`, `SEXN` (1 = Male,
-2 = Female), `SEX`, `WT`, `HT`, `SOURCE_CYCLE`, `SOURCE_SEQN`.
+2 = Female), `SEX`, the requested `vars` (`WT` and/or `HT`), `SOURCE_CYCLE`,
+`SOURCE_SEQN`.
 
 Attributes:
 
-- `"kernels"`: tibble per stratum with `AGE`, `SEX`, `N_NHANES`, `N_EFF`,
-  `H_WT`, `H_HT` (bandwidth SDs on the log scale, `sqrt(diag(H))`), `RHO` (`r`).
-- `"cycles"`: the cycles used, so the comparison uses the same reference.
+- `"kernels"`: tibble per stratum with `AGE`, `SEX`, `N_NHANES` (eligible
+  donors), `N_EFF`, `H_<var>` for each requested var (bandwidth SDs on the log
+  scale, `sqrt(diag(H))`), and `RHO` (`r`) when both vars are requested.
+- `"cycles"`: the cycles used, and `"vars"`: the vars simulated, so the
+  comparison uses the same reference.
 
 ## 3. Validation helpers
 
 ### `compare_nhanes_peds(sim, data = nhanes_peds)`
 
 Builds the reference from the cycle-balanced MEC weights of `data`, restricted
-to the cycles in `attr(sim, "cycles")` and the ages/sexes present in `sim`.
-Returns a long tibble, one row per `AGE` x `SEX` x `VARIABLE`
-(`VARIABLE` in `WT`, `HT`, `BMI`; `BMI = WT / (HT / 100)^2`), with:
+to the cycles in `attr(sim, "cycles")`, the ages/sexes present in `sim`, and
+the same donor eligibility as the simulation (all of `attr(sim, "vars")`
+present). Returns a long tibble, one row per `AGE` x `SEX` x `VARIABLE`
+(`VARIABLE` is each simulated var, plus `BMI = WT / (HT / 100)^2` when both
+were simulated), with:
 
 - `N`, `Mean`, `SD`, `P05`, `Q1`, `Median`, `Q3`, `P95`, each suffixed `_REF`
   (weighted) and `_SIM` (unweighted);
 - `MEAN_RATIO`, `MEDIAN_RATIO`, `P05_RATIO`, `P95_RATIO` (SIM / REF);
-- `RHO_REF`, `RHO_SIM`: correlation of log WT and log HT per AGE x SEX
-  (repeated on each variable's row).
+- when both vars were simulated, `RHO_REF`, `RHO_SIM`: correlation of log WT
+  and log HT per AGE x SEX (repeated on each variable's row).
 
 Errors if `sim` lacks the `"cycles"` attribute or required columns.
 
@@ -149,10 +171,12 @@ No CSV export in the package.
 ### Input validation (`stop()`, as elsewhere in the package)
 
 - `ages`, `sex` or `cycles` values absent from `data` (message names them);
+- `vars` not a non-empty subset of `c("WT", "HT")`;
 - `n` not a single positive whole number;
 - `bandwidth_factor` not a single non-negative number;
 - `data` missing required columns;
-- any CYCLE x AGE x SEX stratum with zero children (message lists them).
+- any CYCLE x AGE x SEX stratum with zero eligible donors for the requested
+  `vars` (message lists them).
 
 Degenerate strata (zero spread in one dimension) get a zero bandwidth in that
 dimension; `MASS::mvrnorm()` handles the singular `H`.
@@ -162,6 +186,9 @@ dimension; `MASS::mvrnorm()` handles the singular `H`.
 - Shape: `n * length(ages) * length(sex)` rows; expected columns; `WT`, `HT`
   finite and positive.
 - `bandwidth_factor = 0`: each simulated (WT, HT) equals its donor's values.
+- `vars = "WT"`: only `WT` returned; donors include children missing height;
+  matches the script's 1-D bandwidth `0.9 * scale * n_eff^(-1/5)`.
+- `vars = c("WT", "HT")`: no donor has a missing WT or HT.
 - `seed`: identical output for the same seed; `.Random.seed` unchanged by the
   call.
 - Fidelity (fixed seed, large `n`): per-stratum medians of WT and HT within
@@ -171,7 +198,8 @@ dimension; `MASS::mvrnorm()` handles the singular `H`.
 - Each validation error triggers.
 - `compare_nhanes_peds()`: expected columns; 3 rows per stratum.
 - `plot_nhanes_peds()`: returns a `ggplot`.
-- `nhanes_peds`: expected columns; ages 2-17; no missing WT/HT/MEC_WT.
+- `nhanes_peds`: expected columns; ages 2-17; no missing `MEC_WT`; every row
+  has at least one of `WT` / `HT`; some rows have exactly one missing.
 
 ### Other
 
