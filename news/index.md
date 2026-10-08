@@ -4,6 +4,8 @@
 
 ## pmxTools 1.6
 
+CRAN release: 2026-10-07
+
 - Added
   [`cut_quantile()`](https://kestrel99.github.io/pmxTools/reference/cut_quantile.md),
   which creates quantile-based bins for one or more continuous
