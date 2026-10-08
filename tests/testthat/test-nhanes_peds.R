@@ -92,3 +92,71 @@ test_that("bandwidth_factor = 0 gives a zero bandwidth", {
   k <- nhanes_kernel(donors, vars = c("WT", "HT"), bandwidth_factor = 0)
   expect_equal(k$H, matrix(0, 2, 2))
 })
+
+test_that("sample_nhanes_peds returns one block per age and sex", {
+  sim <- sample_nhanes_peds(n = 7, ages = c(3, 12), seed = 1)
+  expect_s3_class(sim, "tbl_df")
+  expect_named(
+    sim,
+    c("ID", "AGE", "SEXN", "SEX", "WT", "HT", "SOURCE_CYCLE", "SOURCE_SEQN")
+  )
+  expect_equal(nrow(sim), 7 * 2 * 2)
+  expect_equal(sim$ID, seq_len(28))
+  expect_equal(as.vector(table(sim$AGE, sim$SEX)), rep(7L, 4))
+  expect_equal(sim$SEXN, ifelse(sim$SEX == "Male", 1L, 2L))
+  expect_true(all(is.finite(sim$WT) & sim$WT > 0))
+  expect_true(all(is.finite(sim$HT) & sim$HT > 0))
+})
+
+test_that("sample_nhanes_peds stores kernels, cycles and vars", {
+  sim <- sample_nhanes_peds(n = 5, ages = 4, sex = "Female", seed = 1)
+  kern <- attr(sim, "kernels")
+  expect_named(kern, c("AGE", "SEX", "N_NHANES", "N_EFF", "H_WT", "H_HT", "RHO"))
+  expect_equal(nrow(kern), 1)
+  expect_equal(attr(sim, "cycles"), sort(unique(nhanes_peds$CYCLE)))
+  expect_equal(attr(sim, "vars"), c("WT", "HT"))
+})
+
+test_that("vars = 'WT' returns weight only", {
+  sim <- sample_nhanes_peds(n = 5, ages = 4, vars = "WT", seed = 1)
+  expect_named(
+    sim, c("ID", "AGE", "SEXN", "SEX", "WT", "SOURCE_CYCLE", "SOURCE_SEQN")
+  )
+  expect_named(attr(sim, "kernels"), c("AGE", "SEX", "N_NHANES", "N_EFF", "H_WT"))
+})
+
+test_that("vars are returned in a fixed order", {
+  sim <- sample_nhanes_peds(n = 2, ages = 4, vars = c("HT", "WT"), seed = 1)
+  expect_equal(attr(sim, "vars"), c("WT", "HT"))
+})
+
+test_that("seed makes results reproducible without touching the global RNG", {
+  set.seed(42)
+  before <- get(".Random.seed", envir = globalenv())
+  a <- sample_nhanes_peds(n = 5, ages = 6, seed = 123)
+  expect_identical(get(".Random.seed", envir = globalenv()), before)
+  b <- sample_nhanes_peds(n = 5, ages = 6, seed = 123)
+  expect_identical(a, b)
+})
+
+test_that("cycles restricts the donors", {
+  sim <- sample_nhanes_peds(n = 50, ages = 9, cycles = "2017-18", seed = 1)
+  expect_true(all(sim$SOURCE_CYCLE == "2017-18"))
+  expect_equal(attr(sim, "cycles"), "2017-18")
+})
+
+test_that("sample_nhanes_peds validates its arguments", {
+  expect_error(sample_nhanes_peds(n = 0), "'n' must be a single positive whole number")
+  expect_error(sample_nhanes_peds(n = 2.5), "'n' must be a single positive whole number")
+  expect_error(sample_nhanes_peds(bandwidth_factor = -1), "'bandwidth_factor'")
+  expect_error(sample_nhanes_peds(vars = "BMI"), "'vars' must be")
+  expect_error(sample_nhanes_peds(vars = character(0)), "'vars' must be")
+  expect_error(sample_nhanes_peds(ages = c(1, 18)), "'ages' value(s) not in the reference data: 1, 18", fixed = TRUE)
+  expect_error(sample_nhanes_peds(sex = "M"), "'sex' value(s) not in the reference data: M", fixed = TRUE)
+  expect_error(sample_nhanes_peds(cycles = "1999-00"), "'cycles' value(s) not in the reference data: 1999-00", fixed = TRUE)
+  expect_error(
+    sample_nhanes_peds(data = nhanes_peds[c("AGE", "SEX")]),
+    "'data' is missing column(s): CYCLE, SEQN, WT, HT, MEC_WT",
+    fixed = TRUE
+  )
+})
