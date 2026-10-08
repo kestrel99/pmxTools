@@ -365,7 +365,7 @@ test_that("nhanes_donors gives each cycle an equal share within a stratum", {
     cycles = unique(nhanes_peds$CYCLE)
   )
   shares <- tapply(donors$PROB, donors$CYCLE, sum)
-  expect_equal(unname(shares), rep(0.25, 4))
+  expect_equal(as.vector(shares), rep(0.25, 4))
 })
 
 test_that("nhanes_donors requires all requested vars", {
