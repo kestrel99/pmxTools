@@ -39,3 +39,12 @@ test_that("compare_nhanes_peds needs sample_nhanes_peds() output", {
   attr(sim, "cycles") <- NULL
   expect_error(compare_nhanes_peds(sim), "output of sample_nhanes_peds")
 })
+
+test_that("plot_nhanes_peds returns a ggplot of three percentiles per source", {
+  sim <- sample_nhanes_peds(n = 100, ages = c(3, 9), seed = 1)
+  p <- plot_nhanes_peds(compare_nhanes_peds(sim))
+  expect_s3_class(p, "ggplot")
+  expect_setequal(unique(p$data$Percentile), c("P05", "Median", "P95"))
+  expect_setequal(unique(p$data$Source), c("NHANES", "Simulated"))
+  expect_equal(nrow(p$data), 2 * 2 * 3 * 3 * 2)
+})

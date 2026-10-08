@@ -91,3 +91,49 @@ compare_nhanes_peds <- function(sim, data = pmxTools::nhanes_peds) {
   }
   tibble::as_tibble(cmp)
 }
+
+#' Plot simulated against NHANES percentiles
+#'
+#' Plots the 5th, 50th and 95th percentiles of each simulated measure against
+#' age, for the simulated population and the NHANES reference, by sex.
+#'
+#' @param comparison Output of [compare_nhanes_peds()].
+#' @return A ggplot object.
+#' @seealso [compare_nhanes_peds()], [sample_nhanes_peds()]
+#' @examples
+#' sim <- sample_nhanes_peds(n = 200, ages = 2:17, seed = 1)
+#' plot_nhanes_peds(compare_nhanes_peds(sim))
+#' @export
+plot_nhanes_peds <- function(comparison) {
+  percentiles <- c("P05", "Median", "P95")
+  sources <- c(REF = "NHANES", SIM = "Simulated")
+  long <- do.call(rbind, lapply(names(sources), function(src) {
+    do.call(rbind, lapply(percentiles, function(pct) {
+      data.frame(
+        AGE = comparison$AGE,
+        SEX = comparison$SEX,
+        VARIABLE = comparison$VARIABLE,
+        Percentile = pct,
+        Source = sources[[src]],
+        VALUE = comparison[[paste0(pct, "_", src)]],
+        stringsAsFactors = FALSE
+      )
+    }))
+  }))
+  long$Percentile <- factor(long$Percentile, levels = percentiles)
+  long$VARIABLE <- factor(
+    long$VARIABLE,
+    levels = intersect(c("WT", "HT", "BMI"), long$VARIABLE)
+  )
+
+  ggplot(long, aes(x = .data$AGE, y = .data$VALUE,
+                   colour = .data$Source, linetype = .data$Percentile)) +
+    geom_line(linewidth = 0.7) +
+    geom_point(size = 1) +
+    facet_grid(VARIABLE ~ SEX, scales = "free_y") +
+    labs(
+      title = "NHANES vs simulated percentiles",
+      x = "Age (years)", y = NULL, colour = NULL
+    ) +
+    theme_bw()
+}
