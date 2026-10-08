@@ -1,5 +1,7 @@
 # pmxTools (development version)
 
+* Added `sample_nhanes_peds()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by smoothed, MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. `compare_nhanes_peds()` and `plot_nhanes_peds()` check the simulated population against the reference.
+
 # pmxTools 1.6
 
 * Added `cut_quantile()`, which creates quantile-based bins for one or more continuous variables, with per-variable control over the number of groups.
