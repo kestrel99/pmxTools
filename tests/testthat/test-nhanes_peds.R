@@ -160,3 +160,50 @@ test_that("sample_nhanes_peds validates its arguments", {
     fixed = TRUE
   )
 })
+
+test_that("bandwidth_factor = 0 reproduces the donors exactly", {
+  sim <- sample_nhanes_peds(n = 50, ages = 7, bandwidth_factor = 0, seed = 3)
+  key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
+  key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
+  donor <- nhanes_peds[match(key_sim, key_ref), ]
+  expect_equal(sim$WT, donor$WT)
+  expect_equal(sim$HT, donor$HT)
+})
+
+test_that("joint simulation never uses donors with a missing measure", {
+  sim <- sample_nhanes_peds(n = 500, ages = 2:17, seed = 4)
+  key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
+  key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
+  donor <- nhanes_peds[match(key_sim, key_ref), ]
+  expect_false(anyNA(donor$WT) || anyNA(donor$HT))
+})
+
+test_that("weight-only simulation uses more donors than joint simulation", {
+  wt <- sample_nhanes_peds(n = 1, vars = "WT", seed = 5)
+  both <- sample_nhanes_peds(n = 1, seed = 5)
+  expect_gt(
+    sum(attr(wt, "kernels")$N_NHANES),
+    sum(attr(both, "kernels")$N_NHANES)
+  )
+})
+
+test_that("simulated medians and correlation match the weighted reference", {
+  ages <- c(2, 10, 17)
+  sim <- sample_nhanes_peds(n = 4000, ages = ages, seed = 20261008)
+  donors <- nhanes_donors(
+    nhanes_peds, ages, c("Male", "Female"), c("WT", "HT"),
+    sort(unique(nhanes_peds$CYCLE))
+  )
+  for (age in ages) {
+    for (sx in c("Male", "Female")) {
+      ref <- donors[donors$AGE == age & donors$SEX == sx, ]
+      s <- sim[sim$AGE == age & sim$SEX == sx, ]
+      for (v in c("WT", "HT")) {
+        ref_median <- weighted_quantile(ref[[v]], ref$PROB, 0.5)
+        expect_lt(abs(stats::median(s[[v]]) / ref_median - 1), 0.03)
+      }
+      ref_rho <- weighted_cor(log(ref$WT), log(ref$HT), ref$PROB)
+      expect_lt(abs(stats::cor(log(s$WT), log(s$HT)) - ref_rho), 0.05)
+    }
+  }
+})
