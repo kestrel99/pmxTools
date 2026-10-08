@@ -10,3 +10,5 @@
 ^\.positai$
 ^\.claude$
 ^CRAN-SUBMISSION$
+^data-raw$
+^dev$
