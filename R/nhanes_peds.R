@@ -181,7 +181,7 @@ sample_nhanes <- function(n = 500,
   nhanes_check_values("ages", ages, data$AGE)
   nhanes_check_values("sex", sex, data$SEX)
   nhanes_check_values("cycles", cycles, data$CYCLE)
-  ages <- sort(unique(ages))
+  ages <- sort(unique(as.integer(ages)))
   sex <- unique(sex)
 
   if (!is.null(seed)) {

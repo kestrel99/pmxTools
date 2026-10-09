@@ -207,3 +207,9 @@ test_that("simulated medians and correlation match the weighted reference", {
     }
   }
 })
+
+test_that("AGE is an integer whatever type ages is given as", {
+  sim <- sample_nhanes(n = 2, ages = c(8, 9), seed = 1)
+  expect_type(sim$AGE, "integer")
+  expect_type(attr(sim, "kernels")$AGE, "integer")
+})
