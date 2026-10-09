@@ -68,10 +68,10 @@ choice, not an official pooled NHANES weight.
 
 `DESCRIPTION` gains `LazyData: true`.
 
-## 2. Simulator: `sample_nhanes_peds()`
+## 2. Simulator: `sample_nhanes()`
 
 ```r
-sample_nhanes_peds(
+sample_nhanes(
   n = 500,
   ages = 2:17,
   sex = c("Male", "Female"),
@@ -141,7 +141,7 @@ Attributes:
 
 ## 3. Validation helpers
 
-### `compare_nhanes_peds(sim, data = nhanes_peds)`
+### `compare_nhanes(sim, data = nhanes_peds)`
 
 Builds the reference from the cycle-balanced MEC weights of `data`, restricted
 to the cycles in `attr(sim, "cycles")`, the ages/sexes present in `sim`, and
@@ -158,7 +158,7 @@ were simulated), with:
 
 Errors if `sim` lacks the `"cycles"` attribute or required columns.
 
-### `plot_nhanes_peds(comparison)`
+### `plot_nhanes(comparison)`
 
 ggplot of P05, Median and P95 against age; colour = source (NHANES vs
 Simulated), linetype = percentile; `facet_grid(VARIABLE ~ SEX, scales =
@@ -196,8 +196,8 @@ dimension; `MASS::mvrnorm()` handles the singular `H`.
   `RHO_REF`.
 - `cycles` subset: `SOURCE_CYCLE` limited to the subset; comparison uses it.
 - Each validation error triggers.
-- `compare_nhanes_peds()`: expected columns; 3 rows per stratum.
-- `plot_nhanes_peds()`: returns a `ggplot`.
+- `compare_nhanes()`: expected columns; 3 rows per stratum.
+- `plot_nhanes()`: returns a `ggplot`.
 - `nhanes_peds`: expected columns; ages 2-17; no missing `MEC_WT`; every row
   has at least one of `WT` / `HT`; some rows have exactly one missing.
 

@@ -10,12 +10,12 @@ nhanes_summary <- function(x, w) {
 #' Compare a simulated pediatric population with NHANES
 #'
 #' Summarises body weight, height and (when both were simulated) body mass
-#' index by age and sex for a population from [sample_nhanes_peds()] and for
+#' index by age and sex for a population from [sample_nhanes()] and for
 #' the NHANES reference it was drawn from. The reference uses the same
 #' releases and donor eligibility as the simulation, weighted with the
 #' cycle-balanced MEC weights.
 #'
-#' @param sim Output of [sample_nhanes_peds()], with its attributes intact.
+#' @param sim Output of [sample_nhanes()], with its attributes intact.
 #' @param data Reference data with the columns of [nhanes_peds]; normally the
 #'   data used for the simulation.
 #' @return A tibble with one row per `AGE`, `SEX` and `VARIABLE` (`WT`, `HT`
@@ -25,17 +25,17 @@ nhanes_summary <- function(x, w) {
 #'   `MEAN_RATIO`, `MEDIAN_RATIO`, `P05_RATIO` and `P95_RATIO` (simulated /
 #'   reference). When both weight and height were simulated, `RHO_REF` and
 #'   `RHO_SIM` give the correlation of log weight and log height.
-#' @seealso [sample_nhanes_peds()], [plot_nhanes_peds()]
+#' @seealso [sample_nhanes()], [plot_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 200, ages = c(4, 12), seed = 1)
-#' compare_nhanes_peds(sim)
+#' sim <- sample_nhanes(n = 200, ages = c(4, 12), seed = 1)
+#' compare_nhanes(sim)
 #' @export
-compare_nhanes_peds <- function(sim, data = pmxTools::nhanes_peds) {
+compare_nhanes <- function(sim, data = pmxTools::nhanes_peds) {
   cycles <- attr(sim, "cycles")
   vars <- attr(sim, "vars")
   if (is.null(cycles) || is.null(vars)) {
     stop(
-      "'sim' must be the output of sample_nhanes_peds() ",
+      "'sim' must be the output of sample_nhanes() ",
       "(its \"cycles\" and \"vars\" attributes are missing)",
       call. = FALSE
     )
@@ -97,14 +97,14 @@ compare_nhanes_peds <- function(sim, data = pmxTools::nhanes_peds) {
 #' Plots the 5th, 50th and 95th percentiles of each simulated measure against
 #' age, for the simulated population and the NHANES reference, by sex.
 #'
-#' @param comparison Output of [compare_nhanes_peds()].
+#' @param comparison Output of [compare_nhanes()].
 #' @return A ggplot object.
-#' @seealso [compare_nhanes_peds()], [sample_nhanes_peds()]
+#' @seealso [compare_nhanes()], [sample_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 200, ages = 2:17, seed = 1)
-#' plot_nhanes_peds(compare_nhanes_peds(sim))
+#' sim <- sample_nhanes(n = 200, ages = 2:17, seed = 1)
+#' plot_nhanes(compare_nhanes(sim))
 #' @export
-plot_nhanes_peds <- function(comparison) {
+plot_nhanes <- function(comparison) {
   percentiles <- c("P05", "Median", "P95")
   sources <- c(REF = "NHANES", SIM = "Simulated")
   long <- do.call(rbind, lapply(names(sources), function(src) {

@@ -1,5 +1,5 @@
-# Internal weighted statistics used by sample_nhanes_peds() and
-# compare_nhanes_peds(). Weights need not sum to 1.
+# Internal weighted statistics used by sample_nhanes() and
+# compare_nhanes(). Weights need not sum to 1.
 
 weighted_quantile <- function(x, w, p) {
   o <- order(x)

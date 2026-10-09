@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add `sample_nhanes_peds()`, `compare_nhanes_peds()`, `plot_nhanes_peds()` and the bundled `nhanes_peds` dataset to pmxTools, turning the stand-alone NHANES script into package functionality that simulates pediatric weight and/or height.
+**Goal:** Add `sample_nhanes()`, `compare_nhanes()`, `plot_nhanes()` and the bundled `nhanes_peds` dataset to pmxTools, turning the stand-alone NHANES script into package functionality that simulates pediatric weight and/or height.
 
 **Architecture:** A data-raw script builds a small bundled dataset from four NHANES cycles (ages 2-17, weight and height, `NA` kept). Internal weighted-statistics helpers feed a kernel builder that, per age/sex stratum, resamples cycle-balanced MEC-weighted donors and adds 1-D or 2-D Gaussian noise on the log scale (Silverman-type bandwidth). Validation is separate: a comparison table against the weighted reference and a ggplot.
 
@@ -29,8 +29,8 @@
 | `data/nhanes_peds.rda` | generated | Bundled reference data |
 | `R/data.R` | create | Roxygen docs for `nhanes_peds` |
 | `R/weighted_stats.R` | create | Internal weighted quantile, SD, correlation, robust scale |
-| `R/nhanes_peds.R` | create | `sample_nhanes_peds()` + internal donor selection, kernel, sampling |
-| `R/nhanes_compare.R` | create | `compare_nhanes_peds()`, `plot_nhanes_peds()` |
+| `R/nhanes_peds.R` | create | `sample_nhanes()` + internal donor selection, kernel, sampling |
+| `R/nhanes_compare.R` | create | `compare_nhanes()`, `plot_nhanes()` |
 | `tests/testthat/test-weighted_stats.R` | create | Helper tests |
 | `tests/testthat/test-nhanes_peds.R` | create | Data + simulator tests |
 | `tests/testthat/test-nhanes_compare.R` | create | Comparison + plot tests |
@@ -174,16 +174,16 @@ Create `R/data.R`:
 #' examination, from four releases of the US National Health and Nutrition
 #' Examination Survey (NHANES): 2013-2014, 2015-2016, 2017-2018 and
 #' August 2021-August 2023. Used as the reference population by
-#' [sample_nhanes_peds()].
+#' [sample_nhanes()].
 #'
 #' Children are included when they have a positive two-year mobile
 #' examination center (MEC) exam weight and at least one of body weight or
 #' standing height. A child with only one of the two measures is kept, with
-#' the other set to `NA`; [sample_nhanes_peds()] uses such children only when
+#' the other set to `NA`; [sample_nhanes()] uses such children only when
 #' the missing measure is not requested.
 #'
 #' The MEC weights are those of each individual release. They are not
-#' combined into an official pooled weight; [sample_nhanes_peds()] gives each
+#' combined into an official pooled weight; [sample_nhanes()] gives each
 #' release an equal share, which is a modelling choice.
 #'
 #' NHANES data are produced by the US National Center for Health Statistics
@@ -204,12 +204,12 @@ Create `R/data.R`:
 #' @source National Center for Health Statistics, NHANES public data files
 #'   `DEMO_H`/`BMX_H`, `DEMO_I`/`BMX_I`, `DEMO_J`/`BMX_J` and
 #'   `DEMO_L`/`BMX_L`, \url{https://wwwn.cdc.gov/nchs/nhanes/}.
-#' @seealso [sample_nhanes_peds()]
+#' @seealso [sample_nhanes()]
 "nhanes_peds"
 ```
 
 Run: `Rscript -e "devtools::document()"`
-Expected: `Writing 'nhanes_peds.Rd'`. (A warning that `sample_nhanes_peds` is an unresolved link is expected until Task 4.)
+Expected: `Writing 'nhanes_peds.Rd'`. (A warning that `sample_nhanes` is an unresolved link is expected until Task 4.)
 
 - [ ] **Step 6: Run test to verify it passes**
 
@@ -289,8 +289,8 @@ Expected: errors `could not find function "weighted_quantile"` (and the others).
 Create `R/weighted_stats.R`:
 
 ```r
-# Internal weighted statistics used by sample_nhanes_peds() and
-# compare_nhanes_peds(). Weights need not sum to 1.
+# Internal weighted statistics used by sample_nhanes() and
+# compare_nhanes(). Weights need not sum to 1.
 
 weighted_quantile <- function(x, w, p) {
   o <- order(x)
@@ -443,7 +443,7 @@ Expected: the two Task 1 tests pass; the new ones error `could not find function
 Create `R/nhanes_peds.R`:
 
 ```r
-# Internal helpers for sample_nhanes_peds() and compare_nhanes_peds().
+# Internal helpers for sample_nhanes() and compare_nhanes().
 
 nhanes_required_cols <- c("CYCLE", "SEQN", "AGE", "SEX", "WT", "HT", "MEC_WT")
 
@@ -521,7 +521,7 @@ git commit -m "Add NHANES donor selection and kernel construction"
 
 ---
 
-### Task 4: `sample_nhanes_peds()` — interface, validation, seed
+### Task 4: `sample_nhanes()` — interface, validation, seed
 
 **Files:**
 - Modify: `R/nhanes_peds.R` (append)
@@ -532,8 +532,8 @@ git commit -m "Add NHANES donor selection and kernel construction"
 Append to `tests/testthat/test-nhanes_peds.R`:
 
 ```r
-test_that("sample_nhanes_peds returns one block per age and sex", {
-  sim <- sample_nhanes_peds(n = 7, ages = c(3, 12), seed = 1)
+test_that("sample_nhanes returns one block per age and sex", {
+  sim <- sample_nhanes(n = 7, ages = c(3, 12), seed = 1)
   expect_s3_class(sim, "tbl_df")
   expect_named(
     sim,
@@ -547,8 +547,8 @@ test_that("sample_nhanes_peds returns one block per age and sex", {
   expect_true(all(is.finite(sim$HT) & sim$HT > 0))
 })
 
-test_that("sample_nhanes_peds stores kernels, cycles and vars", {
-  sim <- sample_nhanes_peds(n = 5, ages = 4, sex = "Female", seed = 1)
+test_that("sample_nhanes stores kernels, cycles and vars", {
+  sim <- sample_nhanes(n = 5, ages = 4, sex = "Female", seed = 1)
   kern <- attr(sim, "kernels")
   expect_named(kern, c("AGE", "SEX", "N_NHANES", "N_EFF", "H_WT", "H_HT", "RHO"))
   expect_equal(nrow(kern), 1)
@@ -557,7 +557,7 @@ test_that("sample_nhanes_peds stores kernels, cycles and vars", {
 })
 
 test_that("vars = 'WT' returns weight only", {
-  sim <- sample_nhanes_peds(n = 5, ages = 4, vars = "WT", seed = 1)
+  sim <- sample_nhanes(n = 5, ages = 4, vars = "WT", seed = 1)
   expect_named(
     sim, c("ID", "AGE", "SEXN", "SEX", "WT", "SOURCE_CYCLE", "SOURCE_SEQN")
   )
@@ -565,36 +565,36 @@ test_that("vars = 'WT' returns weight only", {
 })
 
 test_that("vars are returned in a fixed order", {
-  sim <- sample_nhanes_peds(n = 2, ages = 4, vars = c("HT", "WT"), seed = 1)
+  sim <- sample_nhanes(n = 2, ages = 4, vars = c("HT", "WT"), seed = 1)
   expect_equal(attr(sim, "vars"), c("WT", "HT"))
 })
 
 test_that("seed makes results reproducible without touching the global RNG", {
   set.seed(42)
   before <- get(".Random.seed", envir = globalenv())
-  a <- sample_nhanes_peds(n = 5, ages = 6, seed = 123)
+  a <- sample_nhanes(n = 5, ages = 6, seed = 123)
   expect_identical(get(".Random.seed", envir = globalenv()), before)
-  b <- sample_nhanes_peds(n = 5, ages = 6, seed = 123)
+  b <- sample_nhanes(n = 5, ages = 6, seed = 123)
   expect_identical(a, b)
 })
 
 test_that("cycles restricts the donors", {
-  sim <- sample_nhanes_peds(n = 50, ages = 9, cycles = "2017-18", seed = 1)
+  sim <- sample_nhanes(n = 50, ages = 9, cycles = "2017-18", seed = 1)
   expect_true(all(sim$SOURCE_CYCLE == "2017-18"))
   expect_equal(attr(sim, "cycles"), "2017-18")
 })
 
-test_that("sample_nhanes_peds validates its arguments", {
-  expect_error(sample_nhanes_peds(n = 0), "'n' must be a single positive whole number")
-  expect_error(sample_nhanes_peds(n = 2.5), "'n' must be a single positive whole number")
-  expect_error(sample_nhanes_peds(bandwidth_factor = -1), "'bandwidth_factor'")
-  expect_error(sample_nhanes_peds(vars = "BMI"), "'vars' must be")
-  expect_error(sample_nhanes_peds(vars = character(0)), "'vars' must be")
-  expect_error(sample_nhanes_peds(ages = c(1, 18)), "'ages' value\\(s\\) not in the reference data: 1, 18")
-  expect_error(sample_nhanes_peds(sex = "M"), "'sex' value\\(s\\) not in the reference data: M")
-  expect_error(sample_nhanes_peds(cycles = "1999-00"), "'cycles' value\\(s\\) not in the reference data: 1999-00")
+test_that("sample_nhanes validates its arguments", {
+  expect_error(sample_nhanes(n = 0), "'n' must be a single positive whole number")
+  expect_error(sample_nhanes(n = 2.5), "'n' must be a single positive whole number")
+  expect_error(sample_nhanes(bandwidth_factor = -1), "'bandwidth_factor'")
+  expect_error(sample_nhanes(vars = "BMI"), "'vars' must be")
+  expect_error(sample_nhanes(vars = character(0)), "'vars' must be")
+  expect_error(sample_nhanes(ages = c(1, 18)), "'ages' value\\(s\\) not in the reference data: 1, 18")
+  expect_error(sample_nhanes(sex = "M"), "'sex' value\\(s\\) not in the reference data: M")
+  expect_error(sample_nhanes(cycles = "1999-00"), "'cycles' value\\(s\\) not in the reference data: 1999-00")
   expect_error(
-    sample_nhanes_peds(data = nhanes_peds[c("AGE", "SEX")]),
+    sample_nhanes(data = nhanes_peds[c("AGE", "SEX")]),
     "'data' is missing column\\(s\\): CYCLE, SEQN, WT, HT, MEC_WT"
   )
 })
@@ -603,7 +603,7 @@ test_that("sample_nhanes_peds validates its arguments", {
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `Rscript -e "devtools::test(filter = 'nhanes_peds', reporter = 'summary')"`
-Expected: new tests error `could not find function "sample_nhanes_peds"`.
+Expected: new tests error `could not find function "sample_nhanes"`.
 
 - [ ] **Step 3: Implement the sampler and the exported function**
 
@@ -668,7 +668,7 @@ nhanes_check_vars <- function(vars) {
 #'    robust Silverman rule \eqn{h = 0.9 \, \sigma \, n_{eff}^{-1/5}}; with
 #'    both, the correlated noise preserves the weight-height relationship.
 #'
-#' Use [compare_nhanes_peds()] and [plot_nhanes_peds()] to check the
+#' Use [compare_nhanes()] and [plot_nhanes()] to check the
 #' simulated population against the reference.
 #'
 #' @param n Number of children to simulate per age x sex stratum.
@@ -691,17 +691,17 @@ nhanes_check_vars <- function(vars) {
 #'   and/or `H_HT` bandwidth SDs on the log scale, and `RHO`, the weighted
 #'   log weight-height correlation, when both measures are simulated);
 #'   `"cycles"` and `"vars"`, as used.
-#' @seealso [nhanes_peds], [compare_nhanes_peds()], [plot_nhanes_peds()]
+#' @seealso [nhanes_peds], [compare_nhanes()], [plot_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 100, ages = c(2, 8, 14), seed = 20261008)
+#' sim <- sample_nhanes(n = 100, ages = c(2, 8, 14), seed = 20261008)
 #' head(sim)
 #' attr(sim, "kernels")
 #'
 #' # Weight only, using every child with a measured weight
-#' wt <- sample_nhanes_peds(n = 100, ages = 10, vars = "WT", seed = 1)
+#' wt <- sample_nhanes(n = 100, ages = 10, vars = "WT", seed = 1)
 #' summary(wt$WT)
 #' @export
-sample_nhanes_peds <- function(n = 500,
+sample_nhanes <- function(n = 500,
                                ages = 2:17,
                                sex = c("Male", "Female"),
                                vars = c("WT", "HT"),
@@ -792,7 +792,7 @@ sample_nhanes_peds <- function(n = 500,
 ```
 
 Run: `Rscript -e "devtools::document()"`
-Expected: `Writing 'sample_nhanes_peds.Rd'` and `NAMESPACE` gains `export(sample_nhanes_peds)`.
+Expected: `Writing 'sample_nhanes.Rd'` and `NAMESPACE` gains `export(sample_nhanes)`.
 
 - [ ] **Step 4: Run tests to verify they pass**
 
@@ -802,8 +802,8 @@ Expected: all tests pass. Then `git checkout -- tests/testthat/_snaps`.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add R/nhanes_peds.R NAMESPACE man/sample_nhanes_peds.Rd man/nhanes_peds.Rd tests/testthat/test-nhanes_peds.R
-git commit -m "Add sample_nhanes_peds()"
+git add R/nhanes_peds.R NAMESPACE man/sample_nhanes.Rd man/nhanes_peds.Rd tests/testthat/test-nhanes_peds.R
+git commit -m "Add sample_nhanes()"
 ```
 
 ---
@@ -822,7 +822,7 @@ Append to `tests/testthat/test-nhanes_peds.R`:
 
 ```r
 test_that("bandwidth_factor = 0 reproduces the donors exactly", {
-  sim <- sample_nhanes_peds(n = 50, ages = 7, bandwidth_factor = 0, seed = 3)
+  sim <- sample_nhanes(n = 50, ages = 7, bandwidth_factor = 0, seed = 3)
   key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
   key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
   donor <- nhanes_peds[match(key_sim, key_ref), ]
@@ -831,7 +831,7 @@ test_that("bandwidth_factor = 0 reproduces the donors exactly", {
 })
 
 test_that("joint simulation never uses donors with a missing measure", {
-  sim <- sample_nhanes_peds(n = 500, ages = 2:17, seed = 4)
+  sim <- sample_nhanes(n = 500, ages = 2:17, seed = 4)
   key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
   key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
   donor <- nhanes_peds[match(key_sim, key_ref), ]
@@ -839,8 +839,8 @@ test_that("joint simulation never uses donors with a missing measure", {
 })
 
 test_that("weight-only simulation uses more donors than joint simulation", {
-  wt <- sample_nhanes_peds(n = 1, vars = "WT", seed = 5)
-  both <- sample_nhanes_peds(n = 1, seed = 5)
+  wt <- sample_nhanes(n = 1, vars = "WT", seed = 5)
+  both <- sample_nhanes(n = 1, seed = 5)
   expect_gt(
     sum(attr(wt, "kernels")$N_NHANES),
     sum(attr(both, "kernels")$N_NHANES)
@@ -849,7 +849,7 @@ test_that("weight-only simulation uses more donors than joint simulation", {
 
 test_that("simulated medians and correlation match the weighted reference", {
   ages <- c(2, 10, 17)
-  sim <- sample_nhanes_peds(n = 4000, ages = ages, seed = 20261008)
+  sim <- sample_nhanes(n = 4000, ages = ages, seed = 20261008)
   donors <- nhanes_donors(
     nhanes_peds, ages, c("Male", "Female"), c("WT", "HT"),
     sort(unique(nhanes_peds$CYCLE))
@@ -878,12 +878,12 @@ Expected: all pass. Then `git checkout -- tests/testthat/_snaps`.
 
 ```bash
 git add tests/testthat/test-nhanes_peds.R
-git commit -m "Test sample_nhanes_peds() fidelity and donor eligibility"
+git commit -m "Test sample_nhanes() fidelity and donor eligibility"
 ```
 
 ---
 
-### Task 6: `compare_nhanes_peds()`
+### Task 6: `compare_nhanes()`
 
 **Files:**
 - Create: `R/nhanes_compare.R`
@@ -894,9 +894,9 @@ git commit -m "Test sample_nhanes_peds() fidelity and donor eligibility"
 Create `tests/testthat/test-nhanes_compare.R`:
 
 ```r
-test_that("compare_nhanes_peds has one row per age, sex and variable", {
-  sim <- sample_nhanes_peds(n = 200, ages = c(4, 11), seed = 1)
-  cmp <- compare_nhanes_peds(sim)
+test_that("compare_nhanes has one row per age, sex and variable", {
+  sim <- sample_nhanes(n = 200, ages = c(4, 11), seed = 1)
+  cmp <- compare_nhanes(sim)
   stats_cols <- c("N", "Mean", "SD", "P05", "Q1", "Median", "Q3", "P95")
   expect_s3_class(cmp, "tbl_df")
   expect_named(
@@ -912,16 +912,16 @@ test_that("compare_nhanes_peds has one row per age, sex and variable", {
   expect_equal(cmp$MEDIAN_RATIO, cmp$Median_SIM / cmp$Median_REF)
 })
 
-test_that("compare_nhanes_peds omits BMI and RHO for a single measure", {
-  sim <- sample_nhanes_peds(n = 50, ages = 6, vars = "HT", seed = 1)
-  cmp <- compare_nhanes_peds(sim)
+test_that("compare_nhanes omits BMI and RHO for a single measure", {
+  sim <- sample_nhanes(n = 50, ages = 6, vars = "HT", seed = 1)
+  cmp <- compare_nhanes(sim)
   expect_equal(unique(cmp$VARIABLE), "HT")
   expect_false(any(c("RHO_REF", "RHO_SIM") %in% names(cmp)))
 })
 
-test_that("compare_nhanes_peds uses the simulation's cycles", {
-  sim <- sample_nhanes_peds(n = 50, ages = 6, cycles = "2015-16", seed = 1)
-  cmp <- compare_nhanes_peds(sim)
+test_that("compare_nhanes uses the simulation's cycles", {
+  sim <- sample_nhanes(n = 50, ages = 6, cycles = "2015-16", seed = 1)
+  cmp <- compare_nhanes(sim)
   n_ref <- sum(
     nhanes_peds$CYCLE == "2015-16" & nhanes_peds$AGE == 6 &
       nhanes_peds$SEX == "Male" &
@@ -930,17 +930,17 @@ test_that("compare_nhanes_peds uses the simulation's cycles", {
   expect_equal(cmp$N_REF[cmp$SEX == "Male" & cmp$VARIABLE == "WT"], n_ref)
 })
 
-test_that("compare_nhanes_peds needs sample_nhanes_peds() output", {
-  sim <- sample_nhanes_peds(n = 5, ages = 6, seed = 1)
+test_that("compare_nhanes needs sample_nhanes() output", {
+  sim <- sample_nhanes(n = 5, ages = 6, seed = 1)
   attr(sim, "cycles") <- NULL
-  expect_error(compare_nhanes_peds(sim), "output of sample_nhanes_peds")
+  expect_error(compare_nhanes(sim), "output of sample_nhanes")
 })
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `Rscript -e "devtools::test(filter = 'nhanes_compare', reporter = 'summary')"`
-Expected: errors `could not find function "compare_nhanes_peds"`.
+Expected: errors `could not find function "compare_nhanes"`.
 
 - [ ] **Step 3: Implement**
 
@@ -959,12 +959,12 @@ nhanes_summary <- function(x, w) {
 #' Compare a simulated pediatric population with NHANES
 #'
 #' Summarises body weight, height and (when both were simulated) body mass
-#' index by age and sex for a population from [sample_nhanes_peds()] and for
+#' index by age and sex for a population from [sample_nhanes()] and for
 #' the NHANES reference it was drawn from. The reference uses the same
 #' releases and donor eligibility as the simulation, weighted with the
 #' cycle-balanced MEC weights.
 #'
-#' @param sim Output of [sample_nhanes_peds()], with its attributes intact.
+#' @param sim Output of [sample_nhanes()], with its attributes intact.
 #' @param data Reference data with the columns of [nhanes_peds]; normally the
 #'   data used for the simulation.
 #' @return A tibble with one row per `AGE`, `SEX` and `VARIABLE` (`WT`, `HT`
@@ -974,17 +974,17 @@ nhanes_summary <- function(x, w) {
 #'   `MEAN_RATIO`, `MEDIAN_RATIO`, `P05_RATIO` and `P95_RATIO` (simulated /
 #'   reference). When both weight and height were simulated, `RHO_REF` and
 #'   `RHO_SIM` give the correlation of log weight and log height.
-#' @seealso [sample_nhanes_peds()], [plot_nhanes_peds()]
+#' @seealso [sample_nhanes()], [plot_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 200, ages = c(4, 12), seed = 1)
-#' compare_nhanes_peds(sim)
+#' sim <- sample_nhanes(n = 200, ages = c(4, 12), seed = 1)
+#' compare_nhanes(sim)
 #' @export
-compare_nhanes_peds <- function(sim, data = pmxTools::nhanes_peds) {
+compare_nhanes <- function(sim, data = pmxTools::nhanes_peds) {
   cycles <- attr(sim, "cycles")
   vars <- attr(sim, "vars")
   if (is.null(cycles) || is.null(vars)) {
     stop(
-      "'sim' must be the output of sample_nhanes_peds() ",
+      "'sim' must be the output of sample_nhanes() ",
       "(its \"cycles\" and \"vars\" attributes are missing)",
       call. = FALSE
     )
@@ -1043,7 +1043,7 @@ compare_nhanes_peds <- function(sim, data = pmxTools::nhanes_peds) {
 ```
 
 Run: `Rscript -e "devtools::document()"`
-Expected: `Writing 'compare_nhanes_peds.Rd'`; `NAMESPACE` gains `export(compare_nhanes_peds)`.
+Expected: `Writing 'compare_nhanes.Rd'`; `NAMESPACE` gains `export(compare_nhanes)`.
 
 - [ ] **Step 4: Run tests to verify they pass**
 
@@ -1053,13 +1053,13 @@ Expected: all 4 tests pass. Then `git checkout -- tests/testthat/_snaps`.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add R/nhanes_compare.R NAMESPACE man/compare_nhanes_peds.Rd tests/testthat/test-nhanes_compare.R
-git commit -m "Add compare_nhanes_peds()"
+git add R/nhanes_compare.R NAMESPACE man/compare_nhanes.Rd tests/testthat/test-nhanes_compare.R
+git commit -m "Add compare_nhanes()"
 ```
 
 ---
 
-### Task 7: `plot_nhanes_peds()`
+### Task 7: `plot_nhanes()`
 
 **Files:**
 - Modify: `R/nhanes_compare.R` (append)
@@ -1070,9 +1070,9 @@ git commit -m "Add compare_nhanes_peds()"
 Append to `tests/testthat/test-nhanes_compare.R`:
 
 ```r
-test_that("plot_nhanes_peds returns a ggplot of three percentiles per source", {
-  sim <- sample_nhanes_peds(n = 100, ages = c(3, 9), seed = 1)
-  p <- plot_nhanes_peds(compare_nhanes_peds(sim))
+test_that("plot_nhanes returns a ggplot of three percentiles per source", {
+  sim <- sample_nhanes(n = 100, ages = c(3, 9), seed = 1)
+  p <- plot_nhanes(compare_nhanes(sim))
   expect_s3_class(p, "ggplot")
   expect_setequal(unique(p$data$Percentile), c("P05", "Median", "P95"))
   expect_setequal(unique(p$data$Source), c("NHANES", "Simulated"))
@@ -1083,7 +1083,7 @@ test_that("plot_nhanes_peds returns a ggplot of three percentiles per source", {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `Rscript -e "devtools::test(filter = 'nhanes_compare', reporter = 'summary')"`
-Expected: error `could not find function "plot_nhanes_peds"`.
+Expected: error `could not find function "plot_nhanes"`.
 
 - [ ] **Step 3: Implement**
 
@@ -1095,14 +1095,14 @@ Append to `R/nhanes_compare.R`:
 #' Plots the 5th, 50th and 95th percentiles of each simulated measure against
 #' age, for the simulated population and the NHANES reference, by sex.
 #'
-#' @param comparison Output of [compare_nhanes_peds()].
+#' @param comparison Output of [compare_nhanes()].
 #' @return A ggplot object.
-#' @seealso [compare_nhanes_peds()], [sample_nhanes_peds()]
+#' @seealso [compare_nhanes()], [sample_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 200, ages = 2:17, seed = 1)
-#' plot_nhanes_peds(compare_nhanes_peds(sim))
+#' sim <- sample_nhanes(n = 200, ages = 2:17, seed = 1)
+#' plot_nhanes(compare_nhanes(sim))
 #' @export
-plot_nhanes_peds <- function(comparison) {
+plot_nhanes <- function(comparison) {
   percentiles <- c("P05", "Median", "P95")
   sources <- c(REF = "NHANES", SIM = "Simulated")
   long <- do.call(rbind, lapply(names(sources), function(src) {
@@ -1137,7 +1137,7 @@ plot_nhanes_peds <- function(comparison) {
 (`ggplot2` is imported wholesale in `NAMESPACE`, which also provides `.data`.)
 
 Run: `Rscript -e "devtools::document()"`
-Expected: `Writing 'plot_nhanes_peds.Rd'`; `NAMESPACE` gains `export(plot_nhanes_peds)`.
+Expected: `Writing 'plot_nhanes.Rd'`; `NAMESPACE` gains `export(plot_nhanes)`.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -1147,8 +1147,8 @@ Expected: all 5 tests pass. Then `git checkout -- tests/testthat/_snaps`.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add R/nhanes_compare.R NAMESPACE man/plot_nhanes_peds.Rd tests/testthat/test-nhanes_compare.R
-git commit -m "Add plot_nhanes_peds()"
+git add R/nhanes_compare.R NAMESPACE man/plot_nhanes.Rd tests/testthat/test-nhanes_compare.R
+git commit -m "Add plot_nhanes()"
 ```
 
 ---
@@ -1163,7 +1163,7 @@ git commit -m "Add plot_nhanes_peds()"
 Under `# pmxTools (development version)` at the top of `NEWS.md`, add (with a blank line after the heading):
 
 ```markdown
-* Added `sample_nhanes_peds()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by smoothed, MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. `compare_nhanes_peds()` and `plot_nhanes_peds()` check the simulated population against the reference.
+* Added `sample_nhanes()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by smoothed, MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. `compare_nhanes()` and `plot_nhanes()` check the simulated population against the reference.
 ```
 
 - [ ] **Step 2: Run the full test suite**
@@ -1181,7 +1181,7 @@ Expected: 0 errors, 0 warnings. Acceptable NOTE: none expected; a NOTE about ins
 
 ```bash
 git add NEWS.md
-git commit -m "NEWS: sample_nhanes_peds()"
+git commit -m "NEWS: sample_nhanes()"
 ```
 
 ---

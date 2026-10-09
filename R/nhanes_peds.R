@@ -1,4 +1,4 @@
-# Internal helpers for sample_nhanes_peds() and compare_nhanes_peds().
+# Internal helpers for sample_nhanes() and compare_nhanes().
 
 nhanes_required_cols <- c("CYCLE", "SEQN", "AGE", "SEX", "WT", "HT", "MEC_WT")
 
@@ -119,7 +119,7 @@ nhanes_check_vars <- function(vars) {
 #'    robust Silverman rule \eqn{h = 0.9 \, \sigma \, n_{eff}^{-1/5}}; with
 #'    both, the correlated noise preserves the weight-height relationship.
 #'
-#' Use [compare_nhanes_peds()] and [plot_nhanes_peds()] to check the
+#' Use [compare_nhanes()] and [plot_nhanes()] to check the
 #' simulated population against the reference.
 #'
 #' @param n Number of children to simulate per age x sex stratum.
@@ -142,17 +142,17 @@ nhanes_check_vars <- function(vars) {
 #'   and/or `H_HT` bandwidth SDs on the log scale, and `RHO`, the weighted
 #'   log weight-height correlation, when both measures are simulated);
 #'   `"cycles"` and `"vars"`, as used.
-#' @seealso [nhanes_peds], [compare_nhanes_peds()], [plot_nhanes_peds()]
+#' @seealso [nhanes_peds], [compare_nhanes()], [plot_nhanes()]
 #' @examples
-#' sim <- sample_nhanes_peds(n = 100, ages = c(2, 8, 14), seed = 20261008)
+#' sim <- sample_nhanes(n = 100, ages = c(2, 8, 14), seed = 20261008)
 #' head(sim)
 #' attr(sim, "kernels")
 #'
 #' # Weight only, using every child with a measured weight
-#' wt <- sample_nhanes_peds(n = 100, ages = 10, vars = "WT", seed = 1)
+#' wt <- sample_nhanes(n = 100, ages = 10, vars = "WT", seed = 1)
 #' summary(wt$WT)
 #' @export
-sample_nhanes_peds <- function(n = 500,
+sample_nhanes <- function(n = 500,
                                ages = 2:17,
                                sex = c("Male", "Female"),
                                vars = c("WT", "HT"),

@@ -4,16 +4,16 @@
 #' examination, from four releases of the US National Health and Nutrition
 #' Examination Survey (NHANES): 2013-2014, 2015-2016, 2017-2018 and
 #' August 2021-August 2023. Used as the reference population by
-#' [sample_nhanes_peds()].
+#' [sample_nhanes()].
 #'
 #' Children are included when they have a positive two-year mobile
 #' examination center (MEC) exam weight and at least one of body weight or
 #' standing height. A child with only one of the two measures is kept, with
-#' the other set to `NA`; [sample_nhanes_peds()] uses such children only when
+#' the other set to `NA`; [sample_nhanes()] uses such children only when
 #' the missing measure is not requested.
 #'
 #' The MEC weights are those of each individual release. They are not
-#' combined into an official pooled weight; [sample_nhanes_peds()] gives each
+#' combined into an official pooled weight; [sample_nhanes()] gives each
 #' release an equal share, which is a modelling choice.
 #'
 #' NHANES data are produced by the US National Center for Health Statistics
@@ -34,5 +34,5 @@
 #' @source National Center for Health Statistics, NHANES public data files
 #'   `DEMO_H`/`BMX_H`, `DEMO_I`/`BMX_I`, `DEMO_J`/`BMX_J` and
 #'   `DEMO_L`/`BMX_L`, \url{https://wwwn.cdc.gov/nchs/nhanes/}.
-#' @seealso [sample_nhanes_peds()]
+#' @seealso [sample_nhanes()]
 "nhanes_peds"

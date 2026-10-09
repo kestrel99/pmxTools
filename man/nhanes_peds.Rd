@@ -30,17 +30,17 @@ Body weight and standing height of children aged 2 to 17 years at the
 examination, from four releases of the US National Health and Nutrition
 Examination Survey (NHANES): 2013-2014, 2015-2016, 2017-2018 and
 August 2021-August 2023. Used as the reference population by
-\code{\link[=sample_nhanes_peds]{sample_nhanes_peds()}}.
+\code{\link[=sample_nhanes]{sample_nhanes()}}.
 }
 \details{
 Children are included when they have a positive two-year mobile
 examination center (MEC) exam weight and at least one of body weight or
 standing height. A child with only one of the two measures is kept, with
-the other set to \code{NA}; \code{\link[=sample_nhanes_peds]{sample_nhanes_peds()}} uses such children only when
+the other set to \code{NA}; \code{\link[=sample_nhanes]{sample_nhanes()}} uses such children only when
 the missing measure is not requested.
 
 The MEC weights are those of each individual release. They are not
-combined into an official pooled weight; \code{\link[=sample_nhanes_peds]{sample_nhanes_peds()}} gives each
+combined into an official pooled weight; \code{\link[=sample_nhanes]{sample_nhanes()}} gives each
 release an equal share, which is a modelling choice.
 
 NHANES data are produced by the US National Center for Health Statistics
@@ -48,6 +48,6 @@ and are in the public domain. The data were built with
 \code{data-raw/nhanes_peds.R} in the package source.
 }
 \seealso{
-\code{\link[=sample_nhanes_peds]{sample_nhanes_peds()}}
+\code{\link[=sample_nhanes]{sample_nhanes()}}
 }
 \keyword{datasets}
