@@ -215,3 +215,16 @@ dimension; `MASS::mvrnorm()` handles the singular `H`.
 - Changing the existing `sample_omega()` / `sample_uncert()` seed handling
   (flagged separately: they call `set.seed()` and overwrite the user's RNG
   state).
+
+## Revision 2026-10-09
+
+- Functions renamed to `sample_nhanes()`, `compare_nhanes()`, `plot_nhanes()`
+  (dataset keeps the name `nhanes_peds`).
+- New argument `method = c("resample", "smooth")`, default `"resample"`:
+  each simulated child takes one donor child's recorded values unchanged
+  (weight and height stay paired; no noise is drawn). `"smooth"` is the
+  kernel method described above. `bandwidth_factor` applies only to
+  `"smooth"` and warns if supplied with `"resample"`. Kernel diagnostics
+  report `H_WT`/`H_HT` = 0 when resampling; the result carries a `"method"`
+  attribute.
+- `AGE` is always returned as integer.

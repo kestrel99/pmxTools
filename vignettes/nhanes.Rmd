@@ -53,22 +53,21 @@ sim
 ```
 
 For each age and sex, it resamples real children, weighted by their MEC exam
-weights with each NHANES release given an equal share. It then adds a small
-amount of correlated random noise to log weight and log height. The simulated
-values are therefore continuous rather than copies of the reference children,
-and a tall child stays heavier than a short one of the same age. `SOURCE_CYCLE`
-and `SOURCE_SEQN` identify the real child each simulated child was drawn from.
+weights with each NHANES release given an equal share. Resampling is by
+child: each simulated child takes the weight and height of one real child, so
+every value is one that was actually measured, and weight and height stay
+paired. `SOURCE_CYCLE` and `SOURCE_SEQN` identify that child.
 
-The amount of smoothing in each age and sex group is stored with the result:
+Details of the reference in each age and sex group are stored with the result:
 
 ```{r}
 head(attr(sim, "kernels"))
 ```
 
 `N_NHANES` is the number of reference children, `N_EFF` their effective sample
-size after weighting, `H_WT` and `H_HT` the noise standard deviations on the
-log scale, and `RHO` the weighted correlation between log weight and log
-height.
+size after weighting, and `RHO` the weighted correlation between log weight
+and log height. `H_WT` and `H_HT` are 0 here; they are the noise used by the
+smoothed method described below.
 
 ## Checking the simulation
 
@@ -112,14 +111,24 @@ recent <- sample_nhanes(n = 100, ages = 2:5, cycles = "2021-23", seed = 1)
 table(recent$SOURCE_CYCLE)
 ```
 
-`bandwidth_factor` scales the smoothing. `0` returns exact copies of real
-children's measurements; values above 1 smooth more.
+## Smoothed values
+
+Resampled values repeat those of the reference children. If a simulation
+needs continuous values instead, `method = "smooth"` adds a small amount of
+random noise to each resampled child's log weight and log height. The noise
+for weight and height is correlated like the reference data, so a tall child
+stays heavier than a short one of the same age:
 
 ```{r}
-copies <- sample_nhanes(n = 5, ages = 8, sex = "Male", bandwidth_factor = 0,
-                        seed = 1)
-copies
+smoothed <- sample_nhanes(n = 500, ages = c(4, 10, 16), method = "smooth",
+                          seed = 20261008)
+head(smoothed)
+attr(smoothed, "kernels")
 ```
+
+`H_WT` and `H_HT` are the noise standard deviations on the log scale (0.05
+is roughly 5%). `bandwidth_factor` scales them: values above 1 smooth more.
+Check smoothed populations with `compare_nhanes()` in the same way.
 
 ## Using the population in a PK simulation
 
