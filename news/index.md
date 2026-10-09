@@ -2,6 +2,17 @@
 
 ## pmxTools (development version)
 
+- Added
+  [`sample_nhanes()`](https://kestrel99.github.io/pmxTools/reference/sample_nhanes.md),
+  which simulates virtual pediatric populations (ages 2-17) with
+  realistic body weight and/or height by smoothed, MEC-weighted
+  resampling of children from four NHANES releases (2013-2023), bundled
+  as `nhanes_peds`.
+  [`compare_nhanes()`](https://kestrel99.github.io/pmxTools/reference/compare_nhanes.md)
+  and
+  [`plot_nhanes()`](https://kestrel99.github.io/pmxTools/reference/plot_nhanes.md)
+  check the simulated population against the reference.
+
 ## pmxTools 1.6
 
 CRAN release: 2026-10-07

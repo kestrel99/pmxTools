@@ -71,6 +71,9 @@
   [`calc_ss_3cmt_linear_oral_1()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
   : Calculate C(t) for a 3-compartment linear model at steady-state
 
+- [`compare_nhanes()`](https://kestrel99.github.io/pmxTools/reference/compare_nhanes.md)
+  : Compare a simulated pediatric population with NHANES
+
 - [`count_na()`](https://kestrel99.github.io/pmxTools/reference/count_na.md)
   : Count the number of NA values in a vector.
 
@@ -142,6 +145,9 @@
 - [`label_blq()`](https://kestrel99.github.io/pmxTools/reference/label_blq.md)
   : Label axes with censoring labels for BLQ
 
+- [`nhanes_peds`](https://kestrel99.github.io/pmxTools/reference/nhanes_peds.md)
+  : NHANES pediatric body weight and height reference data
+
 - [`pcv()`](https://kestrel99.github.io/pmxTools/reference/pcv.md) :
   Calculate percentage coefficient of variation
 
@@ -151,6 +157,9 @@
 - [`plot_dist()`](https://kestrel99.github.io/pmxTools/reference/plot_dist.md)
   : Plot a distribution as a hybrid containing a halfeye, a boxplot and
   jittered points.
+
+- [`plot_nhanes()`](https://kestrel99.github.io/pmxTools/reference/plot_nhanes.md)
+  : Plot simulated against NHANES percentiles
 
 - [`plot_nmprogress()`](https://kestrel99.github.io/pmxTools/reference/plot_nmprogress.md)
   : Plot NONMEM parameter estimation by iteration.
@@ -184,6 +193,9 @@
 
 - [`rnm()`](https://kestrel99.github.io/pmxTools/reference/rnm.md) :
   Read NONMEM 7.2+ output into an R object.
+
+- [`sample_nhanes()`](https://kestrel99.github.io/pmxTools/reference/sample_nhanes.md)
+  : Simulate pediatric body weight and height from NHANES
 
 - [`sample_omega()`](https://kestrel99.github.io/pmxTools/reference/sample_omega.md)
   : Sample from the multivariate normal distribution using the OMEGA
