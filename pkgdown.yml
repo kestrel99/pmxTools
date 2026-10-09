@@ -2,8 +2,9 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  nhanes: nhanes.html
   pk-curves: pk-curves.html
-last_built: 2026-10-09T07:05Z
+last_built: 2026-10-09T15:43Z
 urls:
   reference: https://kestrel99.github.io/pmxTools/reference
   article: https://kestrel99.github.io/pmxTools/articles

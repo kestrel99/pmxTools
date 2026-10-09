@@ -49,7 +49,7 @@ sim <- sample_nhanes(n = 200, ages = c(4, 12), seed = 1)
 compare_nhanes(sim)
 #> # A tibble: 12 × 25
 #>      AGE SEX    VARIABLE N_REF Mean_REF SD_REF P05_REF Q1_REF Median_REF Q3_REF
-#>    <dbl> <chr>  <chr>    <dbl>    <dbl>  <dbl>   <dbl>  <dbl>      <dbl>  <dbl>
+#>    <int> <chr>  <chr>    <dbl>    <dbl>  <dbl>   <dbl>  <dbl>      <dbl>  <dbl>
 #>  1     4 Male   WT         364     18.8   3.24    14.8   16.7       18.1   20.2
 #>  2     4 Male   HT         364    106.    4.85    98.7  103.       106.   109. 
 #>  3     4 Male   BMI        364     16.5   1.95    14.3   15.3       16.1   17.1

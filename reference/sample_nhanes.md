@@ -1,9 +1,10 @@
 # Simulate pediatric body weight and height from NHANES
 
 Simulates a virtual pediatric population with realistic body weight
-and/or standing height by smoothed resampling of children in the
+and/or standing height by weighted resampling of children in the
 National Health and Nutrition Examination Survey (NHANES), see
-[nhanes_peds](https://kestrel99.github.io/pmxTools/reference/nhanes_peds.md).
+[nhanes_peds](https://kestrel99.github.io/pmxTools/reference/nhanes_peds.md),
+optionally smoothed with random noise.
 
 ## Usage
 
@@ -14,6 +15,7 @@ sample_nhanes(
   sex = c("Male", "Female"),
   vars = c("WT", "HT"),
   cycles = NULL,
+  method = c("resample", "smooth"),
   bandwidth_factor = 1,
   seed = NULL,
   data = pmxTools::nhanes_peds
@@ -45,10 +47,16 @@ sample_nhanes(
   NHANES releases to use (values of `data$CYCLE`); `NULL` uses all of
   them.
 
+- method:
+
+  `"resample"` (default) returns the donor children's recorded values;
+  `"smooth"` adds kernel noise to them.
+
 - bandwidth_factor:
 
-  Multiplier for the kernel bandwidth. `0` gives plain weighted
-  resampling of real children; values above 1 smooth more.
+  Multiplier for the kernel bandwidth when `method = "smooth"`; values
+  above 1 smooth more. Ignored, with a warning if supplied, when
+  `method = "resample"`.
 
 - seed:
 
@@ -67,9 +75,9 @@ A tibble with one row per simulated child and columns `ID`, `AGE`,
 `SOURCE_CYCLE` and `SOURCE_SEQN` (the NHANES release and sequence number
 of the donor child). Attributes: `"kernels"`, a tibble of per-stratum
 diagnostics (`N_NHANES` donors, `N_EFF` effective sample size, `H_WT`
-and/or `H_HT` bandwidth SDs on the log scale, and `RHO`, the weighted
-log weight-height correlation, when both measures are simulated);
-`"cycles"` and `"vars"`, as used.
+and/or `H_HT` bandwidth SDs on the log scale, 0 when resampling, and
+`RHO`, the weighted log weight-height correlation, when both measures
+are simulated); `"cycles"`, `"vars"` and `"method"`, as used.
 
 ## Details
 
@@ -84,16 +92,20 @@ Each age (whole years) x sex stratum is simulated separately:
     no release dominates because of a larger total weight. The equal
     share is a modelling choice, not an official pooled NHANES weight.
 
-3.  `n` donors are drawn with these probabilities and Gaussian noise is
-    added on the log scale, so values stay positive and continuous. The
-    noise covariance is \$\$H = (b \cdot 0.9)^2 \\ n\_{eff}^{-2/(d+4)}
-    \\ S R S\$\$ where `b` is `bandwidth_factor`, `d` is the number of
-    `vars`, \\n\_{eff}\\ is Kish's effective sample size, `S` holds each
-    log measure's robust scale \\\min(SD, IQR/1.349)\\ and `R` is the
-    weighted correlation matrix of the log measures. With one measure
-    this is the robust Silverman rule \\h = 0.9 \\ \sigma \\
-    n\_{eff}^{-1/5}\\; with both, the correlated noise preserves the
-    weight-height relationship.
+3.  `n` donors are drawn with these probabilities. With
+    `method = "resample"` (the default) each simulated child gets its
+    donor's recorded values, so every value is one that was measured.
+
+4.  With `method = "smooth"`, Gaussian noise is added to the donors'
+    values on the log scale, so values stay positive and continuous
+    rather than repeating the reference values. The noise covariance is
+    \$\$H = (b \cdot 0.9)^2 \\ n\_{eff}^{-2/(d+4)} \\ S R S\$\$ where
+    `b` is `bandwidth_factor`, `d` is the number of `vars`, \\n\_{eff}\\
+    is Kish's effective sample size, `S` holds each log measure's robust
+    scale \\\min(SD, IQR/1.349)\\ and `R` is the weighted correlation
+    matrix of the log measures. With one measure this is the robust
+    Silverman rule \\h = 0.9 \\ \sigma \\ n\_{eff}^{-1/5}\\; with both,
+    the correlated noise preserves the weight-height relationship.
 
 Use
 [`compare_nhanes()`](https://kestrel99.github.io/pmxTools/reference/compare_nhanes.md)
@@ -114,17 +126,21 @@ sim <- sample_nhanes(n = 100, ages = c(2, 8, 14), seed = 20261008)
 head(sim)
 #> # A tibble: 6 × 8
 #>      ID   AGE  SEXN SEX      WT    HT SOURCE_CYCLE SOURCE_SEQN
-#>   <int> <dbl> <int> <chr> <dbl> <dbl> <chr>              <dbl>
-#> 1     1     2     1 Male   14.3  91.7 2013-14            81515
-#> 2     2     2     1 Male   13.3  91.7 2015-16            90822
-#> 3     3     2     1 Male   12.5  84.4 2021-23           136484
-#> 4     4     2     1 Male   15.8  96.2 2015-16            84344
-#> 5     5     2     1 Male   10.6  79.8 2013-14            73710
-#> 6     6     2     1 Male   13.0  85.9 2015-16            85690
-attr(sim, "kernels")
+#>   <int> <int> <int> <chr> <dbl> <dbl> <chr>              <dbl>
+#> 1     1     2     1 Male   13.7  90.7 2013-14            81515
+#> 2     2     2     1 Male   13.4  91.6 2015-16            90822
+#> 3     3     2     1 Male   13.5  87   2021-23           136484
+#> 4     4     2     1 Male   15.3  93.5 2015-16            84344
+#> 5     5     2     1 Male   11.7  83.1 2013-14            73710
+#> 6     6     2     1 Male   12.6  87.1 2015-16            85690
+
+# Smoothed: continuous values around the reference children
+smoothed <- sample_nhanes(n = 100, ages = c(2, 8, 14), method = "smooth",
+                          seed = 20261008)
+attr(smoothed, "kernels")
 #> # A tibble: 6 × 7
 #>     AGE SEX    N_NHANES N_EFF   H_WT   H_HT   RHO
-#>   <dbl> <chr>     <int> <dbl>  <dbl>  <dbl> <dbl>
+#>   <int> <chr>     <int> <dbl>  <dbl>  <dbl> <dbl>
 #> 1     2 Male        366  263. 0.0429 0.0171 0.735
 #> 2     2 Female      381  238. 0.0474 0.0168 0.752
 #> 3     8 Male        408  275. 0.0835 0.0153 0.703
@@ -136,5 +152,5 @@ attr(sim, "kernels")
 wt <- sample_nhanes(n = 100, ages = 10, vars = "WT", seed = 1)
 summary(wt$WT)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   21.25   32.58   39.43   42.18   48.75  116.05 
+#>   22.60   33.17   39.25   42.21   49.67  101.80 
 ```
