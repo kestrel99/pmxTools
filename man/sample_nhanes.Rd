@@ -10,6 +10,7 @@ sample_nhanes(
   sex = c("Male", "Female"),
   vars = c("WT", "HT"),
   cycles = NULL,
+  method = c("resample", "smooth"),
   bandwidth_factor = 1,
   seed = NULL,
   data = pmxTools::nhanes_peds
@@ -28,8 +29,12 @@ sample_nhanes(
 \item{cycles}{NHANES releases to use (values of \code{data$CYCLE}); \code{NULL} uses
 all of them.}
 
-\item{bandwidth_factor}{Multiplier for the kernel bandwidth. \code{0} gives plain
-weighted resampling of real children; values above 1 smooth more.}
+\item{method}{\code{"resample"} (default) returns the donor children's recorded
+values; \code{"smooth"} adds kernel noise to them.}
+
+\item{bandwidth_factor}{Multiplier for the kernel bandwidth when
+\code{method = "smooth"}; values above 1 smooth more. Ignored, with a warning
+if supplied, when \code{method = "resample"}.}
 
 \item{seed}{Optional random seed. The previous random number generator
 state is restored afterwards.}
@@ -42,14 +47,15 @@ A tibble with one row per simulated child and columns \code{ID}, \code{AGE},
 \code{SOURCE_CYCLE} and \code{SOURCE_SEQN} (the NHANES release and sequence number
 of the donor child). Attributes: \code{"kernels"}, a tibble of per-stratum
 diagnostics (\code{N_NHANES} donors, \code{N_EFF} effective sample size, \code{H_WT}
-and/or \code{H_HT} bandwidth SDs on the log scale, and \code{RHO}, the weighted
-log weight-height correlation, when both measures are simulated);
-\code{"cycles"} and \code{"vars"}, as used.
+and/or \code{H_HT} bandwidth SDs on the log scale, 0 when resampling, and
+\code{RHO}, the weighted log weight-height correlation, when both measures
+are simulated); \code{"cycles"}, \code{"vars"} and \code{"method"}, as used.
 }
 \description{
 Simulates a virtual pediatric population with realistic body weight and/or
-standing height by smoothed resampling of children in the National Health
-and Nutrition Examination Survey (NHANES), see \link{nhanes_peds}.
+standing height by weighted resampling of children in the National Health
+and Nutrition Examination Survey (NHANES), see \link{nhanes_peds}, optionally
+smoothed with random noise.
 }
 \details{
 Each age (whole years) x sex stratum is simulated separately:
@@ -61,9 +67,12 @@ is requested.
 within its NHANES release, times an equal share per release, so that no
 release dominates because of a larger total weight. The equal share is a
 modelling choice, not an official pooled NHANES weight.
-\item \code{n} donors are drawn with these probabilities and Gaussian noise is
-added on the log scale, so values stay positive and continuous. The
-noise covariance is
+\item \code{n} donors are drawn with these probabilities. With
+\code{method = "resample"} (the default) each simulated child gets its
+donor's recorded values, so every value is one that was measured.
+\item With \code{method = "smooth"}, Gaussian noise is added to the donors' values
+on the log scale, so values stay positive and continuous rather than
+repeating the reference values. The noise covariance is
 \deqn{H = (b \cdot 0.9)^2 \, n_{eff}^{-2/(d+4)} \, S R S}
 where \code{b} is \code{bandwidth_factor}, \code{d} is the number of \code{vars},
 \eqn{n_{eff}} is Kish's effective sample size, \code{S} holds each log
@@ -79,7 +88,11 @@ simulated population against the reference.
 \examples{
 sim <- sample_nhanes(n = 100, ages = c(2, 8, 14), seed = 20261008)
 head(sim)
-attr(sim, "kernels")
+
+# Smoothed: continuous values around the reference children
+smoothed <- sample_nhanes(n = 100, ages = c(2, 8, 14), method = "smooth",
+                          seed = 20261008)
+attr(smoothed, "kernels")
 
 # Weight only, using every child with a measured weight
 wt <- sample_nhanes(n = 100, ages = 10, vars = "WT", seed = 1)

@@ -1,0 +1,143 @@
+---
+title: "Simulating pediatric body size from NHANES"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating pediatric body size from NHANES}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+```{r setup, warning=F, message=F}
+library(pmxTools)
+```
+
+Pediatric simulations need realistic covariates. Body weight drives allometric
+scaling of clearance and volume, and weight-based or body-surface-area-based
+dosing needs weight and height that belong together. `sample_nhanes()`
+generates virtual children aged 2 to 17 years with body weight and/or
+standing height drawn from the US National Health and Nutrition Examination
+Survey (NHANES).
+
+## The reference data
+
+The package includes `nhanes_peds`, with one row per child from four NHANES
+releases (2013-2014 to 2021-2023):
+
+```{r}
+head(nhanes_peds)
+table(nhanes_peds$CYCLE)
+```
+
+Each child has a mobile examination center (MEC) exam weight (`MEC_WT`), which
+NHANES provides so that its sample represents the US population. A few
+children have only one of weight or height measured. They are kept, and are
+used whenever the missing measure isn't needed.
+
+## Simulating a population
+
+`sample_nhanes()` simulates `n` children (500 by default) per age (in whole
+years) and sex:
+
+```{r}
+sim <- sample_nhanes(seed = 20261008)
+sim
+```
+
+For each age and sex, it resamples real children, weighted by their MEC exam
+weights with each NHANES release given an equal share. Resampling is by
+child: each simulated child takes the weight and height of one real child, so
+every value is one that was actually measured, and weight and height stay
+paired. `SOURCE_CYCLE` and `SOURCE_SEQN` identify that child.
+
+Details of the reference in each age and sex group are stored with the result:
+
+```{r}
+head(attr(sim, "kernels"))
+```
+
+`N_NHANES` is the number of reference children, `N_EFF` their effective sample
+size after weighting, and `RHO` the weighted correlation between log weight
+and log height. `H_WT` and `H_HT` are 0 here; they are the noise used by the
+smoothed method described below.
+
+## Checking the simulation
+
+`compare_nhanes()` summarises weight, height and body mass index for the
+simulated population and for the weighted NHANES reference it came from:
+
+```{r}
+cmp <- compare_nhanes(sim)
+cmp[cmp$AGE == 10, c("SEX", "VARIABLE", "Median_REF", "Median_SIM",
+                     "P05_RATIO", "P95_RATIO", "RHO_REF", "RHO_SIM")]
+```
+
+`plot_nhanes()` shows the 5th, 50th and 95th percentiles against age:
+
+```{r}
+plot_nhanes(cmp)
+```
+
+Body mass index is included because it depends on weight and height together.
+If it matches the reference, the relationship between the two has been kept,
+not just each measure on its own. The 5th and 95th percentiles of weight vary
+more from run to run than the medians, because weight has a long upper tail;
+increase `n` if the tails matter for your simulation.
+
+## Options
+
+Simulate a subset of ages, one sex, or a single measure. With
+`vars = "WT"`, children whose height is missing are also used:
+
+```{r}
+wt <- sample_nhanes(n = 100, ages = 6:12, sex = "Female", vars = "WT",
+                    seed = 1)
+head(wt)
+```
+
+`cycles` restricts the reference to particular NHANES releases, for example
+the most recent one only:
+
+```{r}
+recent <- sample_nhanes(n = 100, ages = 2:5, cycles = "2021-23", seed = 1)
+table(recent$SOURCE_CYCLE)
+```
+
+## Smoothed values
+
+Resampled values repeat those of the reference children. If a simulation
+needs continuous values instead, `method = "smooth"` adds a small amount of
+random noise to each resampled child's log weight and log height. The noise
+for weight and height is correlated like the reference data, so a tall child
+stays heavier than a short one of the same age:
+
+```{r}
+smoothed <- sample_nhanes(n = 500, ages = c(4, 10, 16), method = "smooth",
+                          seed = 20261008)
+head(smoothed)
+attr(smoothed, "kernels")
+```
+
+`H_WT` and `H_HT` are the noise standard deviations on the log scale (0.05
+is roughly 5%). `bandwidth_factor` scales them: values above 1 smooth more.
+Check smoothed populations with `compare_nhanes()` in the same way.
+
+## Using the population in a PK simulation
+
+The result is an ordinary data frame, so derived covariates are one step away.
+For example, body surface area (Mosteller) and an allometrically scaled
+clearance for a typical value of 10 L/h at 70 kg:
+
+```{r}
+sim$BSA <- sqrt(sim$WT * sim$HT / 3600)
+sim$CL <- 10 * (sim$WT / 70)^0.75
+head(sim[c("ID", "AGE", "SEX", "WT", "HT", "BSA", "CL")])
+```

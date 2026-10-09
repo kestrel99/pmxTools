@@ -148,7 +148,7 @@ test_that("cycles restricts the donors", {
 test_that("sample_nhanes validates its arguments", {
   expect_error(sample_nhanes(n = 0), "'n' must be a single positive whole number")
   expect_error(sample_nhanes(n = 2.5), "'n' must be a single positive whole number")
-  expect_error(sample_nhanes(bandwidth_factor = -1), "'bandwidth_factor'")
+  expect_error(sample_nhanes(method = "smooth", bandwidth_factor = -1), "'bandwidth_factor'")
   expect_error(sample_nhanes(vars = "BMI"), "'vars' must be")
   expect_error(sample_nhanes(vars = character(0)), "'vars' must be")
   expect_error(sample_nhanes(ages = c(1, 18)), "'ages' value(s) not in the reference data: 1, 18", fixed = TRUE)
@@ -161,8 +161,9 @@ test_that("sample_nhanes validates its arguments", {
   )
 })
 
-test_that("bandwidth_factor = 0 reproduces the donors exactly", {
-  sim <- sample_nhanes(n = 50, ages = 7, bandwidth_factor = 0, seed = 3)
+test_that("smoothing with bandwidth_factor = 0 reproduces the donors", {
+  sim <- sample_nhanes(n = 50, ages = 7, method = "smooth",
+                       bandwidth_factor = 0, seed = 3)
   key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
   key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
   donor <- nhanes_peds[match(key_sim, key_ref), ]
@@ -187,9 +188,10 @@ test_that("weight-only simulation uses more donors than joint simulation", {
   )
 })
 
-test_that("simulated medians and correlation match the weighted reference", {
+test_that("smoothed medians and correlation match the weighted reference", {
   ages <- c(2, 10, 17)
-  sim <- sample_nhanes(n = 4000, ages = ages, seed = 20261008)
+  sim <- sample_nhanes(n = 4000, ages = ages, method = "smooth",
+                       seed = 20261008)
   donors <- nhanes_donors(
     nhanes_peds, ages, c("Male", "Female"), c("WT", "HT"),
     sort(unique(nhanes_peds$CYCLE))
@@ -206,4 +208,47 @@ test_that("simulated medians and correlation match the weighted reference", {
       expect_lt(abs(stats::cor(log(s$WT), log(s$HT)) - ref_rho), 0.05)
     }
   }
+})
+
+test_that("AGE is an integer whatever type ages is given as", {
+  sim <- sample_nhanes(n = 2, ages = c(8, 9), seed = 1)
+  expect_type(sim$AGE, "integer")
+  expect_type(attr(sim, "kernels")$AGE, "integer")
+})
+
+donor_rows <- function(sim) {
+  key_sim <- paste(sim$SOURCE_CYCLE, sim$SOURCE_SEQN)
+  key_ref <- paste(nhanes_peds$CYCLE, nhanes_peds$SEQN)
+  nhanes_peds[match(key_sim, key_ref), ]
+}
+
+test_that("the default method returns the donors' exact values", {
+  sim <- sample_nhanes(n = 50, ages = c(3, 15), seed = 6)
+  donor <- donor_rows(sim)
+  expect_identical(sim$WT, donor$WT)
+  expect_identical(sim$HT, donor$HT)
+  expect_equal(attr(sim, "method"), "resample")
+  kern <- attr(sim, "kernels")
+  expect_true(all(kern$H_WT == 0 & kern$H_HT == 0))
+})
+
+test_that("method = 'smooth' adds noise", {
+  sim <- sample_nhanes(n = 50, ages = 3, method = "smooth", seed = 6)
+  donor <- donor_rows(sim)
+  expect_true(all(sim$WT != donor$WT))
+  expect_equal(attr(sim, "method"), "smooth")
+  expect_true(all(attr(sim, "kernels")$H_WT > 0))
+})
+
+test_that("bandwidth_factor is ignored, with a warning, when resampling", {
+  expect_warning(
+    sim <- sample_nhanes(n = 5, ages = 3, bandwidth_factor = 2, seed = 6),
+    "'bandwidth_factor' is ignored when method = \"resample\"",
+    fixed = TRUE
+  )
+  expect_identical(sim$WT, donor_rows(sim)$WT)
+})
+
+test_that("method must be resample or smooth", {
+  expect_error(sample_nhanes(method = "jitter"), "'arg' should be one of")
 })

@@ -36,7 +36,8 @@ nhanes_donors <- function(data, ages, sex, vars, cycles) {
 nhanes_kernel <- function(donors, vars, bandwidth_factor) {
   d <- length(vars)
   p <- donors$PROB / sum(donors$PROB)
-  y <- log(as.matrix(donors[vars]))
+  x <- as.matrix(donors[vars])
+  y <- log(x)
 
   sigma <- vapply(seq_len(d), function(j) robust_scale(y[, j], p), numeric(1))
   R <- diag(d)
@@ -51,6 +52,7 @@ nhanes_kernel <- function(donors, vars, bandwidth_factor) {
   H <- (bandwidth_factor * 0.9)^2 * neff^(-2 / (d + 4)) * (S %*% R %*% S)
 
   list(
+    x = x,
     y = y,
     p = p,
     H = H,
@@ -61,12 +63,16 @@ nhanes_kernel <- function(donors, vars, bandwidth_factor) {
   )
 }
 
-# Draw n children from one stratum's kernel.
-nhanes_sample_kernel <- function(kernel, n, vars) {
+# Draw n children from one stratum's kernel. Without smoothing the donors'
+# recorded values are returned unchanged.
+nhanes_sample_kernel <- function(kernel, n, vars, smooth) {
   d <- length(vars)
   idx <- sample.int(length(kernel$p), size = n, replace = TRUE, prob = kernel$p)
-  noise <- matrix(MASS::mvrnorm(n, mu = rep(0, d), Sigma = kernel$H), nrow = n)
-  values <- exp(kernel$y[idx, , drop = FALSE] + noise)
+  values <- kernel$x[idx, , drop = FALSE]
+  if (smooth) {
+    noise <- matrix(MASS::mvrnorm(n, mu = rep(0, d), Sigma = kernel$H), nrow = n)
+    values <- exp(kernel$y[idx, , drop = FALSE] + noise)
+  }
   colnames(values) <- vars
   out <- as.data.frame(values)
   out$SOURCE_CYCLE <- kernel$cycle[idx]
@@ -96,8 +102,9 @@ nhanes_check_vars <- function(vars) {
 #' Simulate pediatric body weight and height from NHANES
 #'
 #' Simulates a virtual pediatric population with realistic body weight and/or
-#' standing height by smoothed resampling of children in the National Health
-#' and Nutrition Examination Survey (NHANES), see [nhanes_peds].
+#' standing height by weighted resampling of children in the National Health
+#' and Nutrition Examination Survey (NHANES), see [nhanes_peds], optionally
+#' smoothed with random noise.
 #'
 #' Each age (whole years) x sex stratum is simulated separately:
 #'
@@ -108,9 +115,12 @@ nhanes_check_vars <- function(vars) {
 #'    within its NHANES release, times an equal share per release, so that no
 #'    release dominates because of a larger total weight. The equal share is a
 #'    modelling choice, not an official pooled NHANES weight.
-#' 3. `n` donors are drawn with these probabilities and Gaussian noise is
-#'    added on the log scale, so values stay positive and continuous. The
-#'    noise covariance is
+#' 3. `n` donors are drawn with these probabilities. With
+#'    `method = "resample"` (the default) each simulated child gets its
+#'    donor's recorded values, so every value is one that was measured.
+#' 4. With `method = "smooth"`, Gaussian noise is added to the donors' values
+#'    on the log scale, so values stay positive and continuous rather than
+#'    repeating the reference values. The noise covariance is
 #'    \deqn{H = (b \cdot 0.9)^2 \, n_{eff}^{-2/(d+4)} \, S R S}
 #'    where `b` is `bandwidth_factor`, `d` is the number of `vars`,
 #'    \eqn{n_{eff}} is Kish's effective sample size, `S` holds each log
@@ -129,8 +139,11 @@ nhanes_check_vars <- function(vars) {
 #'   (standing height, cm) or both.
 #' @param cycles NHANES releases to use (values of `data$CYCLE`); `NULL` uses
 #'   all of them.
-#' @param bandwidth_factor Multiplier for the kernel bandwidth. `0` gives plain
-#'   weighted resampling of real children; values above 1 smooth more.
+#' @param method `"resample"` (default) returns the donor children's recorded
+#'   values; `"smooth"` adds kernel noise to them.
+#' @param bandwidth_factor Multiplier for the kernel bandwidth when
+#'   `method = "smooth"`; values above 1 smooth more. Ignored, with a warning
+#'   if supplied, when `method = "resample"`.
 #' @param seed Optional random seed. The previous random number generator
 #'   state is restored afterwards.
 #' @param data Reference data with the columns of [nhanes_peds].
@@ -139,27 +152,37 @@ nhanes_check_vars <- function(vars) {
 #'   `SOURCE_CYCLE` and `SOURCE_SEQN` (the NHANES release and sequence number
 #'   of the donor child). Attributes: `"kernels"`, a tibble of per-stratum
 #'   diagnostics (`N_NHANES` donors, `N_EFF` effective sample size, `H_WT`
-#'   and/or `H_HT` bandwidth SDs on the log scale, and `RHO`, the weighted
-#'   log weight-height correlation, when both measures are simulated);
-#'   `"cycles"` and `"vars"`, as used.
+#'   and/or `H_HT` bandwidth SDs on the log scale, 0 when resampling, and
+#'   `RHO`, the weighted log weight-height correlation, when both measures
+#'   are simulated); `"cycles"`, `"vars"` and `"method"`, as used.
 #' @seealso [nhanes_peds], [compare_nhanes()], [plot_nhanes()]
 #' @examples
 #' sim <- sample_nhanes(n = 100, ages = c(2, 8, 14), seed = 20261008)
 #' head(sim)
-#' attr(sim, "kernels")
+#'
+#' # Smoothed: continuous values around the reference children
+#' smoothed <- sample_nhanes(n = 100, ages = c(2, 8, 14), method = "smooth",
+#'                           seed = 20261008)
+#' attr(smoothed, "kernels")
 #'
 #' # Weight only, using every child with a measured weight
 #' wt <- sample_nhanes(n = 100, ages = 10, vars = "WT", seed = 1)
 #' summary(wt$WT)
 #' @export
 sample_nhanes <- function(n = 500,
-                               ages = 2:17,
-                               sex = c("Male", "Female"),
-                               vars = c("WT", "HT"),
-                               cycles = NULL,
-                               bandwidth_factor = 1,
-                               seed = NULL,
-                               data = pmxTools::nhanes_peds) {
+                          ages = 2:17,
+                          sex = c("Male", "Female"),
+                          vars = c("WT", "HT"),
+                          cycles = NULL,
+                          method = c("resample", "smooth"),
+                          bandwidth_factor = 1,
+                          seed = NULL,
+                          data = pmxTools::nhanes_peds) {
+  method <- match.arg(method)
+  if (method == "resample" && !missing(bandwidth_factor)) {
+    warning("'bandwidth_factor' is ignored when method = \"resample\"",
+            call. = FALSE)
+  }
   missing_cols <- setdiff(nhanes_required_cols, names(data))
   if (length(missing_cols) > 0) {
     stop(
@@ -181,7 +204,7 @@ sample_nhanes <- function(n = 500,
   nhanes_check_values("ages", ages, data$AGE)
   nhanes_check_values("sex", sex, data$SEX)
   nhanes_check_values("cycles", cycles, data$CYCLE)
-  ages <- sort(unique(ages))
+  ages <- sort(unique(as.integer(ages)))
   sex <- unique(sex)
 
   if (!is.null(seed)) {
@@ -199,6 +222,7 @@ sample_nhanes <- function(n = 500,
     set.seed(seed)
   }
 
+  smooth <- method == "smooth"
   donors <- nhanes_donors(data, ages, sex, vars, cycles)
   strata <- expand.grid(SEX = sex, AGE = ages, stringsAsFactors = FALSE)
 
@@ -208,11 +232,11 @@ sample_nhanes <- function(n = 500,
     age <- strata$AGE[i]
     sx <- strata$SEX[i]
     stratum <- donors[donors$AGE == age & donors$SEX == sx, , drop = FALSE]
-    kernel <- nhanes_kernel(stratum, vars, bandwidth_factor)
+    kernel <- nhanes_kernel(stratum, vars, if (smooth) bandwidth_factor else 0)
 
     sims[[i]] <- cbind(
       data.frame(AGE = age, SEX = sx, stringsAsFactors = FALSE),
-      nhanes_sample_kernel(kernel, n, vars)
+      nhanes_sample_kernel(kernel, n, vars, smooth)
     )
 
     diagnostics <- data.frame(
@@ -238,5 +262,6 @@ sample_nhanes <- function(n = 500,
   attr(sim, "kernels") <- tibble::as_tibble(do.call(rbind, kernels))
   attr(sim, "cycles") <- cycles
   attr(sim, "vars") <- vars
+  attr(sim, "method") <- method
   sim
 }

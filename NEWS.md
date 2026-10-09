@@ -1,6 +1,6 @@
 # pmxTools (development version)
 
-* Added `sample_nhanes()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by smoothed, MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. `compare_nhanes()` and `plot_nhanes()` check the simulated population against the reference.
+* Added `sample_nhanes()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. Resampling keeps each child's weight and height together; `method = "smooth"` adds correlated kernel noise for continuous values. `compare_nhanes()` and `plot_nhanes()` check the simulated population against the reference. A new vignette, `vignette("nhanes", package = "pmxTools")`, walks through them.
 
 # pmxTools 1.6
 
