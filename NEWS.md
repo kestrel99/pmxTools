@@ -2,6 +2,8 @@
 
 * Added `sample_nhanes()`, which simulates virtual pediatric populations (ages 2-17) with realistic body weight and/or height by MEC-weighted resampling of children from four NHANES releases (2013-2023), bundled as `nhanes_peds`. Resampling keeps each child's weight and height together; `method = "smooth"` adds correlated kernel noise for continuous values. `compare_nhanes()` and `plot_nhanes()` check the simulated population against the reference. A new vignette, `vignette("nhanes", package = "pmxTools")`, walks through them.
 
+* Added `het_cor()`, which computes a correlation matrix for mixed continuous and ordinal variables (Pearson, polyserial or polychoric for each pair) and can draw it with `plot_cor_triangle()`. The pairwise estimators are available as `polychoric()` and `polyserial()`.
+
 # pmxTools 1.6
 
 * Added `cut_quantile()`, which creates quantile-based bins for one or more continuous variables, with per-variable control over the number of groups.
