@@ -77,6 +77,9 @@ test_that("pair functions check their inputs", {
   expect_error(polyserial(o$x, o$y), "'x' must be numeric")
   expect_error(polyserial(as.numeric(o$x), 1:150), "'y' must be a factor")
   expect_error(polychoric(o$x, o$y[-1]), "same length")
+  expect_error(polychoric(o$x, o$y, max_cor = 1.5), "'max_cor' must be")
+  expect_error(polyserial(as.numeric(o$x), o$y, max_cor = 0), "'max_cor' must be")
+  expect_error(polyserial(as.numeric(o$x), o$y, max_cor = c(0.5, 0.9)), "'max_cor' must be")
 })
 
 test_that("pair functions warn about unordered factors", {
@@ -169,4 +172,11 @@ test_that("plot_cor_triangle checks labels", {
   R <- het_cor(mixed_data())
   expect_error(plot_cor_triangle(R, labels = c(nope = "x")), "`labels` must be named")
   expect_error(plot_cor_triangle(R, labels = "unnamed"), "`labels` must be named")
+})
+
+test_that("plot_cor_triangle checks R", {
+  R <- het_cor(mixed_data())
+  expect_error(plot_cor_triangle(unname(R)), "`R` must be a square matrix")
+  expect_error(plot_cor_triangle(R[, -1]), "`R` must be a square matrix")
+  expect_error(plot_cor_triangle(as.data.frame(R)), "`R` must be a square matrix")
 })

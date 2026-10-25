@@ -23,6 +23,9 @@
 #' @export
 plot_cor_triangle <- function(R, types = NULL, labels = character(),
                               digits = 2, text_size = 11) {
+  if (!is.matrix(R) || nrow(R) != ncol(R) || is.null(colnames(R))) {
+    stop("`R` must be a square matrix with column names", call. = FALSE)
+  }
   vars <- colnames(R)
   bad_labels <- is.null(names(labels)) || !all(names(labels) %in% vars)
   if (length(labels) && bad_labels) {

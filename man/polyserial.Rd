@@ -12,7 +12,7 @@ polyserial(x, y, max_cor = 0.9999)
 \item{y}{A factor of the same length as \code{x}. Its level order is used as the
 ordinal scale; an unordered factor gives a warning.}
 
-\item{max_cor}{Largest absolute correlation searched.}
+\item{max_cor}{Largest absolute correlation searched, between 0 and 1.}
 }
 \value{
 The estimated correlation, using cases complete for both

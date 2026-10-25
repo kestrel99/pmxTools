@@ -10,7 +10,7 @@ polychoric(x, y, max_cor = 0.9999)
 \item{x, y}{Factors of the same length. Their level order is used as the
 ordinal scale; unordered factors give a warning.}
 
-\item{max_cor}{Largest absolute correlation searched.}
+\item{max_cor}{Largest absolute correlation searched, between 0 and 1.}
 }
 \value{
 The estimated correlation, using cases complete for both

@@ -168,6 +168,14 @@ check_same_length <- function(x, y) {
   }
 }
 
+check_max_cor <- function(max_cor) {
+  if (!is.numeric(max_cor) || length(max_cor) != 1 || is.na(max_cor) ||
+        max_cor <= 0 || max_cor >= 1) {
+    stop("'max_cor' must be a single number between 0 and 1 (exclusive)",
+         call. = FALSE)
+  }
+}
+
 #' Polychoric correlation
 #'
 #' Estimates the correlation between two ordinal variables, assuming each
@@ -177,7 +185,7 @@ check_same_length <- function(x, y) {
 #'
 #' @param x,y Factors of the same length. Their level order is used as the
 #'   ordinal scale; unordered factors give a warning.
-#' @param max_cor Largest absolute correlation searched.
+#' @param max_cor Largest absolute correlation searched, between 0 and 1.
 #' @return The estimated correlation, using cases complete for both
 #'   variables, or `NA` if either has fewer than two observed levels.
 #' @references
@@ -197,6 +205,7 @@ polychoric <- function(x, y, max_cor = 0.9999) {
     stop("'x' and 'y' must be factors", call. = FALSE)
   }
   check_same_length(x, y)
+  check_max_cor(max_cor)
   warn_unordered(x, "x")
   warn_unordered(y, "y")
   ok <- !is.na(x) & !is.na(y)
@@ -214,7 +223,7 @@ polychoric <- function(x, y, max_cor = 0.9999) {
 #' @param x A numeric vector.
 #' @param y A factor of the same length as `x`. Its level order is used as the
 #'   ordinal scale; an unordered factor gives a warning.
-#' @param max_cor Largest absolute correlation searched.
+#' @param max_cor Largest absolute correlation searched, between 0 and 1.
 #' @return The estimated correlation, using cases complete for both
 #'   variables, or `NA` if `y` has fewer than two observed levels or `x` is
 #'   constant.
@@ -237,6 +246,7 @@ polyserial <- function(x, y, max_cor = 0.9999) {
     stop("'y' must be a factor", call. = FALSE)
   }
   check_same_length(x, y)
+  check_max_cor(max_cor)
   warn_unordered(y, "y")
   ok <- !is.na(x) & !is.na(y)
   polyserial_rho(x[ok], y[ok], max_cor)
