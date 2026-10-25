@@ -138,6 +138,9 @@
 - [`gm()`](https://kestrel99.github.io/pmxTools/reference/gm.md) :
   Calculate geometric mean
 
+- [`het_cor()`](https://kestrel99.github.io/pmxTools/reference/het_cor.md)
+  : Heterogeneous correlation matrix
+
 - [`itrans_blq_linear()`](https://kestrel99.github.io/pmxTools/reference/itrans_blq_linear.md)
   [`itrans_blq_log()`](https://kestrel99.github.io/pmxTools/reference/itrans_blq_linear.md)
   : Inverse transformation for linear BLQ data
@@ -154,6 +157,9 @@
 - [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
   : Provide concentration-time curves.
 
+- [`plot_cor_triangle()`](https://kestrel99.github.io/pmxTools/reference/plot_cor_triangle.md)
+  : Plot a correlation matrix as a lower triangle
+
 - [`plot_dist()`](https://kestrel99.github.io/pmxTools/reference/plot_dist.md)
   : Plot a distribution as a hybrid containing a halfeye, a boxplot and
   jittered points.
@@ -166,6 +172,12 @@
 
 - [`plot_scm()`](https://kestrel99.github.io/pmxTools/reference/plot_scm.md)
   : Visualize PsN SCM output.
+
+- [`polychoric()`](https://kestrel99.github.io/pmxTools/reference/polychoric.md)
+  : Polychoric correlation
+
+- [`polyserial()`](https://kestrel99.github.io/pmxTools/reference/polyserial.md)
+  : Polyserial correlation
 
 - [`read_nm()`](https://kestrel99.github.io/pmxTools/reference/read_nm.md)
   : Read NONMEM 7.2+ output into a list of lists.

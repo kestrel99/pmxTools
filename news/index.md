@@ -17,6 +17,17 @@
   [`vignette("nhanes", package = "pmxTools")`](https://kestrel99.github.io/pmxTools/articles/nhanes.md),
   walks through them.
 
+- Added
+  [`het_cor()`](https://kestrel99.github.io/pmxTools/reference/het_cor.md),
+  which computes a correlation matrix for mixed continuous and ordinal
+  variables (Pearson, polyserial or polychoric for each pair) and can
+  draw it with
+  [`plot_cor_triangle()`](https://kestrel99.github.io/pmxTools/reference/plot_cor_triangle.md).
+  The pairwise estimators are available as
+  [`polychoric()`](https://kestrel99.github.io/pmxTools/reference/polychoric.md)
+  and
+  [`polyserial()`](https://kestrel99.github.io/pmxTools/reference/polyserial.md).
+
 ## pmxTools 1.6
 
 CRAN release: 2026-10-07
