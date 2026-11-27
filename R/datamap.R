@@ -49,7 +49,6 @@
 #' )
 #' datamap(sample_data, events = events)
 #'
-#' @import ggplot2
 #' @export
 datamap <- function(dat,
                     id = "ID",

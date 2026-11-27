@@ -2,6 +2,12 @@
 
 #' Calculate C(t) for a 3-compartment linear model
 #'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
+#'
 #' @inheritParams calc_sd_1cmt
 #' @param ... Passed to `calc_derived_3cpt()`
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
@@ -13,7 +19,7 @@
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_sd_3cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_sd_3cmt", list(t = t, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_sd_3cmt
@@ -23,6 +29,7 @@ calc_sd_3cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100)
 #' @export
 calc_sd_3cmt_linear_bolus <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.1 p. 39
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -40,7 +47,9 @@ calc_sd_3cmt_linear_bolus <- function(t, dose, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tlag = 1.5)
 #' @export
 calc_sd_3cmt_linear_oral_1_lag <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.3.3 p. 44
   A <- (1/param$V1) * (param$ka / (param$ka - param$alpha)) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
   B <- (1/param$V1) * (param$ka / (param$ka - param$beta))  * ((param$k21 - param$beta)/(param$beta - param$alpha))  * ((param$k31 - param$beta)/(param$beta - param$gamma))
@@ -58,6 +67,7 @@ calc_sd_3cmt_linear_oral_1_lag <- function(t, dose, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tinf=1)
 #' @export
 calc_sd_3cmt_linear_infusion <- function(t, dose, tinf, ...) {
+  check_conc_inputs(t = t, dose = dose, tinf = tinf)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.2 p. 41
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -95,6 +105,7 @@ calc_sd_3cmt_linear_infusion <- function(t, dose, tinf, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100)
 #' @export
 calc_sd_3cmt_linear_oral_0 <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.4 p. 47
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -121,6 +132,7 @@ calc_sd_3cmt_linear_oral_0 <- function(t, dose, dur, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100, tlag=1.5)
 #' @export
 calc_sd_3cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.4 p. 47
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -148,7 +160,9 @@ calc_sd_3cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100)
 #' @export
 calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.3.3 p. 44
   A <- (1/param$V1) * (param$ka / (param$ka - param$alpha)) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
   B <- (1/param$V1) * (param$ka / (param$ka - param$beta))  * ((param$k21 - param$beta)/(param$beta - param$alpha))  * ((param$k31 - param$beta)/(param$beta - param$gamma))
@@ -168,6 +182,12 @@ calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
 
 #' Calculate C(t) for a 3-compartment linear model at steady-state
 #'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
+#'
 #' @inheritParams calc_ss_1cmt
 #' @param ... Passed to `calc_derived_3cpt()`
 #' @return Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
@@ -178,7 +198,7 @@ calc_sd_3cmt_linear_oral_1 <- function(t, dose, ...) {
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_ss_3cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_ss_3cmt", list(tad = tad, tau = tau, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_ss_3cmt
@@ -188,6 +208,7 @@ calc_ss_3cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dose = 100, tau=24)
 #' @export
 calc_ss_3cmt_linear_bolus <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.1 p. 39
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -209,7 +230,9 @@ calc_ss_3cmt_linear_bolus <- function(tad, tau, dose, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tau=24, tlag = 1.5)
 #' @export
 calc_ss_3cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.3.3 p. 44
   A <- (1/param$V1) * (param$ka / (param$ka - param$alpha)) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
   B <- (1/param$V1) * (param$ka / (param$ka - param$beta))  * ((param$k21 - param$beta)/(param$beta - param$alpha))  * ((param$k31 - param$beta)/(param$beta - param$gamma))
@@ -237,6 +260,7 @@ calc_ss_3cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
 #'     V3 = 100, Q2 = 0.5, Q3 = 0.05, dose = 1000, tinf=1, tau=24)
 #' @export
 calc_ss_3cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, tinf = tinf)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.2 p. 41
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -299,6 +323,7 @@ calc_ss_3cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100, tau = 24)
 #' @export
 calc_ss_3cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.4 p. 47
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -345,6 +370,7 @@ calc_ss_3cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
 #'     V3 = 200, Q2 = 0.5, Q3 = 0.05, dur = 1, dose = 100, tau = 24, tlag = 1.5)
 #' @export
 calc_ss_3cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_3cpt(..., sigdig=Inf)
   ### macroconstants - 1.3.4 p. 47
   A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
@@ -423,7 +449,9 @@ calc_ss_3cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
 #'     V2 = 500, V3 = 200, Q2 = 0.5, Q3 = 0.05, ka = 1, dose = 100, tau = 24)
 #' @export
 calc_ss_3cmt_linear_oral_1 <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_3cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.3.3 p. 44
   A <- (1/param$V1) * (param$ka / (param$ka - param$alpha)) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
   B <- (1/param$V1) * (param$ka / (param$ka - param$beta))  * ((param$k21 - param$beta)/(param$beta - param$alpha))  * ((param$k31 - param$beta)/(param$beta - param$gamma))

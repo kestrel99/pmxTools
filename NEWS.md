@@ -4,6 +4,46 @@
 
 * Added `het_cor()`, which computes a correlation matrix for mixed continuous and ordinal variables (Pearson, polyserial or polychoric for each pair) and can draw it with `plot_cor_triangle()`. The pairwise estimators are available as `polychoric()` and `polyserial()`.
 
+## Breaking changes
+
+* `patchwork` has moved from `Depends` to `Suggests`, so `library(pmxTools)` no longer attaches it. Call `library(patchwork)` to combine plots with `+`, `/` and `plot_layout()`.
+
+* The PK calculation functions now stop with an error for inputs outside their domain instead of returning `NaN`, `Inf` or wrong values: non-positive clearances, volumes, `ka`, `dur`, `tinf`, `tau` or `step`; negative `tlag`, `dose` or times; a `ka` equal to a disposition rate constant (where the closed-form solution is singular); and, for the steady-state functions, an infusion or zero-order absorption (`tinf`, `dur`) longer than `tau`, which the steady-state solutions do not cover.
+
+* `calc_derived()` and the `calc_derived_*()` functions now stop when vector inputs have different lengths (other than 1) rather than recycling them.
+
+* `read_nmcov()` now labels the rows and columns of the variance-covariance matrix with the parameter names from the `.cov` file (`THETA1`, `SIGMA(1,1)`, `OMEGA(2,1)`, ...). Rows were previously numbered and column names were altered (`SIGMA.1.1.`). As a result, the columns of `sample_uncert()` output are named after the parameters instead of `V1`, `V2`, ...
+
+## Bug fixes
+
+* `pk_curve()` now superposes additional doses by the time elapsed since each dose, so irregular time grids, grids not starting at zero and `addl` doses beyond the observed window give correct concentrations. Previously doses were added by shifting rows, which was only correct for regular grids aligned with `ii`.
+
+* `pk_curve(ss = TRUE)` now gives a steady-state curve (steady state reached before the dose at time 0, as for `SS=1` in NONMEM, followed by any `addl` doses and then washout). The argument was previously ignored. `pk_curve()` also validates `model`, `t`, `dose`, `ii`, `addl` and `ss`.
+
+* `calc_derived()` and the `calc_derived_*()` functions calculate `Cmax`, `Tmax`, `Cmaxss`, `AUCtau` and their dose-normalized forms separately for each parameter set when given vector inputs, returning one value per set. Previously one value was returned from the pooled profiles.
+
+* `AUCtau` is now integrated over the whole dosing interval when `step` does not divide `tau` exactly.
+
+* `calc_sd_1cmt()`, `calc_sd_2cmt()`, `calc_sd_3cmt()`, `calc_ss_1cmt()`, `calc_ss_2cmt()` and `calc_ss_3cmt()` are now implemented. They choose the regimen-specific function from the parameters given (`tinf`, `dur`, `ka`, `tlag`); previously they stopped with "Not yet implemented".
+
+* `read_nmtables()` merges per-subject (`FIRSTONLY`) tables onto per-record tables correctly when there are three or more table files, by `ID`, keeping all per-record rows in their original order. It warns about subjects missing from the `FIRSTONLY` tables and stops if there is no shared `ID` column. Columns repeated across tables (such as `ID` and `TIME`) are now kept once.
+
+* `read_nmtables()` reads tables with exactly three columns and NSIM > 1 output correctly; both previously lost the header row. `read_nmtables()` and `read_nm_multi_table()` no longer turn a one-row table into a one-column table.
+
+* `read_nm()` now parses the XML document instead of requiring its last line to be `</nm:output>`, so files with trailing blank lines are read. Unparseable files still give a warning and `NULL`.
+
+* `read_scm()` and `plot_scm()` no longer pick up objects with the same names from the global environment, and `rnm()` no longer deletes `THETA`, `ETAD` or `EPSD` objects from the global environment.
+
+* `read_scm()` records the model directory of each step for any path style; previously only Windows paths with an upper-case drive letter were recognized and others were `NA`.
+
+* `plot_scm()` now draws SCMs that stopped after a single forward step.
+
+* `calc_derived()` and the `calc_derived_*()` functions now accept several output names in `type`, as documented, returning a list of those outputs.
+
+* `read_nmtables(quiet = TRUE)` no longer reports table files that were not found.
+
+* `ggplot2` is now imported selectively instead of in full.
+
 # pmxTools 1.6
 
 * Added `cut_quantile()`, which creates quantile-based bins for one or more continuous variables, with per-variable control over the number of groups.

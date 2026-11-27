@@ -233,7 +233,6 @@ as_tibble_row <- function(x, .name_repair = "unique") {
 #' dgr_table(dat, c(AGE = "Age (years)"), by = "SEX")
 #'
 #' @export
-#' @importFrom patchwork area
 #' @importFrom dplyr group_by summarize bind_rows mutate select rename relocate
 #' @importFrom purrr map map_chr pmap map_dfr map_depth
 #' @importFrom stringr str_replace_all

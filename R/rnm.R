@@ -427,13 +427,6 @@ rnm <-
     Time <- 0
   }
   
-  if (exists("THETA"))
-    rm(THETA, inherits = TRUE)
-  if (exists("ETAD"))
-    rm(ETAD, inherits = TRUE)
-  if (exists("EPSD"))
-    rm(EPSD, inherits = TRUE)
-  
   f <- readOutput(filename = file.path(pathNM, paste(prefix, index, ext, sep = "")))  # from xpose4
   
   name <- paste(prefix, index, sep = "")

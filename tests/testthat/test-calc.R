@@ -254,3 +254,133 @@ test_that("calc_derived_xxx works with vector inputs (#29)", {
     "list"
   )
 })
+
+### Review fixes: vectorised NCA, grids, dispatch and domain validation
+
+test_that("calc_derived_*() computes dose-dependent outputs per parameter set", {
+  vec <- suppressMessages(calc_derived_1cpt(CL = c(1, 2), V = c(10, 20), dose = c(100, 100)))
+  expect_equal(vec$AUCinf, c(100, 50))
+  expect_equal(vec$Cmax, c(10, 5))
+  expect_length(vec$Tmax, 2)
+
+  args <- list(CL = c(1, 2, 3), V1 = 10, V2 = 20, Q = 2, ka = c(1, 0.5, 2), dose = 100, tau = 12)
+  vec <- suppressMessages(do.call(calc_derived_2cpt, args))
+  for (i in 1:3) {
+    one <- suppressMessages(calc_derived_2cpt(CL = args$CL[i], V1 = 10, V2 = 20, Q = 2, ka = args$ka[i],
+                                              dose = 100, tau = 12))
+    for (f in setdiff(names(one), "step")) expect_equal(vec[[f]][i], one[[f]], info = paste(f, i))
+  }
+  expect_equal(vec$step, 0.1)
+
+  vec3 <- suppressMessages(calc_derived_3cpt(CL = c(1, 2), V1 = 10, V2 = 20, V3 = 30, Q2 = 2, Q3 = 1,
+                                             tinf = 1, dose = c(100, 200), tau = 24))
+  expect_true(all(lengths(vec3[setdiff(names(vec3), "step")]) == 2))
+})
+
+test_that("calc_derived_*() reports messages once and checks vector lengths", {
+  expect_message(
+    calc_derived_1cpt(CL = c(1, 2, 3), V = 10, dose = 100),
+    "dose present"
+  ) |> suppressMessages()
+  msgs <- testthat::capture_messages(calc_derived_1cpt(CL = c(1, 2, 3), V = 10, dose = 100))
+  expect_equal(sum(grepl("dose present", msgs)), 1)
+  expect_error(calc_derived_1cpt(CL = c(1, 2), V = c(10, 20, 30)), "length 1 or 3")
+  expect_error(calc_derived_1cpt(CL = c(1, 2), V = c(10, 20, 30), dose = 1), "length 1 or 3")
+  expect_equal(
+    suppressMessages(calc_derived_1cpt(CL = c(1, 2), V = 10, dose = 100, type = "Cmax")),
+    c(10, 10)
+  )
+})
+
+test_that("steady-state AUCtau integrates over the whole interval when step does not divide tau", {
+  res <- suppressMessages(calc_derived_1cpt(CL = 2, V = 25, dose = 600, tau = 24.05, step = 0.1))
+  # At steady state the AUC over one interval equals the single-dose AUCinf
+  expect_equal(res$AUCtau, 600 / 2, tolerance = 1e-8)
+})
+
+test_that("generic calc_sd_*cmt()/calc_ss_*cmt() dispatch on the regimen parameters", {
+  t <- c(0, 0.5, 2, 10)
+  p1 <- list(CL = 2, V = 25)
+  p2 <- list(CL = 2, V1 = 25, V2 = 50, Q = 5)
+  p3 <- list(CL = 2, V1 = 25, V2 = 50, V3 = 100, Q2 = 1, Q3 = 0.5)
+  regimens <- list(bolus = list(), infusion = list(tinf = 1), oral_0 = list(dur = 1),
+                   oral_0_lag = list(dur = 1, tlag = 0.25), oral_1 = list(ka = 1),
+                   oral_1_lag = list(ka = 1, tlag = 0.25))
+  for (n in 1:3) {
+    p <- list(p1, p2, p3)[[n]]
+    for (r in names(regimens)) {
+      sd_args <- c(list(t = t, dose = 100), p, regimens[[r]])
+      ss_args <- c(list(tad = t, tau = 12, dose = 100), p, regimens[[r]])
+      expect_equal(
+        do.call(get(sprintf("calc_sd_%dcmt", n)), sd_args),
+        do.call(get(sprintf("calc_sd_%dcmt_linear_%s", n, r)), sd_args),
+        info = paste(n, r, "sd")
+      )
+      expect_equal(
+        do.call(get(sprintf("calc_ss_%dcmt", n)), ss_args),
+        do.call(get(sprintf("calc_ss_%dcmt_linear_%s", n, r)), ss_args),
+        info = paste(n, r, "ss")
+      )
+    }
+  }
+  expect_error(calc_sd_1cmt(t = 1, dose = 1, CL = 1, V = 1, tinf = 1, ka = 1), "tinf")
+  expect_error(calc_sd_1cmt(t = 1, dose = 1, CL = 1, V = 1, dur = 1, ka = 1), "dur")
+  expect_error(calc_ss_2cmt(tad = 1, tau = 12, dose = 1, CL = 1, V1 = 1, V2 = 1, Q = 1, tlag = 1), "tlag")
+})
+
+test_that("PK calculations reject inputs outside their domain", {
+  expect_error(calc_derived_1cpt(CL = 0, V = 25), "CL")
+  expect_error(calc_derived_1cpt(CL = 2, V = -25), "V1")
+  expect_error(calc_derived_2cpt(CL = 2, V1 = 25, V2 = 50, Q = NA), "Q2")
+  expect_error(calc_derived_3cpt(CL = 2, V1 = 25, V2 = 50, V3 = 0, Q2 = 1, Q3 = 1), "V3")
+  expect_error(calc_derived_1cpt(CL = 2, V = 25, tau = 0), "tau")
+  expect_error(calc_derived_1cpt(CL = 2, V = 25, ka = 1, tlag = -1), "tlag")
+  expect_error(calc_sd_1cmt_linear_bolus(t = c(-1, 0), CL = 2, V = 25, dose = 100), "`t`")
+  expect_error(calc_ss_1cmt_linear_bolus(tad = -1, tau = 12, CL = 2, V = 25, dose = 100), "`tad`")
+  expect_error(calc_sd_1cmt_linear_infusion(t = 1, CL = 2, V = 25, dose = 100, tinf = 0), "tinf")
+  expect_error(calc_ss_2cmt_linear_infusion(tad = 1, tau = 4, CL = 2, V1 = 25, V2 = 50, Q = 5,
+                                            dose = 100, tinf = 6), "overlapping")
+  expect_error(calc_ss_3cmt_linear_oral_0(tad = 1, tau = 4, CL = 2, V1 = 25, V2 = 50, V3 = 100, Q2 = 1,
+                                          Q3 = 0.5, dose = 100, dur = 6), "overlapping")
+  expect_no_error(calc_ss_1cmt_linear_infusion(tad = 1, tau = 4, CL = 2, V = 25, dose = 100, tinf = 4))
+})
+
+test_that("first-order absorption errors when ka coincides with a disposition rate", {
+  expect_error(calc_sd_1cmt_linear_oral_1(t = 1, CL = 2, V = 20, ka = 0.1, dose = 100), "alpha")
+  d <- calc_derived_2cpt(CL = 2, V1 = 25, V2 = 50, Q = 5, sigdig = Inf)
+  # ka < k10 here, so the flip-flop warning is expected alongside the error
+  expect_error(
+    suppressWarnings(
+      calc_ss_2cmt_linear_oral_1_lag(tad = 1, tau = 12, CL = 2, V1 = 25, V2 = 50, Q = 5, ka = d$beta,
+                                     tlag = 0.5, dose = 100)
+    ),
+    "beta"
+  )
+  # Nearby (but distinct) rates are still evaluated
+  expect_true(is.finite(calc_sd_1cmt_linear_oral_1(t = 1, CL = 2, V = 20, ka = 0.1 * (1 + 1e-6), dose = 100)))
+})
+
+test_that("3-compartment solution is stable when it degenerates to two compartments", {
+  t <- c(0.5, 2, 10, 48)
+  c2 <- calc_sd_2cmt_linear_bolus(t = t, dose = 100, CL = 2, V1 = 10, V2 = 40, Q = 6)
+  c3 <- calc_sd_3cmt_linear_bolus(t = t, dose = 100, CL = 2, V1 = 10, V2 = 20, V3 = 20, Q2 = 3, Q3 = 3)
+  expect_equal(c3, c2)
+  c3_near <- calc_sd_3cmt_linear_bolus(t = t, dose = 100, CL = 2, V1 = 10, V2 = 20, V3 = 20 * (1 + 1e-10),
+                                       Q2 = 3, Q3 = 3)
+  expect_equal(c3_near, c2)
+})
+
+test_that("calc_derived_*() return one or several outputs selected by `type`", {
+  expect_equal(calc_derived_1cpt(CL = 2, V = 20, type = "k10"), 0.1)
+  expect_equal(
+    calc_derived_2cpt(CL = 2, V1 = 20, V2 = 40, Q = 4, type = c("k10", "Vss")),
+    list(k10 = 0.1, Vss = 60)
+  )
+  vec <- suppressMessages(calc_derived_3cpt(CL = c(1, 2), V1 = 10, V2 = 20, V3 = 30, Q2 = 2, Q3 = 1,
+                                            dose = 100, type = c("Cmax", "AUCinf")))
+  expect_equal(names(vec), c("Cmax", "AUCinf"))
+  expect_equal(vec$AUCinf, c(100, 50))
+  expect_error(calc_derived_1cpt(CL = 2, V = 20, type = c("k10", "nonsense")), "nonsense")
+  # Outputs that need a dose are not available without one
+  expect_error(calc_derived_1cpt(CL = 2, V = 20, type = "Cmax"), "Cmax")
+})

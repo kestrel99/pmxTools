@@ -17,7 +17,8 @@ sample_uncert(nmRun, n, seed)
 A data frame containing \code{n} samples from the multivariate normal distribution, using
 NONMEM typical parameter estimates the NONMEM variance-covariance matrix (from the *.cov file). This
 provides \code{n} sets of parameter estimates sampled from the uncertainty distribution, suitable
-for simulation under model uncertainty.
+for simulation under model uncertainty. Columns are named after the parameters in the
+\code{.cov} file (e.g. \code{THETA1}, \code{SIGMA(1,1)}, \code{OMEGA(2,1)}).
 }
 \description{
 Sample from the multivariate normal distribution to generate new sets of parameters from NONMEM output.

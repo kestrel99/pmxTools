@@ -28,7 +28,7 @@ read_nmcov <- function(fileName, quiet=FALSE, directory=NULL, ...) {
     }
     ret <-
       lapply(
-        X=read_nm_multi_table(fileName=fileName_read, row.names=1, simplify=FALSE),
+        X=read_nm_multi_table(fileName=fileName_read, row.names=1, check.names=FALSE, simplify=FALSE),
         FUN=as.matrix
       )
     if (length(ret) == 1) {

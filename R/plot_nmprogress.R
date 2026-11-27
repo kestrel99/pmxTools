@@ -23,7 +23,6 @@
 #' plot_nmprogress("run315", ".nmlst")
 #' }
 #'
-#' @import ggplot2
 #' @export
 
 plot_nmprogress <- function(fileName, fileExt = ".lst", metric="perc",

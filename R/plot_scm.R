@@ -56,7 +56,7 @@
 #'
 #' @export
 #' @importFrom data.tree SetEdgeStyle SetGraphStyle SetNodeStyle as.Node GetDefaultTooltip
-#' @importFrom stringr str_extract str_split
+#' @importFrom stringr str_split
 
 plot_scm <- function(dir, startPhase="forward", 
                      fwdSuccessCol = "#66C2A5", fwdFailCol="black",
@@ -92,6 +92,9 @@ plot_scm <- function(dir, startPhase="forward",
   
   Step <- NULL 
   scm <- read_scm(dir, startPhase = startPhase)
+  # Built below only for the phases present in the SCM log
+  scm_fwd <- NULL
+  scm_bwd <- NULL
   
   frows <- nrow(scm$forward)
   brows <- nrow(scm$backward)
@@ -132,7 +135,9 @@ plot_scm <- function(dir, startPhase="forward",
     
     scm$forward$pathString <- paste("Base model", scm$forward$Model, sep="/")
     
-    for (n in 2:max(as.numeric(as.character(scm$forward$Step)))) {
+    # Steps after the first hang off the best model of the previous step (none
+    # when the SCM stopped after one step)
+    for (n in seq_len(max(as.numeric(as.character(scm$forward$Step))))[-1]) {
       parent <- "Base model"
       for(i in 2:n) {
         parent <- paste(parent, unique(scm$forward$Parent[as.numeric(as.character(scm$forward$Step))==i]), sep="/")
@@ -198,7 +203,7 @@ plot_scm <- function(dir, startPhase="forward",
       
     }
   
-  if(exists("scm_bwd") & exists("scm_fwd")) {
+  if(!is.null(scm_bwd) && !is.null(scm_fwd)) {
     scm_b <- data.frame(Step=c(scm$forward$Step,scm$backward$Step),
                         Model=c(scm$forward$Model,scm$backward$Model),
                         BaseOFV=c(scm$forward$BaseOFV,scm$backward$BaseOFV),
@@ -224,11 +229,11 @@ plot_scm <- function(dir, startPhase="forward",
     scm_p$Goal = 0
   }
   
-  if(exists("scm_bwd") & !(exists("scm_fwd"))) {
+  if(!is.null(scm_bwd) && is.null(scm_fwd)) {
     scm_p <- scm_bwd  
   }
   
-  if(exists("scm_fwd") & !(exists("scm_bwd"))) {
+  if(!is.null(scm_fwd) && is.null(scm_bwd)) {
     scm_p <- scm_fwd  
   }
   

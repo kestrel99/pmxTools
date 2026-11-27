@@ -30,7 +30,7 @@
 #' }
 #'
 #' @export
-#' @importFrom stringr str_extract str_split
+#' @importFrom stringr str_split
 read_scm <- function(dir, startPhase="forward") {
   
   Drop <- PVal <- NULL  # appease CRAN
@@ -55,6 +55,9 @@ read_scm <- function(dir, startPhase="forward") {
   
   lf <- vector("list", length(scmlog))
   lb <- vector("list", length(scmlog))
+  # Built below only when the log contains forward/backward steps
+  scmf <- NULL
+  scmb <- NULL
   
   direc <- ""
   phase <- startPhase
@@ -63,7 +66,7 @@ read_scm <- function(dir, startPhase="forward") {
   for (n in 1:length(scmlog)) {
     # detect step number and directory of the current step
     if(length(h <- grep("Model directory ", scmlog[n]))) {
-      dir <- stringr::str_extract(scmlog[n], "([A-Z|a:z]:\\\\(.)*$)")
+      direc <- trimws(sub(".*Model directory", "", scmlog[n]))
       step <- step + 1
     }
     
@@ -90,7 +93,7 @@ read_scm <- function(dir, startPhase="forward") {
       } else {
         sign <- 0
       }
-      lf[[n]] <- c(phase, step, dir, model, test, bOFV, nOFV, drop, goal, ddf, sign, pval)
+      lf[[n]] <- c(phase, step, direc, model, test, bOFV, nOFV, drop, goal, ddf, sign, pval)
     }
     
     ### add row (backward)
@@ -110,7 +113,7 @@ read_scm <- function(dir, startPhase="forward") {
       } else {
         sign <- 0
       }
-      if(model!="CRITERION") lb[[n]] <- c(phase, step, dir, model, test, bOFV, nOFV, drop, goal, ddf, sign, pval)
+      if(model!="CRITERION") lb[[n]] <- c(phase, step, direc, model, test, bOFV, nOFV, drop, goal, ddf, sign, pval)
     }
   }
   
@@ -154,7 +157,7 @@ read_scm <- function(dir, startPhase="forward") {
     scmb$PVal    <- as.numeric(as.character(scmb$PVal))
   }
   
-  if (exists("scmf")) {
+  if (!is.null(scmf)) {
     a1 <- split(scmf, scmf$Step)
     a2 <- lapply(a1, function(x) {
       if(nrow(x) > 0) {
@@ -170,7 +173,7 @@ read_scm <- function(dir, startPhase="forward") {
     fwdSummary$dOFV <- -1 * fwdSummary$dOFV
   }
   
-  if (exists("scmb")) {
+  if (!is.null(scmb)) {
     a1 <- split(scmb, scmb$Step)
     a2 <- lapply(a1, function(x) {
       if(nrow(x) > 0) {
@@ -187,12 +190,12 @@ read_scm <- function(dir, startPhase="forward") {
   }
 
   out <- list()
-  if(exists("scmf")){
+  if(!is.null(scmf)){
     out$forward <- scmf
     out$forwardSummary <- fwdSummary
     out$forwardP <- signif(1-stats::pchisq(unique(abs(scmf$Goal)), df=1),2)
   }
-  if(exists("scmb")){
+  if(!is.null(scmb)){
     out$backward <- scmb
     out$backwardSummary <- bwdSummary
     out$backwardP <- signif(1-stats::pchisq(unique(abs(scmb$Goal)), df=1),2)
