@@ -2,6 +2,12 @@
 
 #' Calculate C(t) for a 2-compartment linear model
 #'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
+#'
 #' @inheritParams calc_sd_1cmt
 #' @param ... Passed to `calc_derived_2cpt()`
 #' @return Concentration of drug at requested time (\code{t}) after a single dose, given provided set of parameters and variables.
@@ -13,7 +19,7 @@
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_sd_2cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_sd_2cmt", list(t = t, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_sd_2cmt
@@ -22,6 +28,7 @@ calc_sd_2cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
 #' Ct <- calc_sd_2cmt_linear_bolus(t = 11.75, CL = 7.5, V1 = 20, V2 = 30, Q = 0.5, dose = 10)
 #' @export
 calc_sd_2cmt_linear_bolus <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.2 p. 21
   A <- (1/param$V1) * ((param$alpha - param$k21)/(param$alpha - param$beta))
@@ -38,7 +45,9 @@ calc_sd_2cmt_linear_bolus <- function(t, dose, ...) {
 #'     dose = 1000, ka = 1, tlag = 2)
 #' @export
 calc_sd_2cmt_linear_oral_1_lag <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.2.3 p. 24
   A <- (param$ka/param$V1) * ((param$k21 - param$alpha) / ((param$ka - param$alpha) * (param$beta - param$alpha)))
   B <- (param$ka/param$V1) * ((param$k21 - param$beta) / ((param$ka - param$beta) * (param$alpha - param$beta)))
@@ -55,6 +64,7 @@ calc_sd_2cmt_linear_oral_1_lag <- function(t, dose, ...) {
 #'     dose = 10, tinf = 1)
 #' @export
 calc_sd_2cmt_linear_infusion <- function(t, dose, tinf, ...) {
+  check_conc_inputs(t = t, dose = dose, tinf = tinf)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.2 p. 21
   A <- (1/param$V1) * ((param$alpha - param$k21)/(param$alpha - param$beta))
@@ -74,6 +84,7 @@ calc_sd_2cmt_linear_infusion <- function(t, dose, tinf, ...) {
 #'     dose = 1000, dur = 1, tlag=2)
 #' @export
 calc_sd_2cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
   A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
@@ -95,7 +106,9 @@ calc_sd_2cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
 #'     dose = 1000, ka = 1)
 #' @export
 calc_sd_2cmt_linear_oral_1 <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.2.3 p. 24
   A <- (param$ka/param$V1) * ((param$k21 - param$alpha) / ((param$ka - param$alpha) * (param$beta - param$alpha)))
   B <- (param$ka/param$V1) * ((param$k21 - param$beta) / ((param$ka - param$beta) * (param$alpha - param$beta)))
@@ -111,6 +124,7 @@ calc_sd_2cmt_linear_oral_1 <- function(t, dose, ...) {
 #'     dose = 1000, dur = 1)
 #' @export
 calc_sd_2cmt_linear_oral_0 <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
   A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
@@ -126,6 +140,12 @@ calc_sd_2cmt_linear_oral_0 <- function(t, dose, dur, ...) {
 # Steady-state ####
 #' Calculate C(t) for a 2-compartment linear model at steady-state
 #'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
+#'
 #' @inheritParams calc_ss_1cmt
 #' @param ... Passed to `calc_derived_2cpt()`
 #' @return Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
@@ -136,7 +156,7 @@ calc_sd_2cmt_linear_oral_0 <- function(t, dose, dur, ...) {
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_ss_2cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_ss_2cmt", list(tad = tad, tau = tau, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_ss_2cmt
@@ -146,6 +166,7 @@ calc_ss_2cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
 #'     dose = 10, tau=24)
 #' @export
 calc_ss_2cmt_linear_bolus <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.2 p. 21
   A <- (1/param$V1) * ((param$alpha - param$k21)/(param$alpha - param$beta))
@@ -168,6 +189,7 @@ calc_ss_2cmt_linear_bolus <- function(tad, tau, dose, ...) {
 #'     dose = 10, tinf = 1, tau = 12)
 #' @export
 calc_ss_2cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, tinf = tinf)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.2 p. 21
   A <- 1 / param$V1 * ((param$alpha-param$k21)/(param$alpha-param$beta))
@@ -195,6 +217,7 @@ calc_ss_2cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
 #'     dose = 1000, dur = 1, tau = 24)
 #' @export
 calc_ss_2cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
   A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta ))
@@ -238,7 +261,9 @@ calc_ss_2cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
 #'     dose = 1000, ka = 1, tau=24, tlag=2)
 #' @export
 calc_ss_2cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.2.3 p. 24
   A <- (param$ka/param$V1) * ((param$k21 - param$alpha) / ((param$ka - param$alpha) * (param$beta - param$alpha)))
   B <- (param$ka/param$V1) * ((param$k21 - param$beta) / ((param$ka - param$beta) * (param$alpha - param$beta)))
@@ -259,6 +284,7 @@ calc_ss_2cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
 #'     dose = 1000, dur = 1, tau = 24, tlag=2)
 #' @export
 calc_ss_2cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_2cpt(..., sigdig=Inf)
   ### macroconstants - 1.2.4 p. 28
   A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
@@ -320,7 +346,9 @@ calc_ss_2cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
 #'     dose = 1000, ka = 1, tau=24)
 #' @export
 calc_ss_2cmt_linear_oral_1 <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_2cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### macroconstants - 1.2.3 p. 24
   A <- (param$ka/param$V1) * ((param$k21 - param$alpha) / ((param$ka - param$alpha) * (param$beta - param$alpha)))
   B <- (param$ka/param$V1) * ((param$k21 - param$beta) / ((param$ka - param$beta) * (param$alpha - param$beta)))

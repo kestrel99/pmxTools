@@ -2,6 +2,12 @@
 
 #' Calculate C(t) for a 1-compartment linear model
 #'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
+#'
 #' @param t Time after dose (h)
 #' @param dose Dose
 #' @param dur Duration of zero-order absorption (h)
@@ -16,7 +22,7 @@
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_sd_1cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_sd_1cmt", list(t = t, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_sd_1cmt
@@ -25,6 +31,7 @@ calc_sd_1cmt <- function(t, dose, dur=NULL, tinf=NULL, ...) {
 #' Ct <- calc_sd_1cmt_linear_bolus(t=0:24, CL=6, V=25, dose=600)
 #' @export
 calc_sd_1cmt_linear_bolus <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.1 p. 5
   Ct <- (dose/param$V1) * exp(-param$k10*t)
@@ -37,7 +44,9 @@ calc_sd_1cmt_linear_bolus <- function(t, dose, ...) {
 #' Ct <- calc_sd_1cmt_linear_oral_1_lag(t=0:24, CL=6, V=25, ka=1.1, dose=600, tlag=2)
 #' @export
 calc_sd_1cmt_linear_oral_1_lag <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### C(t) after single dose - eq 1.11 p. 9
   Ct <- (dose/param$V1) * (param$ka / (param$ka - param$k10)) * (exp(-param$k10 * (t - param$tlag)) - exp(-param$ka * (t - param$tlag)))
   Ct[t < param$tlag] <- 0
@@ -50,6 +59,7 @@ calc_sd_1cmt_linear_oral_1_lag <- function(t, dose, ...) {
 #' Ct <- calc_sd_1cmt_linear_infusion(t=0:24, CL=6, V=25, dose=600, tinf=1)
 #' @export
 calc_sd_1cmt_linear_infusion <- function(t, dose, tinf, ...) {
+  check_conc_inputs(t = t, dose = dose, tinf = tinf)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.6 p. 7
   Ct <- (dose/tinf) * (1 / (param$k10*param$V1) ) * (1 - exp(-param$k10 * tinf)) * exp(-param$k10 * (t-tinf))
@@ -63,6 +73,7 @@ calc_sd_1cmt_linear_infusion <- function(t, dose, tinf, ...) {
 #' Ct <- calc_sd_1cmt_linear_oral_0(t=0:24, CL=6, V=25, dur=1.5, dose=600)
 #' @export
 calc_sd_1cmt_linear_oral_0 <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.21 p. 13
   Ct <- (dose/ dur) * (1 / (param$k10 * param$V1)) * (1 - exp(-param$k10 * dur)) * exp(-param$k10 * (t - dur))
@@ -76,7 +87,9 @@ calc_sd_1cmt_linear_oral_0 <- function(t, dose, dur, ...) {
 #' Ct <- calc_sd_1cmt_linear_oral_1(t=0:24, CL=6, V=25, ka=1.1, dose=600)
 #' @export
 calc_sd_1cmt_linear_oral_1 <- function(t, dose, ...) {
+  check_conc_inputs(t = t, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### C(t) after single dose - eq 1.11 p. 9
   Ct <- (dose/param$V1) * (param$ka / (param$ka - param$k10)) * (exp(-param$k10 * t) - exp(-param$ka * t))
   Ct
@@ -88,6 +101,7 @@ calc_sd_1cmt_linear_oral_1 <- function(t, dose, ...) {
 #' Ct <- calc_sd_1cmt_linear_oral_0_lag(t=0:24, CL=6, V=25, dur=1.5, dose=600, tlag=1.5)
 #' @export
 calc_sd_1cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
+  check_conc_inputs(t = t, dose = dose, dur = dur)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.24 p. 13
   Ct <- (dose / dur) * (1 / (param$k10 * param$V1)) * (1 - exp(-param$k10 * dur)) * exp(-param$k10 * (t - param$tlag - dur))
@@ -99,6 +113,12 @@ calc_sd_1cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
 # Steady-State #####
 
 #' Calculate C(t) for a 1-compartment linear model at steady-state
+#'
+#' The dosing regimen is chosen from the parameters supplied: `tinf` gives an
+#' IV infusion, `dur` zero-order absorption and `ka` (in `...`) first-order
+#' absorption, each of the oral forms optionally with a lag time `tlag` (in
+#' `...`). With none of these an IV bolus is assumed. The matching
+#' regimen-specific function listed below is then called.
 #'
 #' @param tad Time after dose (h)
 #' @param tau Dosing interval (h)
@@ -115,7 +135,7 @@ calc_sd_1cmt_linear_oral_0_lag <- function(t, dose, dur, ...) {
 #' @references Rowland M, Tozer TN. Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications (4th). Lippincott Williams & Wilkins, Philadelphia, 2010.  
 #' @export
 calc_ss_1cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
-  stop("Not yet implemented")
+  dispatch_regimen("calc_ss_1cmt", list(tad = tad, tau = tau, dose = dose), dur = dur, tinf = tinf, ...)
 }
 
 #' @describeIn calc_ss_1cmt
@@ -124,6 +144,7 @@ calc_ss_1cmt <- function(tad, tau, dose, dur=NULL, tinf=NULL, ...) {
 #' Ct <- calc_ss_1cmt_linear_bolus(t=0:24, CL=6, V=25, dose=600, tau=24)
 #' @export
 calc_ss_1cmt_linear_bolus <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.1 p. 5
   Ct <- (dose/param$V1) * (exp(-param$k10*tad))/(1 - exp(-param$k10 * tau))
@@ -136,6 +157,7 @@ calc_ss_1cmt_linear_bolus <- function(tad, tau, dose, ...) {
 #' Ct <- calc_ss_1cmt_linear_infusion(tad=0:36, CL=2, V=25, dose=600, tinf=1, tau=24)
 #' @export
 calc_ss_1cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, tinf = tinf)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) after single dose - eq 1.8 p. 8
   Ct <-
@@ -163,6 +185,7 @@ calc_ss_1cmt_linear_infusion <- function(tad, tau, dose, tinf, ...) {
 #' Ct <- calc_ss_1cmt_linear_oral_0(tad=0:36, CL=2, V=25, dose=600, dur=1, tau=24)
 #' @export
 calc_ss_1cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) at steady state - eq 1.23 p. 14
   Ct <-
@@ -190,6 +213,7 @@ calc_ss_1cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
 #' Ct <- calc_ss_1cmt_linear_oral_0_lag(tad=0:36, CL=2, V=25, dose=600, dur=1, tau=24, tlag=1.5)
 #' @export
 calc_ss_1cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
   param <- calc_derived_1cpt(..., sigdig=Inf)
   ### C(t) at steady state - eq 1.26 p. 14
   Ct <-
@@ -225,7 +249,9 @@ calc_ss_1cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
 #'     ka=0.25, tlag=0.75, tau=24)
 #' @export
 calc_ss_1cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### C(t) after single dose - eq 1.16 p. 11
   Ct <-
     (dose /param$V1) *
@@ -250,7 +276,9 @@ calc_ss_1cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
 #' Ct <- calc_ss_1cmt_linear_oral_1(tad=0:36, CL=2, V=25, dose=600, ka=0.25, tau=24)
 #' @export
 calc_ss_1cmt_linear_oral_1 <- function(tad, tau, dose, ...) {
+  check_conc_inputs(tad = tad, tau = tau, dose = dose)
   param <- calc_derived_1cpt(..., sigdig=Inf)
+  check_ka_distinct(param)
   ### C(t) after single dose - eq 1.8 p. 8
   Ct <-
     (dose/param$V1) *

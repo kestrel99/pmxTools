@@ -170,13 +170,13 @@ test_that("sample_uncertainty", {
   n <- 5000
   samp <- sample_uncert("testData/runR001.xml", n = n, seed = 740727)
 
-  expect_named(samp, paste0("V", 1:7))
+  expect_named(samp, c("THETA1", "THETA2", "THETA3", "SIGMA(1,1)", "OMEGA(1,1)", "OMEGA(2,1)", "OMEGA(2,2)"))
   expect_equal(nrow(samp), n)
   # Zero variance in the covariance matrix, so every draw is the estimate. The
   # eigendecomposition leaves rounding noise around 1e-10 on macOS, so compare
   # with a tolerance rather than requiring a single unique value.
-  expect_equal(samp$V4, rep(mu[4], n), tolerance = 1e-6)
-  expect_equal(samp$V6, rep(mu[6], n), tolerance = 1e-6)
+  expect_equal(samp$`SIGMA(1,1)`, rep(mu[4], n), tolerance = 1e-6)
+  expect_equal(samp$`OMEGA(2,1)`, rep(mu[6], n), tolerance = 1e-6)
   # Ratios rather than raw values so that the tolerance applies per parameter
   # rather than being swamped by V2, which is three orders of magnitude larger.
   varies <- sigma > 0
@@ -200,3 +200,15 @@ test_that("sample_sigma", {
   expect_snapshot(sample_sigma("testData/runR001.xml", n=50, seed=740727))
 })
 
+
+test_that("rnm() leaves same-named objects in the global environment alone", {
+  for (nm in c("THETA", "ETAD", "EPSD")) assign(nm, paste("user", nm), envir = globalenv())
+  withr::defer(rm(list = c("THETA", "ETAD", "EPSD"), envir = globalenv()))
+
+  res <- rnm(index = "001", prefix = "runR", pathNM = test_path("testData"), ext = ".res", extmod = ".ctl")
+
+  expect_equal(get("THETA", envir = globalenv()), "user THETA")
+  expect_equal(get("ETAD", envir = globalenv()), "user ETAD")
+  expect_equal(get("EPSD", envir = globalenv()), "user EPSD")
+  expect_s3_class(res$Theta, "data.frame")
+})

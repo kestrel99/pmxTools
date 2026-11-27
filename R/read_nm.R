@@ -29,13 +29,22 @@ read_nm <- function(fileName, directory=NULL, quiet=FALSE, ...) {
     message("Reading ", fileName_read)
   }
   
-  testFile <- readLines(fileName_read)
-  if(testFile[length(testFile)] != "</nm:output>") {
-    warning("Invalid XML: ", fileName_read)
-    return(NULL)    
-  } else {
-    nmFile <- xml2::read_xml(fileName_read)
-    xml2::as_list(nmFile)$output
+  # Parse the document itself rather than checking its last line: a truncated
+  # file (e.g. from a run still in progress) fails to parse, while trailing
+  # whitespace and either line ending are valid XML.
+  nmFile <- tryCatch(
+    xml2::read_xml(fileName_read),
+    error = function(e) {
+      warning("Invalid XML: ", fileName_read, " (", conditionMessage(e), ")", call. = FALSE)
+      NULL
+    }
+  )
+  if (is.null(nmFile)) {
+    return(NULL)
   }
-  
+  if (xml2::xml_name(nmFile) != "output") {
+    warning("Invalid XML: ", fileName_read, " (root element is not <nm:output>)", call. = FALSE)
+    return(NULL)
+  }
+  xml2::as_list(nmFile)$output
 }

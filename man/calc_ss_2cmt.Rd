@@ -41,7 +41,11 @@ calc_ss_2cmt_linear_oral_1(tad, tau, dose, ...)
 Concentration of drug at requested time (\code{t}) at steady-state, given provided set of parameters and variables.
 }
 \description{
-Calculate C(t) for a 2-compartment linear model at steady-state
+The dosing regimen is chosen from the parameters supplied: \code{tinf} gives an
+IV infusion, \code{dur} zero-order absorption and \code{ka} (in \code{...}) first-order
+absorption, each of the oral forms optionally with a lag time \code{tlag} (in
+\code{...}). With none of these an IV bolus is assumed. The matching
+regimen-specific function listed below is then called.
 }
 \section{Functions}{
 \itemize{

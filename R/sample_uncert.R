@@ -7,7 +7,8 @@
 #' @return A data frame containing \code{n} samples from the multivariate normal distribution, using
 #' NONMEM typical parameter estimates the NONMEM variance-covariance matrix (from the *.cov file). This
 #' provides \code{n} sets of parameter estimates sampled from the uncertainty distribution, suitable
-#' for simulation under model uncertainty.
+#' for simulation under model uncertainty. Columns are named after the parameters in the
+#' \code{.cov} file (e.g. \code{THETA1}, \code{SIGMA(1,1)}, \code{OMEGA(2,1)}).
 #' 
 #' @seealso NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}

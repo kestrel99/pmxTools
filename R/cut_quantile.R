@@ -48,7 +48,6 @@
 #' # Verbose output
 #' result <- cut_quantile(dat, list(CONC = c(4, 3), AGE = 4), verbose = TRUE)
 #'
-#' @import ggplot2
 #' @importFrom dplyr mutate select group_by summarize ungroup filter pull left_join slice
 #' @importFrom dplyr n_distinct bind_rows any_of
 #' @importFrom tibble tibble as_tibble

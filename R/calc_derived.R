@@ -16,6 +16,82 @@ calc_auc_tau <- function(conc, time) {
   as.numeric(PKNCA::pk.calc.auc.all(conc = conc, time = time))
 }
 
+# A grid from 0 to `to` in increments of `step` that always ends exactly at
+# `to`, so integrals over the dosing interval cover all of it.
+seq_through <- function(to, step) {
+  grid <- seq(0, to, by = step)
+  if (grid[length(grid)] < to) c(grid, to) else grid
+}
+
+# Inputs that may be supplied as vectors, one element per parameter set.
+derived_vector_args <- c("CL", "V", "V1", "V2", "V3", "Q", "Q2", "Q3", "ka", "dur", "tlag", "tinf", "dose", "tau")
+
+#' Evaluate calc_derived_*() separately for each recycled parameter set
+#'
+#' The dose-dependent (NCA) outputs are computed from one simulated profile per
+#' parameter set, so when `dose` is given with vector inputs each set is
+#' evaluated on its own and the results are combined element-wise.  Messages
+#' are emitted once rather than once per set.
+#'
+#' @param fun The calling `calc_derived_*()` function.
+#' @param args Named list of the arguments supplied to `fun`.
+#' @returns `NULL` when no row-wise evaluation is needed (scalar inputs, or no
+#'   `dose`), otherwise the combined result.
+#' @noRd
+derived_rowwise <- function(fun, args) {
+  vec <- Filter(Negate(is.null), args[intersect(names(args), derived_vector_args)])
+  n_each <- lengths(vec)
+  n <- max(c(1, n_each))
+  bad <- n_each != 1 & n_each != n
+  if (any(bad)) {
+    stop("Parameter inputs must have length 1 or ", n, "; check: ",
+         paste(names(vec)[bad], collapse = ", "), call. = FALSE)
+  }
+  if (n == 1 || is.null(args[["dose"]])) return(NULL)
+
+  muffle_flipflop <- function(w) {
+    if (startsWith(conditionMessage(w), "Flip-flop")) invokeRestart("muffleWarning")
+  }
+  rows <- lapply(seq_len(n), function(i) {
+    row_args <- args
+    row_args[names(vec)] <- lapply(vec, function(x) x[min(i, length(x))])
+    run <- function() do.call(fun, row_args)
+    withCallingHandlers(
+      if (i == 1) run() else suppressMessages(run()),
+      warning = muffle_flipflop
+    )
+  })
+  V1 <- if (is.null(vec[["V1"]])) vec[["V"]] else vec[["V1"]]
+  maybe_warn_flipflop(ka = vec[["ka"]], k10 = vec[["CL"]] / V1)
+
+  if (!is.list(rows[[1]])) return(unlist(rows))
+  fields <- names(rows[[1]])
+  out <- stats::setNames(lapply(fields, function(f) unlist(lapply(rows, `[[`, f))), fields)
+  if ("step" %in% fields) out$step <- rows[[1]]$step
+  out
+}
+
+#' Select the requested outputs of calc_derived_*()
+#'
+#' @param out Named list of all outputs; `NULL` entries are not available for
+#'   the inputs given.
+#' @param type `"all"`, one output name, or a vector of output names.
+#' @returns The list without `NULL` entries for `"all"`, the value itself for
+#'   one name, or a list of the named outputs for several names.
+#' @noRd
+select_derived <- function(out, type) {
+  out <- out[!vapply(out, is.null, logical(1))]
+  if (identical(type, "all")) return(out)
+  if (!is.character(type) || length(type) == 0) {
+    stop("`type` must be \"all\" or a character vector of output names.", call. = FALSE)
+  }
+  invalid <- setdiff(type, names(out))
+  if (length(invalid) > 0) {
+    stop("Invalid value for `type`: ", paste(invalid, collapse = ", "), call. = FALSE)
+  }
+  if (length(type) == 1) out[[type]] else out[type]
+}
+
 #' Calculate derived pharmacokinetic parameters for a 1-, 2-, or 3-compartment
 #' linear model.
 #'
@@ -37,7 +113,8 @@ calc_auc_tau <- function(conc, time) {
 #' @param tau Duration of interdose interval (time units, e.g. h; defaults to 24)
 #' @param step Time increment to use when estimating NCA parameters (time units, e.g. h; defaults to 0.1)
 #' @param type Parameters to return. Default is \code{"all"}.  If not
-#'   \code{"all"}, this may be a vector from the names of the return value list.
+#'   \code{"all"}, this may be one name from the return value list, giving
+#'   that value alone, or a vector of names, giving a list of those values.
 #' @param sigdig Number of significant digits to be returned. Default is
 #'   \code{5}.
 #' @param verbose For \code{calc_derived()}, provide a message indicating the
@@ -82,7 +159,14 @@ calc_auc_tau <- function(conc, time) {
 #' The input parameters with standardized names (\code{dose}, \code{V1}, \code{V2},
 #' \code{V3}, \code{CL}, \code{Q2}, and \code{Q3}) are also returned in the
 #' list, and if provided, additional PK parameters of `ka`, `tlag`, `tinf` and `dur` are also
-#' returned in the list.  All inputs may be scalars or vectors.
+#' returned in the list.  All PK parameter inputs (including `dose` and `tau`)
+#' may be scalars or vectors; vectors must all have the same length, and
+#' scalars are recycled to it.  Each element of every returned parameter then
+#' corresponds to one parameter set, with NCA parameters calculated separately
+#' for each set.  `step`, `type` and `sigdig` must be single values.
+#'
+#' Clearances, volumes, `ka`, `dur`, `tinf`, `tau` and `step` must be positive;
+#' `tlag` and `dose` must be non-negative.
 #'
 #' @author Justin Wilkins, \email{justin.wilkins@@occams.com}
 #' @author Bill Denney, \email{wdenney@@humanpredictions.com}
@@ -137,12 +221,19 @@ maybe_warn_flipflop <- function(ka, k10) {
 #' params <- calc_derived_1cpt(CL=16, V=25)
 #' @export
 calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL, tinf=NULL, dose=NULL, tau=NULL, step=0.1, type="all", sigdig=5) {
+  rowwise <- derived_rowwise(calc_derived_1cpt, mget(names(match.call())[-1]))
+  if (!is.null(rowwise)) return(rowwise)
+
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")
   } else if (!is.null(V)) {
     # Use the preferred synonym
     V1 <- V
   }
+  check_derived_inputs(
+    positive = list(CL = CL, V1 = V1, ka = ka, dur = dur, tinf = tinf, tau = tau, step = step),
+    nonnegative = list(tlag = tlag, dose = dose)
+  )
   k10 <- CL/V1
   Vss <- V1
   trueA <- 1/V1
@@ -178,11 +269,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -196,11 +287,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, tinf = tinf)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tinf=tinf)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -213,11 +304,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -230,11 +321,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, tlag=tlag)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, tlag=tlag)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -247,11 +338,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -264,11 +355,11 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       t <- seq(0, tend, by=step)
       C <- calc_sd_1cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, tlag=tlag, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_1cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -306,15 +397,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       dose=dose
     )
 
-  if(type=="all") {
-    o <- out
-  } else {
-    o <- out[[type]]
-    if (is.null(o)) {
-      stop("Invalid value for `type`: ", type)
-    }
-  }
-  o[sapply(o, is.null)] <- NULL   # drops NULL values
+  o <- select_derived(out, type)
 
   maybe_warn_flipflop(ka = ka, k10 = k10)
   o
@@ -325,6 +408,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
 #' params <- calc_derived_2cpt(CL=16, V1=25, V2=50, Q=0.5)
 #' @export
 calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL, tinf=NULL, ka=NULL, tlag=NULL, dose=NULL, tau=NULL, step=0.1, type="all", sigdig=5) {
+  rowwise <- derived_rowwise(calc_derived_2cpt, mget(names(match.call())[-1]))
+  if (!is.null(rowwise)) return(rowwise)
+
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")
   } else if (!is.null(V)) {
@@ -337,6 +423,10 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # Use the preferred synonym
     Q2 <- Q
   }
+  check_derived_inputs(
+    positive = list(CL = CL, V1 = V1, V2 = V2, Q2 = Q2, ka = ka, dur = dur, tinf = tinf, tau = tau, step = step),
+    nonnegative = list(tlag = tlag, dose = dose)
+  )
 
   ### variables
   k10   <- CL/V1
@@ -381,11 +471,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -399,11 +489,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tinf = tinf)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tinf=tinf)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -416,11 +506,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -433,11 +523,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -450,11 +540,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, Q=Q)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -467,11 +557,11 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       t <- seq(0, tend, by=step)
       C <- calc_sd_2cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_2cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -517,15 +607,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       dose=dose
     )
 
-  if(type=="all") {
-    o <- out
-  } else {
-    o <- out[[type]]
-    if (is.null(o)) {
-      stop("Invalid value for `type`: ", type)
-    }
-  }
-  o[sapply(o, is.null)] <- NULL   # drops NULL values
+  o <- select_derived(out, type)
 
   maybe_warn_flipflop(ka = ka, k10 = k10)
 
@@ -537,6 +619,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
 #' params <- calc_derived_3cpt(CL=29.4, V1=23.4, V2=114, V3=4614, Q2=270, Q3=73)
 #' @export
 calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, ka=NULL, dur=NULL, tinf=NULL, tlag=NULL, dose=NULL, tau=NULL, step=0.1, type="all", sigdig=5) {
+  rowwise <- derived_rowwise(calc_derived_3cpt, mget(names(match.call())[-1]))
+  if (!is.null(rowwise)) return(rowwise)
+
   if (!xor(is.null(V), is.null(V1))) {
     stop("Exactly one of V or V1 may be provided since they are considered synonyms.")
   } else if (!is.null(V)) {
@@ -549,6 +634,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # Use the preferred synonym
     Q2 <- Q
   }
+  check_derived_inputs(
+    positive = list(CL = CL, V1 = V1, V2 = V2, V3 = V3, Q2 = Q2, Q3 = Q3, ka = ka, dur = dur, tinf = tinf,
+                    tau = tau, step = step),
+    nonnegative = list(tlag = tlag, dose = dose)
+  )
 
   ### variables
   k10   <- CL/V1
@@ -609,11 +699,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -627,11 +717,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf = tinf)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf=tinf)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -644,11 +734,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -661,11 +751,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -678,11 +768,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -695,11 +785,11 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       t <- seq(0, tend, by=step)
       C <- calc_sd_3cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur)
       Cmax <- max(C)
-      Tmax <- t[C==Cmax]
+      Tmax <- t[which.max(C)]
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
-      t <- seq(0, tau, by=step)
+      t <- seq_through(tau, step)
       C <- calc_ss_3cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur)
       Cmaxss <- max(C)
       AUCtau  <- calc_auc_tau(conc = C, time = t)
@@ -758,15 +848,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       tinf=tinf,
       dose=dose
     )
-  if(type=="all") {
-    o <- out
-  } else {
-    o <- out[[type]]
-    if (is.null(o)) {
-      stop("Invalid value for `type`: ", type)
-    }
-  }
-  o[sapply(o, is.null)] <- NULL   # drops NULL values
+  o <- select_derived(out, type)
 
   maybe_warn_flipflop(ka = ka, k10 = k10)
 

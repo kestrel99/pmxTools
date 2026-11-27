@@ -39,13 +39,14 @@ Imports:
     magrittr,
     data.tree
 Depends:
-    R (>= 4.0.0),
-    patchwork
+    R (>= 4.0.0)
 Suggests:
     testthat,
+    patchwork,
     vdiffr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    withr
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3

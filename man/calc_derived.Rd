@@ -89,7 +89,8 @@ are synonyms; use only one.}
 \item{step}{Time increment to use when estimating NCA parameters (time units, e.g. h; defaults to 0.1)}
 
 \item{type}{Parameters to return. Default is \code{"all"}.  If not
-\code{"all"}, this may be a vector from the names of the return value list.}
+\code{"all"}, this may be one name from the return value list, giving
+that value alone, or a vector of names, giving a list of those values.}
 
 \item{sigdig}{Number of significant digits to be returned. Default is
 \code{5}.}
@@ -144,7 +145,14 @@ be provided as well, based on simulation of single-dose and (if \code{tau} is sp
 The input parameters with standardized names (\code{dose}, \code{V1}, \code{V2},
 \code{V3}, \code{CL}, \code{Q2}, and \code{Q3}) are also returned in the
 list, and if provided, additional PK parameters of \code{ka}, \code{tlag}, \code{tinf} and \code{dur} are also
-returned in the list.  All inputs may be scalars or vectors.
+returned in the list.  All PK parameter inputs (including \code{dose} and \code{tau})
+may be scalars or vectors; vectors must all have the same length, and
+scalars are recycled to it.  Each element of every returned parameter then
+corresponds to one parameter set, with NCA parameters calculated separately
+for each set.  \code{step}, \code{type} and \code{sigdig} must be single values.
+
+Clearances, volumes, \code{ka}, \code{dur}, \code{tinf}, \code{tau} and \code{step} must be positive;
+\code{tlag} and \code{dose} must be non-negative.
 }
 \description{
 Calculate derived pharmacokinetic parameters for a 1-, 2-, or 3-compartment

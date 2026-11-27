@@ -63,10 +63,12 @@ read_nmtables <- function(tableFiles = NULL,
     )
     return(NULL)
   } else if (any(!mask_found_files)) {
-    message(
-      "The following files were not found and therefore cannot be loaded: ",
-      paste0('"', tabFiles[!mask_found_files], '"', collapse=", ")
-    )
+    if (!quiet) {
+      message(
+        "The following files were not found and therefore cannot be loaded: ",
+        paste0('"', tabFiles[!mask_found_files], '"', collapse=", ")
+      )
+    }
     tabFiles <- tabFiles[mask_found_files]
   }
 
@@ -90,12 +92,12 @@ read_nmtables <- function(tableFiles = NULL,
     
     ret <-
       if (length(lngths) == 1) {
-        Reduce(f=cbind, x=loaded_files)
+        bind_nmtables(loaded_files)
       } else if (length(lngths) == 2) {
         # There is likely a combination of firstonly and non-firstonly tables.
-        short <- Reduce(f=cbind, x=loaded_files[lngths == min(lngths)])
-        long <- Reduce(f=cbind, x=loaded_files[lngths == max(lngths)])
-        merge(long, short)
+        short <- bind_nmtables(loaded_files[file.df$filedim == min(lngths)])
+        long <- bind_nmtables(loaded_files[file.df$filedim == max(lngths)])
+        merge_firstonly(long, short)
       } else {
         message(
           "The table files associated with this run number (", runNo, ") appear ",
@@ -111,62 +113,73 @@ read_nmtables <- function(tableFiles = NULL,
   ret
 }
 
+# Column-bind tables with the same number of rows.  Columns repeated across
+# tables (e.g. ID and TIME, which NONMEM writes to every table) are kept once.
+bind_nmtables <- function(tables) {
+  ret <- Reduce(f=cbind, x=tables)
+  ret[, !duplicated(names(ret)), drop=FALSE]
+}
+
+# Merge per-subject (FIRSTONLY) tables onto per-record tables by ID.  Columns
+# present in both are taken from the per-record tables, all per-record rows are
+# kept in their original order, and subjects without a FIRSTONLY row get NA.
+merge_firstonly <- function(long, short) {
+  if (!("ID" %in% names(long) && "ID" %in% names(short))) {
+    stop("Tables with different numbers of rows can only be merged by an `ID` column present in all of them. ",
+         "Use output_type = \"list\" to read them separately.", call.=FALSE)
+  }
+  if (anyDuplicated(short$ID)) {
+    stop("The shorter (FIRSTONLY) tables contain more than one row per `ID` and cannot be merged by subject. ",
+         "Use output_type = \"list\" to read them separately.", call.=FALSE)
+  }
+  missing_ids <- setdiff(long$ID, short$ID)
+  if (length(missing_ids) > 0) {
+    warning("No FIRSTONLY table row for ID: ", paste(missing_ids, collapse=", "),
+            "; their per-subject columns are NA.", call.=FALSE)
+  }
+  short <- short[, c("ID", setdiff(names(short), names(long))), drop=FALSE]
+  row_order <- seq_len(nrow(long))
+  ret <- merge(cbind(long, .row_order=row_order), short, by="ID", all.x=TRUE, sort=FALSE)
+  ret <- ret[order(ret$.row_order), c(names(long), setdiff(names(short), "ID")), drop=FALSE]
+  rownames(ret) <- NULL
+  ret
+}
+
+# Keep only data rows (dropping repeated headers) and convert every column to
+# numeric without changing the table's shape.
+clean_nmtable <- function(tab) {
+  automatic_rownames <- .row_names_info(tab) < 0L
+  pattern <- "^[[:space:]]*([[:alpha:]].*)"
+  tab <- tab[!grepl(pattern, tab[[1]]), , drop=FALSE]
+  tab[] <- lapply(tab, as.numeric)
+  # Renumber automatic row names after dropping rows; keep real labels (e.g.
+  # parameter names read with row.names=1)
+  if (automatic_rownames) rownames(tab) <- NULL
+  tab
+}
+
 read_nmtable_single <- function(filename, quiet) {
   if (!quiet) {
     message("Reading ", filename)
   }
   
+  ## Drop the "TABLE NO." banners. NONMEM writes one per table, so there are
+  ## several (each followed by a repeated header row) when NSIM > 1.
+  lines <- readLines(filename)
+  banners <- grepl(pattern="^TABLE NO", x=lines)
+  if (sum(banners) > 1 && !quiet) {
+    message(
+      filename, " contains ", sum(banners), " tables, as when running multiple ",
+      "simulations in NONMEM (NSIM > 1). They will be stacked."
+    )
+  }
+  lines <- lines[!banners]
+
   ## Check which type of separator we have in our tables
-  header.line <- scan(file=filename, nlines=1, skip=1, what="character", sep="\n", quiet=TRUE)
-  sep.char <- ""
-  if (length(grep(pattern=",", x=header.line)) != 0) {
-    sep.char <- ","
-  }
-
-  ## Check if we have unequal number of fields in the file
-  ## used for multiple simulations
-  fields.per.line      <- utils::count.fields(filename)
-  fields.in.first.line <- fields.per.line[1]
-  fields.in.rest       <- fields.per.line[-1]
-  if((length(unique(fields.in.rest)) != 1) ||
-     (all(fields.in.first.line == fields.in.rest))) {
-    if (!quiet) {
-      message(
-        filename, " contains varying numbers of fields.  ",
-        "This may be due to multiple TABLE and header rows ",
-        "caused by running multiple simulations in NONMEM (NSIM > 1).",
-        "Will attempt to remove these rows. Please be patient..."
-      )
-    }
-    tmp   <- readLines(filename, n=-1)
-    inds  <- grep(pattern="TABLE", x=tmp)
-    if (length(inds) != 1) {
-      inds  <- inds[c(2:length(inds))]
-      inds2 <- inds+1
-      ret <-
-        utils::read.table(
-          textConnection(tmp[-c(inds, inds2)]),
-          skip=2, header=TRUE, sep=sep.char
-        )
-    } else {
-      ret <-
-        utils::read.table(filename, skip=2, header=TRUE, sep=sep.char)
-    }
-  } else {
-    ret <-
-      utils::read.table(filename, skip=1, header=TRUE, sep=sep.char)
-  }
+  sep.char <- if (grepl(pattern=",", x=lines[1])) "," else ""
+  ret <- utils::read.table(text=lines, header=TRUE, sep=sep.char)
   # scan to ensure no remaining column headers or other text pollution
-
-  # Define the regular expression pattern
-  pattern <- "^[[:space:]]*([[:alpha:]].*)"
-  
-  # Find the indices of rows that match the pattern
-  indices <- which(!grepl(pattern, ret[[1]]))
-  ret <- ret[indices,]
-  ret <- as.data.frame(sapply(ret, as.numeric))
-  
-  ret
+  clean_nmtable(ret)
 }
 
 #' Read (single or) multiple NONMEM tables from a single file
@@ -205,15 +218,7 @@ read_nm_multi_table <- function(fileName, header=TRUE, ..., simplify=TRUE, table
     )
     
     # scan to ensure no remaining column headers or other text pollution
-    
-    # Define the regular expression pattern
-    pattern <- "^[[:space:]]*([[:alpha:]].*)"
-    
-    # Find the indices of rows that match the pattern
-    indices <- which(!grepl(pattern, tmptab[[1]]))
-    tmptab <- tmptab[indices,]
-    tmptab <- as.data.frame(sapply(tmptab, as.numeric))    
-    ret[[current_table_name]] <- tmptab
+    ret[[current_table_name]] <- clean_nmtable(tmptab)
   }
   if (simplify & (length(ret) == 1)) {
     # Simplify to just the matrix in the common case of a single estimation
