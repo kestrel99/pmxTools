@@ -442,10 +442,34 @@ test_that("Cmaxss is found at break points of the steady-state profile that fall
                                                           dur = 2.05, tlag = 13.33))
 })
 
-test_that("AUCtau approaches dose/CL at steady state as the integration step shrinks", {
-  res <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05, tau = 1, step = 0.001))
-  expect_equal(res$AUCtau, 1 / 100, tolerance = 1e-3)
-  res <- suppressMessages(calc_derived_2cpt(CL = 2, V1 = 10, V2 = 20, Q = 3, ka = 0.7, tlag = 5, dose = 100, tau = 12,
-                                            step = 0.01))
-  expect_equal(res$AUCtau, 100 / 2, tolerance = 1e-5)
+test_that("AUCtau equals dose/CL at steady state for every regimen with the default step", {
+  # Mass balance: at steady state, the amount eliminated over a dosing interval equals the dose
+  pars <- list(list(CL = 1, V = 10), list(CL = 1, V1 = 10, V2 = 20, Q = 2),
+               list(CL = 1, V1 = 10, V2 = 20, V3 = 30, Q2 = 2, Q3 = 1))
+  regimens <- list(list(), list(tinf = 0.05), list(ka = 0.7), list(ka = 0.7, tlag = 13.3),
+                   list(dur = 2.05), list(dur = 2.05, tlag = 13.3))
+  for (n in 1:3) {
+    fun <- get(sprintf("calc_derived_%dcpt", n))
+    for (reg in regimens) {
+      res <- suppressWarnings(suppressMessages(do.call(fun, c(pars[[n]], reg, list(dose = 100, tau = 12)))))
+      expect_equal(res$AUCtau, 100, tolerance = 1e-8, info = paste(n, names(reg)))
+    }
+  }
+  # The reviewer's short infusion, which a 0.1 h grid underestimated by 30%
+  res <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05, tau = 1))
+  expect_equal(res$AUCtau, 1 / 100, tolerance = 1e-8)
+})
+
+test_that("calc_derived_*() warns about flip-flop kinetics once", {
+  w <- character()
+  withCallingHandlers(
+    suppressMessages(calc_derived_3cpt(CL = 29.4, V1 = 23.4, V2 = 114, V3 = 4614, Q2 = 270, Q3 = 73,
+                                       dose = 1000, tau = 24, ka = 1, tlag = 30)),
+    warning = function(x) {
+      w <<- c(w, conditionMessage(x))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_length(w, 1)
+  expect_match(w, "Flip-flop")
 })

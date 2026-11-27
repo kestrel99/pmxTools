@@ -96,7 +96,6 @@ export(sample_sigma)
 export(sample_uncert)
 export(table_rtf)
 importFrom(MASS,mvrnorm)
-importFrom(PKNCA,pk.calc.auc.all)
 importFrom(data.tree,
   GetDefaultTooltip,
   SetEdgeStyle,

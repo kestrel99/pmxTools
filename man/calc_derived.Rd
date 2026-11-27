@@ -86,7 +86,7 @@ are synonyms; use only one.}
 
 \item{tau}{Duration of interdose interval (time units, e.g. h; defaults to 24)}
 
-\item{step}{Time increment to use when estimating NCA parameters (time units, e.g. h; defaults to 0.1)}
+\item{step}{Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss} (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. \code{AUCtau} is integrated adaptively and does not depend on \code{step}.}
 
 \item{type}{Parameters to return. Default is \code{"all"}.  If not
 \code{"all"}, this may be one name from the return value list, giving
@@ -139,7 +139,7 @@ be provided as well, based on simulation of single-dose and (if \code{tau} is sp
 \item \code{AUCtau_dose_normalized}: Dose-normalized area under the concentration-time curve over the dosing interval at steady state
 \item \code{Cmax_dose_normalized}: Dose-normalized maximum concentration after a single dose
 \item \code{Cmaxss_dose_normalized}: Dose-normalized maximum concentration over the dosing interval at steady state
-\item \code{step}: Time increment used when estimating NCA parameters.
+\item \code{step}: Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss}.
 }
 
 The input parameters with standardized names (\code{dose}, \code{V1}, \code{V2},
