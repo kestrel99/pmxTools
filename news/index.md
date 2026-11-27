@@ -39,12 +39,12 @@
 
 - The PK calculation functions now stop with an error for inputs outside
   their domain instead of returning `NaN`, `Inf` or wrong values:
-  non-positive clearances, volumes, `ka`, `dur`, `tinf`, `tau` or
-  `step`; negative `tlag`, `dose` or times; a `ka` equal to a
-  disposition rate constant (where the closed-form solution is
-  singular); and, for the steady-state functions, an infusion or
-  zero-order absorption (`tinf`, `dur`) longer than `tau`, which the
-  steady-state solutions do not cover.
+  missing or infinite values; non-positive clearances, volumes, `ka`,
+  `dur`, `tinf`, `tau` or `step`; negative `tlag`, `dose` or times; a
+  `ka` equal to a disposition rate constant (where the closed-form
+  solution is singular); and, for the steady-state functions, an
+  infusion or zero-order absorption (`tinf`, `dur`) longer than `tau`,
+  which the steady-state solutions do not cover.
 
 - [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
   and the `calc_derived_*()` functions now stop when vector inputs have
@@ -57,6 +57,11 @@
   altered (`SIGMA.1.1.`). As a result, the columns of
   [`sample_uncert()`](https://kestrel99.github.io/pmxTools/reference/sample_uncert.md)
   output are named after the parameters instead of `V1`, `V2`, …
+
+- [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
+  requires a single value for each parameter in `params`, since every
+  dose uses the same parameter set. Vectors previously mixed parameter
+  sets across doses.
 
 ### Bug fixes
 
@@ -83,6 +88,25 @@
 - `AUCtau` is now integrated over the whole dosing interval when `step`
   does not divide `tau` exactly.
 
+- `Cmax` and `Tmax` from
+  [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions are now found when the peak comes
+  late, e.g. after a long `tlag`. The search window now allows for
+  `tlag` and is extended until it contains the peak; previously it could
+  end before absorption started and report `Cmax = 0`.
+
+- The steady-state lag-time functions
+  (`calc_ss_*cmt_linear_oral_1_lag()` and
+  `calc_ss_*cmt_linear_oral_0_lag()`) are now correct when `tlag`
+  exceeds the time after dose by more than one dosing interval, and when
+  zero-order absorption runs past the end of the interval. Both
+  previously gave wrong, sometimes negative, concentrations.
+
+- [`sample_uncert()`](https://kestrel99.github.io/pmxTools/reference/sample_uncert.md)
+  matches the parameter estimates to the covariance matrix by name
+  rather than by position, and returns a one-row data frame when
+  `n = 1`.
+
 - [`calc_sd_1cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md),
   [`calc_sd_2cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md),
   [`calc_sd_3cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md),
@@ -95,12 +119,14 @@
   stopped with “Not yet implemented”.
 
 - [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
-  merges per-subject (`FIRSTONLY`) tables onto per-record tables
-  correctly when there are three or more table files, by `ID`, keeping
-  all per-record rows in their original order. It warns about subjects
-  missing from the `FIRSTONLY` tables and stops if there is no shared
-  `ID` column. Columns repeated across tables (such as `ID` and `TIME`)
-  are now kept once.
+  joins each per-subject (`FIRSTONLY`) table onto the per-record tables
+  by `ID`, whatever the order of its rows and however many table files
+  there are, keeping all per-record rows in their original order. It
+  warns about subjects missing from a `FIRSTONLY` table and stops if
+  there is no shared `ID` column. Per-record tables are combined row by
+  row only after checking that their shared columns (such as `ID` and
+  `TIME`) agree, and those columns are kept once. Previously tables
+  could be combined in the wrong row order without warning.
 
 - [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
   reads tables with exactly three columns and NSIM \> 1 output
