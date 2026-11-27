@@ -121,7 +121,11 @@ bind_nmtables <- function(tables) {
   ret <- tables[[1]]
   for (tab in tables[-1]) {
     shared <- intersect(names(ret), names(tab))
-    misaligned <- shared[!vapply(shared, function(col) same_values(ret[[col]], tab[[col]]), logical(1))]
+    # Subject identifiers must match exactly; tolerance is only for rounding
+    # of continuous values such as TIME
+    misaligned <- shared[!vapply(shared, function(col) {
+      same_values(ret[[col]], tab[[col]], tolerance=if (col == "ID") 0 else 1e-4)
+    }, logical(1))]
     if (length(misaligned) > 0) {
       stop("Tables with the same number of rows disagree in shared column(s) ",
            paste(misaligned, collapse=", "), ", so their rows do not line up. ",
@@ -135,7 +139,7 @@ bind_nmtables <- function(tables) {
 # Element-wise equality allowing for the rounding of different $TABLE formats
 same_values <- function(x, y, tolerance=1e-4) {
   both_na <- is.na(x) & is.na(y)
-  close <- abs(x - y) <= pmax(tolerance * pmax(abs(x), abs(y)), 1e-12)
+  close <- if (tolerance == 0) x == y else abs(x - y) <= pmax(tolerance * pmax(abs(x), abs(y)), 1e-12)
   all(both_na | (!is.na(close) & close))
 }
 

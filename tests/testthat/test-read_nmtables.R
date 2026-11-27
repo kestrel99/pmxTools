@@ -131,6 +131,15 @@ test_that("read_nmtables() refuses to bind per-record tables whose rows do not l
   expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "ID, TIME")
 })
 
+test_that("read_nmtables() compares subject IDs exactly when lining up per-record tables", {
+  # 10001 and 10002 are within the relative tolerance used for rounded values
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = c(10001, 10002), TIME = 0, DV = c(1, 2), PRED = 1), dir, "sdtab1")
+  local_nmtable(data.frame(ID = c(10002, 10001), TIME = 0, WT = c(90, 55), CWRES = 0), dir, "patab1")
+
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) ID,", fixed = TRUE)
+})
+
 test_that("read_nmtables() binds per-record tables written with different precision", {
   dir <- withr::local_tempdir()
   local_nmtable(data.frame(ID = c(1, 1), TIME = c(0, 1 / 3), DV = c(1, 2), PRED = c(1, 1)), dir, "sdtab1")
