@@ -42,6 +42,19 @@ A data.frame or list of data.frames depending on the
 \description{
 Reads NONMEM output tables.
 }
+\details{
+When \code{output_type = "data.frame"}, per-subject
+(\code{FIRSTONLY}) tables are joined to the others by \code{ID}. Tables with
+one row per record are combined row by row, relying on NONMEM writing every
+table of a run in the same record order. Columns the tables share (such as
+\code{ID} and \code{TIME}) are checked for agreement first, and kept once.
+That check can only detect misaligned rows where the shared columns tell
+records apart. Where they cannot, e.g. a dose and an observation at the same
+\code{ID} and \code{TIME}, or tables with no columns in common, the rows are
+combined in file order. Tables from different runs, or edited after NONMEM
+wrote them, may then be silently misaligned; read them with
+\code{output_type = "list"} instead.
+}
 \note{
 Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
 }

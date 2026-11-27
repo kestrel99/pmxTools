@@ -1,25 +1,5 @@
-#' Area under the steady-state concentration-time curve over a dosing interval
-#'
-#' Integrates the steady-state concentration function adaptively over
-#' `[0, tau]`, split at the profile's break points (end of infusion, start and
-#' end of absorption), where it is not smooth.  The result is accurate to the
-#' integration tolerance whatever grid `step` is used for `Cmaxss`.
-#'
-#' @param conc_fun Concentration as a (vectorized) function of time after dose
-#' @param tau Dosing interval
-#' @param at Break points within the interval
-#' @returns The AUC as a numeric value with no attributes
-#' @noRd
-calc_auc_tau <- function(conc_fun, tau, at = NULL) {
-  bounds <- sort(unique(c(0, at[at > 0 & at < tau], tau)))
-  pieces <- quiet_flipflop(mapply(function(from, to) {
-    stats::integrate(conc_fun, from, to, rel.tol = 1e-10, abs.tol = 0, subdivisions = 1000L)$value
-  }, bounds[-length(bounds)], bounds[-1]))
-  sum(pieces)
-}
-
 # A grid from 0 to `to` in increments of `step` that always ends exactly at
-# `to`, so integrals over the dosing interval cover all of it, and that also
+# `to`, so the whole dosing interval is searched, and that also
 # contains the break points `at` lying within it.
 seq_through <- function(to, step, at = NULL) {
   grid <- seq(0, to, by = step)
@@ -147,7 +127,7 @@ select_derived <- function(out, type) {
 #' @param tinf Duration of infusion (time units, e.g. h)
 #' @param dose Dose (amount units, e.g. mg)
 #' @param tau Duration of interdose interval (time units, e.g. h; defaults to 24)
-#' @param step Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss} (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. \code{AUCtau} is integrated adaptively and does not depend on \code{step}.
+#' @param step Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss} (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. \code{AUCtau} is calculated as \code{dose/CL}, which is exact at steady state for these linear models, so it does not depend on \code{step}.
 #' @param type Parameters to return. Default is \code{"all"}.  If not
 #'   \code{"all"}, this may be one name from the return value list, giving
 #'   that value alone, or a vector of names, giving a list of those values.
@@ -313,7 +293,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -332,7 +312,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tinf=tinf)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -350,7 +330,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -368,7 +348,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, tlag=tlag)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -386,7 +366,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -404,7 +384,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
       ss_conc <- function(t) calc_ss_1cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, tlag=tlag, dur=dur)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -522,7 +502,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -541,7 +521,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tinf=tinf)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -559,7 +539,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -577,7 +557,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -595,7 +575,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, Q=Q)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -613,7 +593,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
       ss_conc <- function(t) calc_ss_2cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -757,7 +737,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_bolus(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -776,7 +756,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_infusion(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf=tinf)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -794,7 +774,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_oral_1(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -812,7 +792,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_oral_1_lag(tad = t, dose=dose, tau=tau, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -830,7 +810,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_oral_0(tad = t, dose=dose, tau=tau, dur=dur, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }
@@ -848,7 +828,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
       ss_conc <- function(t) calc_ss_3cmt_linear_oral_0_lag(tad = t, dose=dose, tau=tau, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur)
       C <- quiet_flipflop(ss_conc(t))
       Cmaxss <- max(C)
-      AUCtau  <- calc_auc_tau(ss_conc, tau = tau, at = ss_break_points(tau, tinf, tlag, dur))
+      AUCtau  <- dose/CL
       AUCtau_dose_normalized <- AUCtau/dose
       Cmaxss_dose_normalized <- Cmaxss/dose
     }

@@ -442,22 +442,40 @@ test_that("Cmaxss is found at break points of the steady-state profile that fall
                                                           dur = 2.05, tlag = 13.33))
 })
 
-test_that("AUCtau equals dose/CL at steady state for every regimen with the default step", {
-  # Mass balance: at steady state, the amount eliminated over a dosing interval equals the dose
+test_that("AUCtau (dose/CL) is the area under the steady-state curve for every regimen", {
+  # Mass balance: at steady state, the amount eliminated over a dosing interval
+  # equals the dose.  Check that against the package's own steady-state curves,
+  # integrated piecewise between the points where they have kinks.
   pars <- list(list(CL = 1, V = 10), list(CL = 1, V1 = 10, V2 = 20, Q = 2),
                list(CL = 1, V1 = 10, V2 = 20, V3 = 30, Q2 = 2, Q3 = 1))
   regimens <- list(list(), list(tinf = 0.05), list(ka = 0.7), list(ka = 0.7, tlag = 13.3),
                    list(dur = 2.05), list(dur = 2.05, tlag = 13.3))
+  tau <- 12
   for (n in 1:3) {
-    fun <- get(sprintf("calc_derived_%dcpt", n))
+    derived <- get(sprintf("calc_derived_%dcpt", n))
+    ss <- get(sprintf("calc_ss_%dcmt", n))
     for (reg in regimens) {
-      res <- suppressWarnings(suppressMessages(do.call(fun, c(pars[[n]], reg, list(dose = 100, tau = 12)))))
-      expect_equal(res$AUCtau, 100, tolerance = 1e-8, info = paste(n, names(reg)))
+      args <- c(pars[[n]], reg, list(dose = 100, tau = tau))
+      res <- suppressWarnings(suppressMessages(do.call(derived, args)))
+      kinks <- c(reg$tinf, c(reg$tlag, sum(reg$tlag, reg$dur)) %% tau)
+      bounds <- sort(unique(c(0, kinks, tau)))
+      curve <- function(t) suppressWarnings(do.call(ss, c(list(tad = t), args)))
+      auc <- sum(mapply(function(from, to) stats::integrate(curve, from, to, rel.tol = 1e-10)$value,
+                        bounds[-length(bounds)], bounds[-1]))
+      expect_equal(res$AUCtau, auc, tolerance = 1e-7, info = paste(n, names(reg)))
+      expect_equal(res$AUCtau, 100, info = paste(n, names(reg)))
     }
   }
-  # The reviewer's short infusion, which a 0.1 h grid underestimated by 30%
+})
+
+test_that("AUCtau is right for profiles that decay much faster than tau", {
+  # Adaptive integration returned 0 (CL = 20000) or failed as divergent (CL = 3000)
+  for (CL in c(100, 3000, 20000)) {
+    res <- suppressMessages(calc_derived_1cpt(CL = CL, V = 1, dose = 1, tau = 24))
+    expect_equal(res$AUCtau, 1 / CL, info = CL)
+  }
   res <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05, tau = 1))
-  expect_equal(res$AUCtau, 1 / 100, tolerance = 1e-8)
+  expect_equal(res$AUCtau, 1 / 100)
 })
 
 test_that("calc_derived_*() warns about flip-flop kinetics once", {
