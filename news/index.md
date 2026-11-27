@@ -68,9 +68,11 @@
 - [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
   now superposes additional doses by the time elapsed since each dose,
   so irregular time grids, grids not starting at zero and `addl` doses
-  beyond the observed window give correct concentrations. Previously
-  doses were added by shifting rows, which was only correct for regular
-  grids aligned with `ii`.
+  beyond the observed window give correct concentrations. A dose
+  scheduled at an observation time is counted there even when rounding
+  makes the computed dose time slightly later (e.g. `3 * 0.1 > 0.3`).
+  Previously doses were added by shifting rows, which was only correct
+  for regular grids aligned with `ii`.
 
 - `pk_curve(ss = TRUE)` now gives a steady-state curve (steady state
   reached before the dose at time 0, as for `SS=1` in NONMEM, followed
@@ -93,7 +95,10 @@
   and the `calc_derived_*()` functions are now found when the peak comes
   late, e.g. after a long `tlag`. The search window now allows for
   `tlag` and is extended until it contains the peak; previously it could
-  end before absorption started and report `Cmax = 0`.
+  end before absorption started and report `Cmax = 0`. The search also
+  checks the end of an infusion or of zero-order absorption, so a peak
+  there is found exactly rather than at the nearest `step`. A zero dose
+  gives `Cmax = 0` and `Tmax = 0` directly.
 
 - The steady-state lag-time functions
   (`calc_ss_*cmt_linear_oral_1_lag()` and
@@ -124,9 +129,10 @@
   there are, keeping all per-record rows in their original order. It
   warns about subjects missing from a `FIRSTONLY` table and stops if
   there is no shared `ID` column. Per-record tables are combined row by
-  row only after checking that their shared columns (such as `ID` and
-  `TIME`) agree, and those columns are kept once. Previously tables
-  could be combined in the wrong row order without warning.
+  row only after checking that their shared columns agree (`ID` exactly,
+  other columns such as `TIME` allowing for different `$TABLE`
+  precision), and those columns are kept once. Previously tables could
+  be combined in the wrong row order without warning.
 
 - [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
   reads tables with exactly three columns and NSIM \> 1 output
