@@ -30,6 +30,16 @@ test_that("pk_curve() gives zero contribution from doses not yet given", {
   expect_equal(res$cp, single)
 })
 
+test_that("pk_curve() counts a dose given at an observation time despite rounding in the dose time", {
+  # 3 * 0.1 is slightly greater than 0.3 in floating point
+  p <- list(CL = 1, V = 1)
+  res <- pk_curve(t = c(0.3 - 1e-6, 0.3), model = "1cmt_bolus", params = p, dose = 1, ii = 0.1, addl = 3)
+
+  dose_times <- c(0, 0.1, 0.2)
+  expect_equal(res$cp[1], sum(exp(-(0.3 - 1e-6 - dose_times))))
+  expect_equal(res$cp[2], sum(exp(-(0.3 - dose_times))) + 1)
+})
+
 test_that("pk_curve(ss = TRUE) gives the steady-state curve over the dosing interval", {
   p <- list(CL = 2.5, V1 = 25, V2 = 50, Q = 5, ka = 1)
   tad <- c(0, 0.5, 3, 11.9)

@@ -416,3 +416,18 @@ test_that("Cmax and Tmax are found when the peak lies beyond the default search 
   tmax <- log(0.01 / 0.1) / (0.01 - 0.1)
   expect_equal(slow$Tmax, tmax, tolerance = 1e-3)
 })
+
+test_that("Cmax and Tmax are found at an end of infusion or absorption that falls between grid steps", {
+  # The peak is at the end of the infusion, 0.05, off the default 0.1 grid
+  inf <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05))
+  expect_equal(inf$Tmax, 0.05)
+  expect_equal(inf$Cmax, calc_sd_1cmt_linear_infusion(t = 0.05, dose = 1, CL = 100, V = 1, tinf = 0.05))
+
+  zo <- suppressMessages(calc_derived_2cpt(CL = 1, V1 = 10, V2 = 20, Q = 2, dur = 2.05, tlag = 0.33, dose = 100))
+  expect_equal(zo$Tmax, 2.38)
+})
+
+test_that("a zero dose gives Cmax = 0 without searching for a peak", {
+  expect_no_warning(res <- suppressMessages(calc_derived_1cpt(CL = 1, V = 10, ka = 1, dose = 0)))
+  expect_equal(c(res$Cmax, res$Tmax), c(0, 0))
+})

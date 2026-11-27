@@ -72,9 +72,12 @@ pk_curve <- function(t, model = "1cmt_oral", params=list(ka=2.77, CL=2.5, V=25),
   }
   dose_times <- ii * seq(from = if (ss) 1 else 0, length.out = addl + !ss)
   for (dose_time in dose_times) {
-    given <- t >= dose_time
+    # Allow for rounding in dose_time (3 * 0.1 > 0.3), so a dose scheduled at an
+    # observation time is counted there, at zero elapsed time
+    elapsed <- t - dose_time
+    given <- elapsed >= -sqrt(.Machine$double.eps) * dose_time
     if (any(given)) {
-      cp[given] <- cp[given] + single_dose(t[given] - dose_time)
+      cp[given] <- cp[given] + single_dose(pmax(elapsed[given], 0))
     }
   }
 
