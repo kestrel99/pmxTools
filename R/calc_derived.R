@@ -23,6 +23,24 @@ seq_through <- function(to, step) {
   if (grid[length(grid)] < to) c(grid, to) else grid
 }
 
+# Single-dose Cmax and Tmax from a concentration function of time, searched on
+# a grid from 0 to `tend` that is doubled until the maximum lies inside it
+# (rather than at its end, or nowhere when absorption has not yet begun).
+find_peak <- function(conc_fun, tend, step, max_doublings = 8) {
+  for (i in 0:max_doublings) {
+    t <- seq(0, tend, by = step)
+    C <- conc_fun(t)
+    peak <- which.max(C)
+    if (peak < length(t) && C[peak] > 0) break
+    tend <- tend * 2
+  }
+  if (peak == length(t) || C[peak] <= 0) {
+    warning("No concentration peak was found within ", t[length(t)], " time units; Cmax and Tmax are unreliable.",
+            call. = FALSE)
+  }
+  list(Cmax = C[peak], Tmax = t[peak])
+}
+
 # Inputs that may be supplied as vectors, one element per parameter set.
 derived_vector_args <- c("CL", "V", "V1", "V2", "V3", "Q", "Q2", "Q3", "ka", "dur", "tlag", "tinf", "dose", "tau")
 
@@ -254,6 +272,7 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
+  if(!is.null(tlag)) guess_tmax <- guess_tmax + tlag
 
   tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
 
@@ -266,10 +285,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("1-compartment bolus detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -284,10 +302,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("1-compartment infusion detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, tinf = tinf)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, tinf = tinf), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
@@ -301,10 +318,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # oral first-order
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("1-compartment first-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -318,10 +334,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # oral first-order lag
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("1-compartment first-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, tlag=tlag)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, tlag=tlag), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -335,10 +350,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # oral zero-order
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("1-compartment zero-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -352,10 +366,9 @@ calc_derived_1cpt <- function(CL, V=NULL, V1=NULL, ka=NULL, dur=NULL, tlag=NULL,
     # oral zero-order lag
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("1-compartment zero-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_1cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, tlag=tlag, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_1cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, tlag=tlag, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -456,6 +469,7 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
+  if(!is.null(tlag)) guess_tmax <- guess_tmax + tlag
 
   tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
 
@@ -468,10 +482,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("2-compartment bolus detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -486,10 +499,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("2-compartment infusion detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tinf = tinf)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tinf = tinf), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
@@ -503,10 +515,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # oral first-order
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("2-compartment first-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -520,10 +531,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # oral first-order lag
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("2-compartment first-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -537,10 +547,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # oral zero-order
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("2-compartment zero-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -554,10 +563,9 @@ calc_derived_2cpt <- function(CL, V1=NULL, V2, Q2=NULL, V=NULL, Q=NULL, dur=NULL
     # oral zero-order lag
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("2-compartment zero-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_2cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_2cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, Q=Q, tlag=tlag, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -684,6 +692,7 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
   if(!is.null(ka)) guess_tmax <- 1/ka
   if(!is.null(dur)) guess_tmax <- dur
   if(!is.null(tinf)) guess_tmax <- tinf
+  if(!is.null(tlag)) guess_tmax <- guess_tmax + tlag
 
   tend <- update_tend(tend = 24, guess_tmax = guess_tmax)
 
@@ -696,10 +705,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # IV bolus
     if(is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("3-compartment bolus detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_bolus(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -714,10 +722,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # IV infusion
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tinf)) {
       message("3-compartment infusion detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf = tinf)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_infusion(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tinf = tinf), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & !is.null(tinf)) {
@@ -731,10 +738,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # oral first-order
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("3-compartment first-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_oral_1(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -748,10 +754,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # oral first-order lag
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("3-compartment first-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_oral_1_lag(t=t, dose=dose, ka=ka, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(is.null(dur) & !is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -765,10 +770,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # oral zero-order
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & is.null(tinf)) {
       message("3-compartment zero-order oral detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_oral_0(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & is.null(tlag) & !is.null(tau) & is.null(tinf)) {
@@ -782,10 +786,9 @@ calc_derived_3cpt <- function(CL, V1=NULL, V2, V3, Q2=NULL, Q3, V=NULL, Q=NULL, 
     # oral zero-order lag
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & is.null(tinf)) {
       message("3-compartment zero-order oral with lag time detected.")
-      t <- seq(0, tend, by=step)
-      C <- calc_sd_3cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur)
-      Cmax <- max(C)
-      Tmax <- t[which.max(C)]
+      peak <- find_peak(function(t) calc_sd_3cmt_linear_oral_0_lag(t=t, dose=dose, CL=CL, V1=V1, V2=V2, V3=V3, Q2=Q2, Q3=Q3, tlag=tlag, dur=dur), tend = tend, step = step)
+      Cmax <- peak$Cmax
+      Tmax <- peak$Tmax
       Cmax_dose_normalized <- Cmax/dose
     }
     if(!is.null(dur) & is.null(ka) & !is.null(tlag) & !is.null(tau) & is.null(tinf)) {

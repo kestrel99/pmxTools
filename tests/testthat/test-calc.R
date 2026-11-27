@@ -278,10 +278,6 @@ test_that("calc_derived_*() computes dose-dependent outputs per parameter set", 
 })
 
 test_that("calc_derived_*() reports messages once and checks vector lengths", {
-  expect_message(
-    calc_derived_1cpt(CL = c(1, 2, 3), V = 10, dose = 100),
-    "dose present"
-  ) |> suppressMessages()
   msgs <- testthat::capture_messages(calc_derived_1cpt(CL = c(1, 2, 3), V = 10, dose = 100))
   expect_equal(sum(grepl("dose present", msgs)), 1)
   expect_error(calc_derived_1cpt(CL = c(1, 2), V = c(10, 20, 30)), "length 1 or 3")
@@ -383,4 +379,40 @@ test_that("calc_derived_*() return one or several outputs selected by `type`", {
   expect_error(calc_derived_1cpt(CL = 2, V = 20, type = c("k10", "nonsense")), "nonsense")
   # Outputs that need a dose are not available without one
   expect_error(calc_derived_1cpt(CL = 2, V = 20, type = "Cmax"), "Cmax")
+})
+
+test_that("steady-state lag models equal the sum of past doses for any lag and duration", {
+  pars <- list(list(CL = 1, V = 10), list(CL = 2, V1 = 25, V2 = 50, Q = 5),
+               list(CL = 2, V1 = 25, V2 = 50, V3 = 100, Q2 = 1, Q3 = 0.5))
+  tau <- 12
+  tad <- c(0, 0.3, 9.99, 10, 11.9, 12, 30)
+  for (n in 1:3) {
+    for (case in list(list(reg = "oral_1_lag", ka = 1, tlag = 25), list(reg = "oral_1_lag", ka = 1, tlag = 0.5),
+                      list(reg = "oral_0_lag", dur = 4, tlag = 10), list(reg = "oral_0_lag", dur = 12, tlag = 13))) {
+      args <- c(pars[[n]], dose = 100, case[setdiff(names(case), "reg")])
+      sd_fun <- get(sprintf("calc_sd_%dcmt_linear_%s", n, case$reg))
+      ss_fun <- get(sprintf("calc_ss_%dcmt_linear_%s", n, case$reg))
+      superposed <- sapply(tad, function(x) sum(do.call(sd_fun, c(list(t = x + tau * (0:3000)), args))))
+      expect_equal(do.call(ss_fun, c(list(tad = tad, tau = tau), args)), superposed,
+                   info = paste(n, case$reg, case$tlag))
+    }
+  }
+  expect_equal(calc_ss_1cmt(tad = 0, tau = 12, dose = 100, CL = 1, V = 10, ka = 1, tlag = 25), 5.292512,
+               tolerance = 1e-6)
+})
+
+test_that("Cmax and Tmax are found when the peak lies beyond the default search window", {
+  for (n in 1:3) {
+    pars <- list(list(CL = 1, V = 10), list(CL = 1, V1 = 10, V2 = 20, Q = 2),
+                 list(CL = 1, V1 = 10, V2 = 20, V3 = 30, Q2 = 2, Q3 = 1))[[n]]
+    fun <- get(sprintf("calc_derived_%dcpt", n))
+    res <- suppressMessages(do.call(fun, c(pars, list(ka = 1, tlag = 30, dose = 100))))
+    unlagged <- suppressMessages(do.call(fun, c(pars, list(ka = 1, dose = 100))))
+    expect_equal(res$Tmax, unlagged$Tmax + 30, tolerance = 1e-8, info = n)
+    expect_equal(res$Cmax, unlagged$Cmax, tolerance = 1e-8, info = n)
+  }
+  # Slow absorption (flip-flop) puts the peak beyond the first guess of 1/ka
+  slow <- suppressWarnings(suppressMessages(calc_derived_1cpt(CL = 1, V = 10, ka = 0.01, dose = 100)))
+  tmax <- log(0.01 / 0.1) / (0.01 - 0.1)
+  expect_equal(slow$Tmax, tmax, tolerance = 1e-3)
 })

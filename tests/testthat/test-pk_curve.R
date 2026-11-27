@@ -75,3 +75,16 @@ test_that("pk_curve() validates its inputs", {
   expect_error(pk_curve(t = 0:2, params = p, ss = NA), "ss")
   expect_error(pk_curve(t = 0:2, params = p, dose = -1), "dose")
 })
+
+test_that("pk_curve() requires one value per parameter and finite dosing inputs", {
+  expect_error(
+    pk_curve(t = c(0, 0.5, 1.5), model = "1cmt_bolus", params = list(CL = c(1, 2, 3), V = c(10, 10, 10)),
+             ii = 1, addl = 1),
+    "CL, V"
+  )
+  p <- list(CL = 1, V = 10)
+  expect_error(pk_curve(t = 0:2, model = "1cmt_bolus", params = p, ii = Inf), "ii")
+  expect_error(pk_curve(t = 0:2, model = "1cmt_bolus", params = p, addl = Inf), "addl")
+  expect_error(pk_curve(t = c(0, Inf), model = "1cmt_bolus", params = p), "`t`")
+  expect_error(pk_curve(t = 0:2, model = "1cmt_bolus", params = list(CL = Inf, V = 10)), "CL")
+})

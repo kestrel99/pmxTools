@@ -95,9 +95,10 @@ read_nmtables <- function(tableFiles = NULL,
         bind_nmtables(loaded_files)
       } else if (length(lngths) == 2) {
         # There is likely a combination of firstonly and non-firstonly tables.
-        short <- bind_nmtables(loaded_files[file.df$filedim == min(lngths)])
+        # Per-record tables share NONMEM's record order; per-subject tables
+        # need not share an ID order, so each is joined by ID separately.
         long <- bind_nmtables(loaded_files[file.df$filedim == max(lngths)])
-        merge_firstonly(long, short)
+        Reduce(f=merge_firstonly, x=loaded_files[file.df$filedim == min(lngths)], init=long)
       } else {
         message(
           "The table files associated with this run number (", runNo, ") appear ",
@@ -113,14 +114,32 @@ read_nmtables <- function(tableFiles = NULL,
   ret
 }
 
-# Column-bind tables with the same number of rows.  Columns repeated across
-# tables (e.g. ID and TIME, which NONMEM writes to every table) are kept once.
+# Column-bind tables with the same number of rows, which NONMEM writes in the
+# same record order.  Columns repeated across tables (e.g. ID and TIME) are kept
+# once, after checking that they agree row by row, i.e. that the rows line up.
 bind_nmtables <- function(tables) {
-  ret <- Reduce(f=cbind, x=tables)
-  ret[, !duplicated(names(ret)), drop=FALSE]
+  ret <- tables[[1]]
+  for (tab in tables[-1]) {
+    shared <- intersect(names(ret), names(tab))
+    misaligned <- shared[!vapply(shared, function(col) same_values(ret[[col]], tab[[col]]), logical(1))]
+    if (length(misaligned) > 0) {
+      stop("Tables with the same number of rows disagree in shared column(s) ",
+           paste(misaligned, collapse=", "), ", so their rows do not line up. ",
+           "Use output_type = \"list\" to read them separately.", call.=FALSE)
+    }
+    ret <- cbind(ret, tab[, setdiff(names(tab), shared), drop=FALSE])
+  }
+  ret
 }
 
-# Merge per-subject (FIRSTONLY) tables onto per-record tables by ID.  Columns
+# Element-wise equality allowing for the rounding of different $TABLE formats
+same_values <- function(x, y, tolerance=1e-4) {
+  both_na <- is.na(x) & is.na(y)
+  close <- abs(x - y) <= pmax(tolerance * pmax(abs(x), abs(y)), 1e-12)
+  all(both_na | (!is.na(close) & close))
+}
+
+# Merge a per-subject (FIRSTONLY) table onto per-record tables by ID.  Columns
 # present in both are taken from the per-record tables, all per-record rows are
 # kept in their original order, and subjects without a FIRSTONLY row get NA.
 merge_firstonly <- function(long, short) {

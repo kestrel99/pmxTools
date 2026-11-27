@@ -42,13 +42,21 @@ pk_curve <- function(t, model = "1cmt_oral", params=list(ka=2.77, CL=2.5, V=25),
     stop("The ", spec$label, " model requires parameter values for ",
          paste(spec$params, collapse = ", "), ".", call. = FALSE)
   }
+  # Every dose must use the same parameter set, so each parameter is a single
+  # value (the curve describes one individual)
+  non_scalar <- names(params)[lengths(params) != 1]
+  if (length(non_scalar) > 0) {
+    stop("Each parameter in `params` must be a single value; check: ", paste(non_scalar, collapse = ", "),
+         ". Call pk_curve() once per parameter set.", call. = FALSE)
+  }
   assert_nonnegative(t)
   assert_positive(dose)
   assert_positive(ii)
+  assert_nonnegative(addl)
   if (length(dose) != 1 || length(ii) != 1) {
     stop("`dose` and `ii` must be single values.", call. = FALSE)
   }
-  if (!is.numeric(addl) || length(addl) != 1 || is.na(addl) || addl < 0 || addl != round(addl)) {
+  if (length(addl) != 1 || addl != round(addl)) {
     stop("`addl` must be a single non-negative whole number.", call. = FALSE)
   }
   if (!is.logical(ss) || length(ss) != 1 || is.na(ss)) {

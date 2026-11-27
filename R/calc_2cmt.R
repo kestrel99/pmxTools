@@ -262,19 +262,8 @@ calc_ss_2cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
 #' @export
 calc_ss_2cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
   check_conc_inputs(tad = tad, tau = tau, dose = dose)
-  param <- calc_derived_2cpt(..., sigdig=Inf)
-  check_ka_distinct(param)
-  ### macroconstants - 1.2.3 p. 24
-  A <- (param$ka/param$V1) * ((param$k21 - param$alpha) / ((param$ka - param$alpha) * (param$beta - param$alpha)))
-  B <- (param$ka/param$V1) * ((param$k21 - param$beta) / ((param$ka - param$beta) * (param$alpha - param$beta)))
-  ### C(t) after single dose - eq 1.46 p. 26
-  Ct <- dose * (((A * exp(-param$alpha * (tad - param$tlag))) / (1 - exp(-param$alpha * tau)))  +
-                  ((B * exp(-param$beta * (tad - param$tlag))) / (1 - exp(-param$beta * tau))) -
-                  (((A + B) * exp(-param$ka * (tad - param$tlag))) / (1 - exp(-param$ka * tau))))
-  Ct[tad < param$tlag] <- dose * (((A * exp(-param$alpha * (tad[tad < param$tlag] + tau - param$tlag))) / (1 - exp(-param$alpha * tau)))  +
-                              ((B * exp(-param$beta * (tad[tad < param$tlag] + tau - param$tlag))) / (1 - exp(-param$beta * tau))) -
-                              (((A + B) * exp(-param$ka * (tad[tad < param$tlag] + tau - param$tlag))) / (1 - exp(-param$ka * tau))))
-  Ct
+  # At steady state the lag only shifts the profile (see ss_time_after_lag())
+  calc_ss_2cmt_linear_oral_1(tad = ss_time_after_lag(tad, tau, list(...)[["tlag"]]), tau = tau, dose = dose, ...)
 }
 
 #' @describeIn calc_ss_2cmt
@@ -285,58 +274,8 @@ calc_ss_2cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
 #' @export
 calc_ss_2cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
   check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
-  param <- calc_derived_2cpt(..., sigdig=Inf)
-  ### macroconstants - 1.2.4 p. 28
-  A <- (1/param$V1) * ((param$alpha - param$k21) / (param$alpha - param$beta))
-  B <- (1/param$V1) * ((param$beta - param$k21) / (param$beta - param$alpha))
-  ### C(t) at steady state - eq 1.56 p. 33
-  c1  <- dose / dur
-  ca1 <- A / param$alpha
-  cb1 <- B / param$beta
-  
-  # rest
-  
-  c1a1 <- 1 - exp(-param$alpha * dur)
-  c1a2 <- exp(-param$alpha * (tad - param$tlag - dur))
-  c1a3 <- 1 - exp(-param$alpha * tau)
-  
-  c1b1 <- 1 - exp(-param$beta * dur) 
-  c1b2 <- exp(-param$beta * (tad - param$tlag - dur))
-  c1b3 <- 1 - exp(-param$beta * tau)
-  
-  Ct <- c1 * (ca1 * ((c1a1 * c1a2) / c1a3) +
-                cb1 * ((c1b1 * c1b2) / c1b3))
-  
-  # during lag
-  
-  c2a1 <- 1 - exp(-param$alpha * dur)
-  c2a2 <- exp(-param$alpha * (tad[tad <= param$tlag] + tau - param$tlag - dur))
-  c2a3 <- 1 - exp(-param$alpha * tau)
-  
-  c2b1 <- 1 - exp(-param$beta * dur)
-  c2b2 <- exp(-param$beta * (tad[tad <= param$tlag] + tau - param$tlag - dur))
-  c2b3 <- 1 - exp(-param$beta * tau)
-  
-  Ct[tad <= param$tlag] <- c1 * (ca1 * ((c2a1 * c2a2) / c2a3) +
-                             cb1 * ((c2b1 * c2b2) / c2b3))
-  
-  # during zero order absorption
-  
-  c3a1 <- 1 - exp(-param$alpha * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag))
-  c3a2 <- 1 - exp(-param$alpha * dur)
-  c3a3 <- exp(-param$alpha * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag - dur))
-  c3a4 <- 1 - exp(-param$alpha * tau)
-  
-  c3b1 <- 1 - exp(-param$beta * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag))
-  c3b2 <- 1 - exp(-param$beta * dur)
-  c3b3 <- exp(-param$beta * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag - dur))
-  c3b4 <- 1 - exp(-param$beta * tau)
-  
-  Ct[tad > param$tlag & tad <= param$tlag + dur] <-
-    c1 * (ca1 * (c3a1 + exp(-param$alpha * tau) * (c3a2 * c3a3 / c3a4)) +
-            cb1 * (c3b1 + exp(-param$beta * tau) * (c3b2 * c3b3 / c3b4)))
-  
-  Ct
+  # At steady state the lag only shifts the profile (see ss_time_after_lag())
+  calc_ss_2cmt_linear_oral_0(tad = ss_time_after_lag(tad, tau, list(...)[["tlag"]]), tau = tau, dose = dose, dur = dur, ...)
 }
 
 #' @describeIn calc_ss_2cmt

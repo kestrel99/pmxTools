@@ -27,19 +27,28 @@ sample_uncert <- function(nmRun, n, seed) {
   thetas <- get_theta(nmOutput)
   omegas <- get_omega(nmOutput)
   sigmas <- get_sigma(nmOutput)
-  omList <- c()
-  for (i in 1:nrow(omegas)) {
-    for (j in 1:i) {
-      omList <- c(omList, omegas[i, j])
-    }
+  # Name each estimate as NONMEM labels it in the .cov file, so that the means
+  # can be matched to the covariance matrix by name rather than by position
+  mu <- c(
+    stats::setNames(as.numeric(thetas), paste0("THETA", seq_along(thetas))),
+    lower_triangle(sigmas, "SIGMA"),
+    lower_triangle(omegas, "OMEGA")
+  )
+  vcov <- read_nmcov(sub(pattern = "\\.xml$", replacement = ".cov", x = nmRun))
+  labels <- rownames(vcov)
+  if (!identical(labels, colnames(vcov)) || !setequal(labels, names(mu)) || length(labels) != length(mu)) {
+    stop("The parameters in the covariance matrix do not match the estimates in ", nmRun, ".", call. = FALSE)
   }
-  siList <- c()
-  for (i in 1:nrow(sigmas)) {
-    for (j in 1:i) {
-      siList <- c(siList, sigmas[i, j])
-    }
-  }
-  mu <- as.numeric(c(thetas, siList, omList))
-  vcov <- read_nmcov(gsub(pattern = ".xml", replacement = ".cov", x = nmRun))
-  as.data.frame(MASS::mvrnorm(n = n, mu, Sigma = vcov))
+  mu <- mu[labels]
+  draws <- MASS::mvrnorm(n = n, mu = mu, Sigma = vcov)
+  # mvrnorm() returns a vector for a single draw
+  as.data.frame(matrix(draws, nrow = n, dimnames = list(NULL, labels)), optional = TRUE)
+}
+
+# Lower-triangle elements of an OMEGA or SIGMA matrix, row by row, named as in
+# NONMEM's .cov file (e.g. "OMEGA(2,1)")
+lower_triangle <- function(m, prefix) {
+  idx <- which(lower.tri(m, diag = TRUE), arr.ind = TRUE)
+  idx <- idx[order(idx[, "row"], idx[, "col"]), , drop = FALSE]
+  stats::setNames(as.numeric(m[idx]), sprintf("%s(%d,%d)", prefix, idx[, "row"], idx[, "col"]))
 }

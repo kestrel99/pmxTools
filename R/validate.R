@@ -5,11 +5,11 @@
 
 check_numeric_domain <- function(x, name, lower, inclusive) {
   if (is.null(x)) return(invisible(x))
-  ok_type <- is.numeric(x) && length(x) > 0 && !anyNA(x)
+  ok_type <- is.numeric(x) && length(x) > 0 && all(is.finite(x))
   ok_range <- ok_type && all(if (inclusive) x >= lower else x > lower)
   if (!ok_range) {
     bound <- if (inclusive) "non-negative" else "positive"
-    stop("`", name, "` must be ", bound, " numeric value(s) with no missing values.", call. = FALSE)
+    stop("`", name, "` must be finite, ", bound, " numeric value(s) with no missing values.", call. = FALSE)
   }
   invisible(x)
 }
@@ -60,4 +60,16 @@ check_derived_inputs <- function(positive = list(), nonnegative = list()) {
   for (nm in names(positive)) assert_positive(positive[[nm]], nm)
   for (nm in names(nonnegative)) assert_nonnegative(nonnegative[[nm]], nm)
   invisible(TRUE)
+}
+
+# At steady state an absorption lag only shifts the dosing profile, so a lagged
+# steady-state concentration equals the unlagged one at the time since
+# absorption of the most recent dose began: tad - tlag, plus as many intervals
+# as needed when that dose's absorption has not started yet.
+ss_time_after_lag <- function(tad, tau, tlag) {
+  if (is.null(tlag)) {
+    stop("`tlag` is required for the lag-time models.", call. = FALSE)
+  }
+  elapsed <- tad - tlag
+  elapsed + tau * pmax(0, ceiling(-elapsed / tau))
 }
