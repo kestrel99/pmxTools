@@ -97,8 +97,10 @@
   `tlag` and is extended until it contains the peak; previously it could
   end before absorption started and report `Cmax = 0`. The search also
   checks the end of an infusion or of zero-order absorption, so a peak
-  there is found exactly rather than at the nearest `step`. A zero dose
-  gives `Cmax = 0` and `Tmax = 0` directly.
+  there is found exactly rather than at the nearest `step`; the
+  steady-state grid used for `Cmaxss` and `AUCtau` includes the same
+  points within the dosing interval. A zero dose gives `Cmax = 0` and
+  `Tmax = 0` directly.
 
 - The steady-state lag-time functions
   (`calc_ss_*cmt_linear_oral_1_lag()` and
@@ -129,10 +131,11 @@
   there are, keeping all per-record rows in their original order. It
   warns about subjects missing from a `FIRSTONLY` table and stops if
   there is no shared `ID` column. Per-record tables are combined row by
-  row only after checking that their shared columns agree (`ID` exactly,
-  other columns such as `TIME` allowing for different `$TABLE`
-  precision), and those columns are kept once. Previously tables could
-  be combined in the wrong row order without warning.
+  row only after checking that their shared columns (such as `ID` and
+  `TIME`) agree to the precision of the less precise table, so tables
+  written with different `$TABLE` formats can still be combined, and
+  those columns are kept once. Previously tables could be combined in
+  the wrong row order without warning.
 
 - [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
   reads tables with exactly three columns and NSIM \> 1 output
