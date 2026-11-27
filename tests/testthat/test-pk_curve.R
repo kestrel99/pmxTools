@@ -40,6 +40,16 @@ test_that("pk_curve() counts a dose given at an observation time despite roundin
   expect_equal(res$cp[2], sum(exp(-(0.3 - dose_times))) + 1)
 })
 
+test_that("pk_curve() does not count a dose before it is given, however close", {
+  p <- list(CL = 1, V = 1)
+  before <- pk_curve(t = 0.3 - 1e-9, model = "1cmt_bolus", params = p, dose = 1, ii = 0.1, addl = 3)
+  expect_equal(before$cp, sum(exp(-(0.3 - 1e-9 - c(0, 0.1, 0.2)))))
+
+  late <- pk_curve(t = c(2400 - 1e-5, 2400), model = "1cmt_bolus", params = list(CL = 1, V = 100), dose = 1,
+                   ii = 24, addl = 100)
+  expect_equal(diff(late$cp), 1 / 100, tolerance = 1e-6)
+})
+
 test_that("pk_curve(ss = TRUE) gives the steady-state curve over the dosing interval", {
   p <- list(CL = 2.5, V1 = 25, V2 = 50, Q = 5, ka = 1)
   tad <- c(0, 0.5, 3, 11.9)

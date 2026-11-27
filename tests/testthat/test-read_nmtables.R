@@ -131,13 +131,27 @@ test_that("read_nmtables() refuses to bind per-record tables whose rows do not l
   expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "ID, TIME")
 })
 
-test_that("read_nmtables() compares subject IDs exactly when lining up per-record tables", {
-  # 10001 and 10002 are within the relative tolerance used for rounded values
+test_that("read_nmtables() detects reordered subjects when lining up per-record tables", {
+  # 10001 and 10002 differ only in the fifth significant digit
   dir <- withr::local_tempdir()
   local_nmtable(data.frame(ID = c(10001, 10002), TIME = 0, DV = c(1, 2), PRED = 1), dir, "sdtab1")
   local_nmtable(data.frame(ID = c(10002, 10001), TIME = 0, WT = c(90, 55), CWRES = 0), dir, "patab1")
 
   expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) ID,", fixed = TRUE)
+})
+
+test_that("read_nmtables() detects reordered records within a subject", {
+  # 2400 and 2400.1 differ in the fifth significant digit, which NONMEM's default format keeps
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = 1, TIME = c(2400, 2400.1), DV = c(1, 2), PRED = 1), dir, "sdtab1")
+  local_nmtable(data.frame(ID = 1, TIME = c(2400.1, 2400), IPRED = c(20, 10), CWRES = 0), dir, "patab1")
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) TIME,", fixed = TRUE)
+
+  # Tables written at the same higher precision are compared at that precision
+  dir <- withr::local_tempdir()
+  writeLines(c("TABLE NO.  1", " ID TIME DV", " 1 2400.01 1", " 1 2400.02 2"), file.path(dir, "sdtab1"))
+  writeLines(c("TABLE NO.  2", " ID TIME IPRED", " 1 2400.02 20", " 1 2400.01 10"), file.path(dir, "patab1"))
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) TIME,", fixed = TRUE)
 })
 
 test_that("read_nmtables() binds per-record tables written with different precision", {

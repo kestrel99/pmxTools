@@ -117,29 +117,46 @@ read_nmtables <- function(tableFiles = NULL,
 # Column-bind tables with the same number of rows, which NONMEM writes in the
 # same record order.  Columns repeated across tables (e.g. ID and TIME) are kept
 # once, after checking that they agree row by row, i.e. that the rows line up.
+# Tables may be written with different $TABLE formats, so shared columns are
+# compared at the precision of the coarser of the two tables.
 bind_nmtables <- function(tables) {
   ret <- tables[[1]]
+  col_digits <- stats::setNames(rep(table_digits(ret), ncol(ret)), names(ret))
   for (tab in tables[-1]) {
+    digits <- table_digits(tab)
     shared <- intersect(names(ret), names(tab))
-    # Subject identifiers must match exactly; tolerance is only for rounding
-    # of continuous values such as TIME
     misaligned <- shared[!vapply(shared, function(col) {
-      same_values(ret[[col]], tab[[col]], tolerance=if (col == "ID") 0 else 1e-4)
+      same_values(ret[[col]], tab[[col]], digits=min(col_digits[[col]], digits))
     }, logical(1))]
     if (length(misaligned) > 0) {
       stop("Tables with the same number of rows disagree in shared column(s) ",
            paste(misaligned, collapse=", "), ", so their rows do not line up. ",
            "Use output_type = \"list\" to read them separately.", call.=FALSE)
     }
-    ret <- cbind(ret, tab[, setdiff(names(tab), shared), drop=FALSE])
+    added <- setdiff(names(tab), shared)
+    ret <- cbind(ret, tab[, added, drop=FALSE])
+    col_digits[added] <- digits
   }
   ret
 }
 
-# Element-wise equality allowing for the rounding of different $TABLE formats
-same_values <- function(x, y, tolerance=1e-4) {
+# Significant digits a table was written with: the most that any of its values
+# needs, and at least 5 (NONMEM's default format, 1PE11.4)
+table_digits <- function(tab) {
+  x <- unlist(tab, use.names=FALSE)
+  x <- x[is.finite(x) & x != 0]
+  for (digits in 5:15) {
+    if (all(abs(signif(x, digits) - x) <= 4 * .Machine$double.eps * abs(x))) return(digits)
+  }
+  15
+}
+
+# Element-wise equality after rounding both to `digits` significant digits
+same_values <- function(x, y, digits) {
   both_na <- is.na(x) & is.na(y)
-  close <- if (tolerance == 0) x == y else abs(x - y) <= pmax(tolerance * pmax(abs(x), abs(y)), 1e-12)
+  x <- signif(x, digits)
+  y <- signif(y, digits)
+  close <- abs(x - y) <= 4 * .Machine$double.eps * pmax(abs(x), abs(y))
   all(both_na | (!is.na(close) & close))
 }
 

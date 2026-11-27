@@ -431,3 +431,21 @@ test_that("a zero dose gives Cmax = 0 without searching for a peak", {
   expect_no_warning(res <- suppressMessages(calc_derived_1cpt(CL = 1, V = 10, ka = 1, dose = 0)))
   expect_equal(c(res$Cmax, res$Tmax), c(0, 0))
 })
+
+test_that("Cmaxss is found at break points of the steady-state profile that fall between grid steps", {
+  inf <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05, tau = 1))
+  expect_equal(inf$Cmaxss, calc_ss_1cmt_linear_infusion(tad = 0.05, tau = 1, dose = 1, CL = 100, V = 1, tinf = 0.05))
+
+  # With a lag longer than tau, absorption ends at (tlag + dur) %% tau = 3.38 h after the dose
+  zo <- suppressMessages(calc_derived_1cpt(CL = 1, V = 10, dose = 100, dur = 2.05, tlag = 13.33, tau = 12))
+  expect_equal(zo$Cmaxss, calc_ss_1cmt_linear_oral_0_lag(tad = 3.38, tau = 12, dose = 100, CL = 1, V = 10,
+                                                          dur = 2.05, tlag = 13.33))
+})
+
+test_that("AUCtau approaches dose/CL at steady state as the integration step shrinks", {
+  res <- suppressMessages(calc_derived_1cpt(CL = 100, V = 1, dose = 1, tinf = 0.05, tau = 1, step = 0.001))
+  expect_equal(res$AUCtau, 1 / 100, tolerance = 1e-3)
+  res <- suppressMessages(calc_derived_2cpt(CL = 2, V1 = 10, V2 = 20, Q = 3, ka = 0.7, tlag = 5, dose = 100, tau = 12,
+                                            step = 0.01))
+  expect_equal(res$AUCtau, 100 / 2, tolerance = 1e-5)
+})
