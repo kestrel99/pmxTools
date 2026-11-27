@@ -185,3 +185,16 @@ test_that("read_nmtables() compares subject IDs exactly, at any magnitude", {
 
   expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) ID,", fixed = TRUE)
 })
+
+test_that("read_nmtables() binds records the shared columns cannot tell apart in file order", {
+  # Documented: e.g. a dose and an observation at the same ID and TIME cannot be
+  # checked, so NONMEM's record order is relied on
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = 1, TIME = c(0, 0), DV = c(0, 5)), dir, "sdtab1")
+  local_nmtable(data.frame(ID = 1, TIME = c(0, 0), IPRED = c(10, 20)), dir, "patab1")
+
+  res <- read_nmtables(runNo = 1, directory = dir, quiet = TRUE)
+
+  expect_equal(res$DV, c(0, 5))
+  expect_equal(res$IPRED, c(10, 20))
+})

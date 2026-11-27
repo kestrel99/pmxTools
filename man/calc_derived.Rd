@@ -86,7 +86,7 @@ are synonyms; use only one.}
 
 \item{tau}{Duration of interdose interval (time units, e.g. h; defaults to 24)}
 
-\item{step}{Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss} (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. \code{AUCtau} is integrated adaptively and does not depend on \code{step}.}
+\item{step}{Time increment of the grid searched for \code{Cmax}, \code{Tmax} and \code{Cmaxss} (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. \code{AUCtau} is calculated as \code{dose/CL}, which is exact at steady state for these linear models, so it does not depend on \code{step}.}
 
 \item{type}{Parameters to return. Default is \code{"all"}.  If not
 \code{"all"}, this may be one name from the return value list, giving

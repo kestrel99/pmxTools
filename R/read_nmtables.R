@@ -11,6 +11,18 @@
 #' @return A data.frame or list of data.frames depending on the
 #'   \code{output_type} argument.
 #'
+#' @details When \code{output_type = "data.frame"}, per-subject
+#'   (\code{FIRSTONLY}) tables are joined to the others by \code{ID}. Tables with
+#'   one row per record are combined row by row, relying on NONMEM writing every
+#'   table of a run in the same record order. Columns the tables share (such as
+#'   \code{ID} and \code{TIME}) are checked for agreement first, and kept once.
+#'   That check can only detect misaligned rows where the shared columns tell
+#'   records apart. Where they cannot, e.g. a dose and an observation at the same
+#'   \code{ID} and \code{TIME}, or tables with no columns in common, the rows are
+#'   combined in file order. Tables from different runs, or edited after NONMEM
+#'   wrote them, may then be silently misaligned; read them with
+#'   \code{output_type = "list"} instead.
+#'
 #' @note Adapted from Xpose 4 (\url{https://CRAN.R-project.org/package=xpose4}).
 #' @references NONMEM (\url{https://www.iconplc.com/solutions/technologies/nonmem})
 #' @references Jonsson EN, Karlsson MO. Xpose--an S-PLUS based population
@@ -119,7 +131,9 @@ read_nmtables <- function(tableFiles = NULL,
 # once, after checking that they agree row by row, i.e. that the rows line up.
 # Tables may be written with different $TABLE formats, so shared columns other
 # than ID are compared at the precision of the coarser of the two tables, as
-# long as that rounding keeps every record distinguishable.
+# long as that rounding keeps every record distinguishable.  Records the shared
+# columns cannot tell apart (or tables with none in common) are bound in file
+# order unchecked, as documented in ?read_nmtables.
 bind_nmtables <- function(tables) {
   ret <- tables[[1]]
   col_digits <- stats::setNames(rep(table_digits(ret), ncol(ret)), names(ret))
