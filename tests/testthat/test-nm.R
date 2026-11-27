@@ -212,3 +212,29 @@ test_that("rnm() leaves same-named objects in the global environment alone", {
   expect_equal(get("EPSD", envir = globalenv()), "user EPSD")
   expect_s3_class(res$Theta, "data.frame")
 })
+
+test_that("sample_uncert() matches estimates to the covariance matrix by parameter name", {
+  dir <- withr::local_tempdir()
+  file.copy(test_path("testData", "runR001.xml"), file.path(dir, "run1.xml"))
+  # Swap THETA1 and THETA2 in both dimensions of the covariance matrix
+  cov <- read_nmcov(test_path("testData", "runR001.cov"), quiet = TRUE)
+  perm <- c(2, 1, 3:7)
+  cov <- cov[perm, perm]
+  body <- vapply(seq_len(nrow(cov)), function(i) {
+    paste(c(sprintf("%-12s", rownames(cov)[i]), sprintf("%12.5E", cov[i, ])), collapse = " ")
+  }, character(1))
+  writeLines(c("TABLE NO.     1: First Order", paste(c(" NAME       ", sprintf("%12s", colnames(cov))), collapse = " "), body),
+             file.path(dir, "run1.cov"))
+
+  samp <- suppressMessages(sample_uncert(file.path(dir, "run1.xml"), n = 2000, seed = 1))
+
+  expect_equal(names(samp)[1:2], c("THETA2", "THETA1"))
+  expect_equal(mean(samp$THETA1), 3.98013, tolerance = 0.01)
+  expect_equal(mean(samp$THETA2), 68.2194, tolerance = 0.01)
+})
+
+test_that("sample_uncert() returns one row for a single draw", {
+  samp <- suppressMessages(sample_uncert(test_path("testData", "runR001.xml"), n = 1, seed = 1))
+  expect_equal(dim(samp), c(1, 7))
+  expect_equal(names(samp)[1], "THETA1")
+})

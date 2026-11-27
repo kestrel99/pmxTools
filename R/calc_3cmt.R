@@ -231,26 +231,8 @@ calc_ss_3cmt_linear_bolus <- function(tad, tau, dose, ...) {
 #' @export
 calc_ss_3cmt_linear_oral_1_lag <- function(tad, tau, dose, ...) {
   check_conc_inputs(tad = tad, tau = tau, dose = dose)
-  param <- calc_derived_3cpt(..., sigdig=Inf)
-  check_ka_distinct(param)
-  ### macroconstants - 1.3.3 p. 44
-  A <- (1/param$V1) * (param$ka / (param$ka - param$alpha)) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
-  B <- (1/param$V1) * (param$ka / (param$ka - param$beta))  * ((param$k21 - param$beta)/(param$beta - param$alpha))  * ((param$k31 - param$beta)/(param$beta - param$gamma))
-  C <- (1/param$V1) * (param$ka / (param$ka - param$gamma)) * ((param$k21 - param$gamma)/(param$gamma - param$beta)) * ((param$k31 - param$gamma)/(param$gamma - param$alpha))
-  ### C(t) after single dose with lag time - eq 1.76 p. 45
-  Ct <-
-    dose *
-    (((A * exp(-param$alpha*(tad-param$tlag)))/(1-exp(-param$alpha*tau))) +
-       ((B * exp(-param$beta*(tad-param$tlag)))/(1-exp(-param$beta*tau))) +
-       ((C * exp(-param$gamma*(tad-param$tlag)))/(1-exp(-param$gamma*tau))) -
-       (((A + B + C)*exp(-param$ka*(tad-param$tlag)))/(1-exp(-param$ka*tau))))
-  Ct[tad<param$tlag] <-
-    dose *
-    (((A * exp(-param$alpha*(tad[tad<param$tlag]+tau-param$tlag)))/(1-exp(-param$alpha*tau))) +
-       ((B * exp(-param$beta*(tad[tad<param$tlag]+tau-param$tlag)))/(1-exp(-param$beta*tau))) +
-       ((C * exp(-param$gamma*(tad[tad<param$tlag]+tau-param$tlag)))/(1-exp(-param$gamma*tau))) -
-       (((A + B + C)*exp(-param$ka*(tad[tad<param$tlag]+tau-param$tlag)))/(1-exp(-param$ka*tau))))
-  Ct
+  # At steady state the lag only shifts the profile (see ss_time_after_lag())
+  calc_ss_3cmt_linear_oral_1(tad = ss_time_after_lag(tad, tau, list(...)[["tlag"]]), tau = tau, dose = dose, ...)
 }
 
 #' @describeIn calc_ss_3cmt
@@ -371,75 +353,8 @@ calc_ss_3cmt_linear_oral_0 <- function(tad, tau, dose, dur, ...) {
 #' @export
 calc_ss_3cmt_linear_oral_0_lag <- function(tad, tau, dose, dur, ...) {
   check_conc_inputs(tad = tad, tau = tau, dose = dose, dur = dur)
-  param <- calc_derived_3cpt(..., sigdig=Inf)
-  ### macroconstants - 1.3.4 p. 47
-  A <- (1/param$V1) * ((param$k21 - param$alpha)/(param$alpha - param$beta)) * ((param$k31 - param$alpha)/(param$alpha - param$gamma))
-  B <- (1/param$V1) * ((param$k21 - param$beta)/(param$beta - param$alpha)) * ((param$k31 - param$beta)/(param$beta - param$gamma))
-  C <- (1/param$V1) * ((param$k21 - param$gamma)/(param$gamma - param$beta)) * ((param$k31 - param$gamma)/(param$gamma - param$alpha))
-  ### C(t) at steady state - eq 1.86 p. 51
-  
-  tm1a1 <- 1 - exp(-param$alpha * dur)
-  tm2a1 <- exp(-param$alpha * (tad - param$tlag - dur))
-  tm3a1 <- 1 - exp(-param$alpha * tau)
-  
-  tm1b1 <- 1 - exp(-param$beta * dur)
-  tm2b1 <- exp(-param$beta * (tad - param$tlag - dur))
-  tm3b1 <- 1 - exp(-param$beta * tau)
-  
-  tm1c1 <- 1 - exp(-param$gamma * dur)
-  tm2c1 <- exp(-param$gamma * (tad - param$tlag - dur))
-  tm3c1 <- 1 - exp(-param$gamma * tau)
-  
-  Ct <-
-    (dose / dur) *
-    ((A/param$alpha) * ((tm1a1 * tm2a1)/tm3a1) +
-       (B/param$beta)  * ((tm1b1 * tm2b1)/tm3b1) +
-       (C/param$gamma) * ((tm1c1 * tm2c1)/tm3c1))
-  
-  
-  tm1a2 <- 1 - exp(-param$alpha * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag))
-  tm2a2 <- exp(-param$alpha * tau)
-  tm3a2 <- 1 - exp(-param$alpha * dur)
-  tm4a2 <- exp(-param$alpha * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag - dur))
-  tm5a2 <- 1 - exp(-param$alpha * tau)
-  
-  tm1b2 <- 1 - exp(-param$beta * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag))
-  tm2b2 <- exp(-param$beta * tau)
-  tm3b2 <- 1 - exp(-param$beta * dur)
-  tm4b2 <- exp(-param$beta * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag - dur))
-  tm5b2 <- 1 - exp(-param$beta * tau)
-  
-  tm1c2 <- 1 - exp(-param$gamma * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag))
-  tm2c2 <- exp(-param$gamma * tau)
-  tm3c2 <- 1 - exp(-param$gamma * dur)
-  tm4c2 <- exp(-param$gamma * (tad[tad > param$tlag & tad <= param$tlag + dur] - param$tlag - dur))
-  tm5c2 <- 1 - exp(-param$gamma * tau)
-  
-  Ct[tad > param$tlag & tad <= param$tlag + dur] <-
-    (dose/dur) *
-    ((A/param$alpha) * (tm1a2 + (tm2a2 * (tm3a2 * tm4a2)/tm5a2)) +
-       (B/param$beta)  * (tm1b2 + (tm2b2 * (tm3b2 * tm4b2)/tm5b2)) +
-       (C/param$gamma) * (tm1c2 + (tm2c2 * (tm3c2 * tm4c2)/tm5c2)))
-  
-  tm1a3 <- 1 - exp(-param$alpha * dur)
-  tm2a3 <- exp(-param$alpha * (tad[tad <= param$tlag] + tau - param$tlag - dur))
-  tm3a3 <- 1 - exp(-param$alpha * tau)
-  
-  tm1b3 <- 1 - exp(-param$beta * dur)
-  tm2b3 <- exp(-param$beta * (tad[tad <= param$tlag] + tau - param$tlag - dur))
-  tm3b3 <- 1 - exp(-param$beta * tau)
-  
-  tm1c3 <- 1 - exp(-param$gamma * dur)
-  tm2c3 <- exp(-param$gamma * (tad[tad <= param$tlag] + tau - param$tlag - dur))
-  tm3c3 <- 1 - exp(-param$gamma * tau)
-  
-  Ct[tad <= param$tlag] <-
-    (dose/dur) *
-    ((A/param$alpha) * ((tm1a3 * tm2a3) / tm3a3) +
-       (B/param$beta)  * ((tm1b3 * tm2b3) / tm3b3) +
-       (C/param$gamma) * ((tm1c3 * tm2c3) / tm3c3))
-  
-  Ct
+  # At steady state the lag only shifts the profile (see ss_time_after_lag())
+  calc_ss_3cmt_linear_oral_0(tad = ss_time_after_lag(tad, tau, list(...)[["tlag"]]), tau = tau, dose = dose, dur = dur, ...)
 }
 
 #' @describeIn calc_ss_3cmt

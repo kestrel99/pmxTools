@@ -106,6 +106,38 @@ test_that("read_nmtables() reports missing table files only when not quiet", {
   local_nmtable(data.frame(ID = c(1, 2), TIME = c(0, 1)), dir, "sdtab1")
 
   expect_no_message(read_nmtables(runNo = 1, directory = dir, quiet = TRUE))
-  expect_message(read_nmtables(runNo = 1, directory = dir, quiet = FALSE), "not found") |>
-    suppressMessages()
+  msgs <- testthat::capture_messages(read_nmtables(runNo = 1, directory = dir, quiet = FALSE))
+  expect_true(any(grepl("not found", msgs)))
+})
+
+test_that("read_nmtables() joins each FIRSTONLY table by ID whatever its row order", {
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = c(1, 1, 2), TIME = c(0, 1, 0), DV = c(1, 2, 3), PRED = c(1, 1, 1)), dir, "sdtab1")
+  local_nmtable(data.frame(ID = c(1, 2), WT = c(70, 80), X1 = 0, X2 = 0), dir, "cotab1")
+  local_nmtable(data.frame(ID = c(2, 1), AGE = c(40, 30), Y1 = 0, Y2 = 0), dir, "catab1")
+
+  res <- read_nmtables(runNo = 1, directory = dir, quiet = TRUE)
+
+  expect_equal(res$ID, c(1, 1, 2))
+  expect_equal(res$WT, c(70, 70, 80))
+  expect_equal(res$AGE, c(30, 30, 40))
+})
+
+test_that("read_nmtables() refuses to bind per-record tables whose rows do not line up", {
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = c(1, 1, 2), TIME = c(0, 1, 0), DV = c(1, 2, 3), PRED = c(1, 1, 1)), dir, "sdtab1")
+  local_nmtable(data.frame(ID = c(1, 2, 1), TIME = c(0, 0, 1), IPRED = c(1, 3, 2), CWRES = 0), dir, "patab1")
+
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "ID, TIME")
+})
+
+test_that("read_nmtables() binds per-record tables written with different precision", {
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = c(1, 1), TIME = c(0, 1 / 3), DV = c(1, 2), PRED = c(1, 1)), dir, "sdtab1")
+  writeLines(c("TABLE NO.  2", "  ID  TIME  IPRED  CWRES", " 1 0 1.5 0", " 1 0.333333333 2.5 0"),
+             file.path(dir, "patab1"))
+
+  res <- read_nmtables(runNo = 1, directory = dir, quiet = TRUE)
+
+  expect_equal(res$IPRED, c(1.5, 2.5))
 })
