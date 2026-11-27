@@ -59,6 +59,20 @@ read_nmtables(
 A data.frame or list of data.frames depending on the `output_type`
 argument.
 
+## Details
+
+When `output_type = "data.frame"`, per-subject (`FIRSTONLY`) tables are
+joined to the others by `ID`. Tables with one row per record are
+combined row by row, relying on NONMEM writing every table of a run in
+the same record order. Columns the tables share (such as `ID` and
+`TIME`) are checked for agreement first, and kept once. That check can
+only detect misaligned rows where the shared columns tell records apart.
+Where they cannot, e.g. a dose and an observation at the same `ID` and
+`TIME`, or tables with no columns in common, the rows are combined in
+file order. Tables from different runs, or edited after NONMEM wrote
+them, may then be silently misaligned; read them with
+`output_type = "list"` instead.
+
 ## Note
 
 Adapted from Xpose 4 (<https://CRAN.R-project.org/package=xpose4>).

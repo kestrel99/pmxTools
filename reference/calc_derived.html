@@ -150,7 +150,7 @@ are synonyms; use only one.</p></dd>
 
 
 <dt id="arg-step">step<a class="anchor" aria-label="anchor" href="#arg-step"></a></dt>
-<dd><p>Time increment of the grid searched for <code>Cmax</code>, <code>Tmax</code> and <code>Cmaxss</code> (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. <code>AUCtau</code> is integrated adaptively and does not depend on <code>step</code>.</p></dd>
+<dd><p>Time increment of the grid searched for <code>Cmax</code>, <code>Tmax</code> and <code>Cmaxss</code> (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. <code>AUCtau</code> is calculated as <code>dose/CL</code>, which is exact at steady state for these linear models, so it does not depend on <code>step</code>.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>

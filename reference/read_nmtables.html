@@ -101,6 +101,20 @@ merged or a "list" of data.frames.</p></dd>
 <code>output_type</code> argument.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When <code>output_type = "data.frame"</code>, per-subject
+(<code>FIRSTONLY</code>) tables are joined to the others by <code>ID</code>. Tables with
+one row per record are combined row by row, relying on NONMEM writing every
+table of a run in the same record order. Columns the tables share (such as
+<code>ID</code> and <code>TIME</code>) are checked for agreement first, and kept once.
+That check can only detect misaligned rows where the shared columns tell
+records apart. Where they cannot, e.g. a dose and an observation at the same
+<code>ID</code> and <code>TIME</code>, or tables with no columns in common, the rows are
+combined in file order. Tables from different runs, or edited after NONMEM
+wrote them, may then be silently misaligned; read them with
+<code>output_type = "list"</code> instead.</p>
+    </div>
+    <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>Adapted from Xpose 4 (<a href="https://CRAN.R-project.org/package=xpose4" class="external-link">https://CRAN.R-project.org/package=xpose4</a>).</p>
     </div>

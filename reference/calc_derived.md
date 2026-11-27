@@ -111,7 +111,8 @@ calc_derived_3cpt(
   Time increment of the grid searched for `Cmax`, `Tmax` and `Cmaxss`
   (time units, e.g. h; defaults to 0.1). The end of an infusion and the
   start and end of absorption are always included. `AUCtau` is
-  integrated adaptively and does not depend on `step`.
+  calculated as `dose/CL`, which is exact at steady state for these
+  linear models, so it does not depend on `step`.
 
 - type:
 
