@@ -117,21 +117,38 @@ read_nmtables <- function(tableFiles = NULL,
 # Column-bind tables with the same number of rows, which NONMEM writes in the
 # same record order.  Columns repeated across tables (e.g. ID and TIME) are kept
 # once, after checking that they agree row by row, i.e. that the rows line up.
-# Tables may be written with different $TABLE formats, so shared columns are
-# compared at the precision of the coarser of the two tables.
+# Tables may be written with different $TABLE formats, so shared columns other
+# than ID are compared at the precision of the coarser of the two tables, as
+# long as that rounding keeps every record distinguishable.
 bind_nmtables <- function(tables) {
   ret <- tables[[1]]
   col_digits <- stats::setNames(rep(table_digits(ret), ncol(ret)), names(ret))
   for (tab in tables[-1]) {
     digits <- table_digits(tab)
     shared <- intersect(names(ret), names(tab))
+    # Significant digits to compare each shared column at; NULL (exact) for ID
+    compare_at <- lapply(stats::setNames(shared, shared), function(col) {
+      if (col == "ID") NULL else min(col_digits[[col]], digits)
+    })
     misaligned <- shared[!vapply(shared, function(col) {
-      same_values(ret[[col]], tab[[col]], digits=min(col_digits[[col]], digits))
+      same_values(ret[[col]], tab[[col]], compare_at[[col]])
     }, logical(1))]
     if (length(misaligned) > 0) {
       stop("Tables with the same number of rows disagree in shared column(s) ",
            paste(misaligned, collapse=", "), ", so their rows do not line up. ",
            "Use output_type = \"list\" to read them separately.", call.=FALSE)
+    }
+    # If rounding merges records that the more precise table tells apart (e.g.
+    # TIME 2400.01 and 2400.02 both printed as 2400.0), their order cannot be
+    # checked
+    precise <- lapply(shared, function(col) if (col_digits[[col]] >= digits) ret[[col]] else tab[[col]])
+    rounded <- Map(round_to, precise, compare_at)
+    if (count_distinct_rows(rounded) < count_distinct_rows(precise)) {
+      merged <- shared[!mapply(identical, precise, rounded)]
+      stop("Tables with the same number of rows cannot be lined up reliably: at the precision of the less ",
+           "precise table, distinct records have the same ", paste(merged, collapse=", "), ". ",
+           "Write the tables with the same $TABLE FORMAT, or use output_type = \"list\" to read them separately.",
+           call.=FALSE)
     }
     added <- setdiff(names(tab), shared)
     ret <- cbind(ret, tab[, added, drop=FALSE])
@@ -151,14 +168,24 @@ table_digits <- function(tab) {
   15
 }
 
-# Element-wise equality after rounding both to `digits` significant digits
-same_values <- function(x, y, digits) {
+# Element-wise equality after rounding both to `digits` significant digits, or
+# exact equality when `digits` is NULL
+same_values <- function(x, y, digits=NULL) {
   both_na <- is.na(x) & is.na(y)
-  x <- signif(x, digits)
-  y <- signif(y, digits)
-  close <- abs(x - y) <= 4 * .Machine$double.eps * pmax(abs(x), abs(y))
+  if (is.null(digits)) {
+    close <- x == y
+  } else {
+    x <- signif(x, digits)
+    y <- signif(y, digits)
+    close <- abs(x - y) <= 4 * .Machine$double.eps * pmax(abs(x), abs(y))
+  }
   all(both_na | (!is.na(close) & close))
 }
+
+round_to <- function(x, digits) if (is.null(digits)) x else signif(x, digits)
+
+# Number of distinct records (rows) across a list of equal-length columns
+count_distinct_rows <- function(cols) sum(!duplicated(do.call(cbind, cols)))
 
 # Merge a per-subject (FIRSTONLY) table onto per-record tables by ID.  Columns
 # present in both are taken from the per-record tables, all per-record rows are

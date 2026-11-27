@@ -164,3 +164,24 @@ test_that("read_nmtables() binds per-record tables written with different precis
 
   expect_equal(res$IPRED, c(1.5, 2.5))
 })
+
+test_that("read_nmtables() refuses to line up records that rounding makes indistinguishable", {
+  # The default-format table prints both times as 2400.0, so it cannot show
+  # which of the precise table's records comes first
+  dir <- withr::local_tempdir()
+  local_nmtable(data.frame(ID = 1, TIME = c(2400.01, 2400.02), DV = c(1, 2), PRED = 1), dir, "sdtab1")
+  writeLines(c("TABLE NO.  2", " ID TIME IPRED", " 1 2400.02 20", " 1 2400.01 10"), file.path(dir, "patab1"))
+
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "distinct records have the same TIME",
+               fixed = TRUE)
+})
+
+test_that("read_nmtables() compares subject IDs exactly, at any magnitude", {
+  dir <- withr::local_tempdir()
+  writeLines(c("TABLE NO.  1", " ID TIME DV", " 1000000000000001 0 1", " 1000000000000002 0 2"),
+             file.path(dir, "sdtab1"))
+  writeLines(c("TABLE NO.  2", " ID TIME IPRED", " 1000000000000002 0 20", " 1000000000000001 0 10"),
+             file.path(dir, "patab1"))
+
+  expect_error(read_nmtables(runNo = 1, directory = dir, quiet = TRUE), "shared column(s) ID,", fixed = TRUE)
+})

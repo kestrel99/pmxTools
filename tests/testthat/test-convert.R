@@ -159,8 +159,8 @@ test_that("automatic detection works", {
   )
 })
 
-test_that("derived AUCtau values carry no attributes from PKNCA", {
-  # PKNCA >= 0.12.1.9000 attaches a `method` attribute to the AUC it returns,
+test_that("derived AUCtau values are plain numbers", {
+  # PKNCA >= 0.12.1.9000 attached a `method` attribute to the AUC it returned,
   # which propagates through AUCtau/dose.  The derived-parameter list is
   # documented as plain numbers, so nothing may leak through.
   suppressMessages(
