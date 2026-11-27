@@ -29,7 +29,9 @@ A data frame containing `n` samples from the multivariate normal
 distribution, using NONMEM typical parameter estimates the NONMEM
 variance-covariance matrix (from the \*.cov file). This provides `n`
 sets of parameter estimates sampled from the uncertainty distribution,
-suitable for simulation under model uncertainty.
+suitable for simulation under model uncertainty. Columns are named after
+the parameters in the `.cov` file (e.g. `THETA1`, `SIGMA(1,1)`,
+`OMEGA(2,1)`).
 
 ## See also
 

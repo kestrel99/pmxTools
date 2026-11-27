@@ -114,7 +114,8 @@ calc_derived_3cpt(
 - type:
 
   Parameters to return. Default is `"all"`. If not `"all"`, this may be
-  a vector from the names of the return value list.
+  one name from the return value list, giving that value alone, or a
+  vector of names, giving a list of those values.
 
 - sigdig:
 
@@ -223,7 +224,15 @@ and (if `tau` is specified) steady-state time courses.
 The input parameters with standardized names (`dose`, `V1`, `V2`, `V3`,
 `CL`, `Q2`, and `Q3`) are also returned in the list, and if provided,
 additional PK parameters of `ka`, `tlag`, `tinf` and `dur` are also
-returned in the list. All inputs may be scalars or vectors.
+returned in the list. All PK parameter inputs (including `dose` and
+`tau`) may be scalars or vectors; vectors must all have the same length,
+and scalars are recycled to it. Each element of every returned parameter
+then corresponds to one parameter set, with NCA parameters calculated
+separately for each set. `step`, `type` and `sigdig` must be single
+values.
+
+Clearances, volumes, `ka`, `dur`, `tinf`, `tau` and `step` must be
+positive; `tlag` and `dose` must be non-negative.
 
 ## References
 

@@ -28,6 +28,119 @@
   and
   [`polyserial()`](https://kestrel99.github.io/pmxTools/reference/polyserial.md).
 
+### Breaking changes
+
+- `patchwork` has moved from `Depends` to `Suggests`, so
+  [`library(pmxTools)`](https://github.com/kestrel99/pmxTools) no longer
+  attaches it. Call
+  [`library(patchwork)`](https://patchwork.data-imaginist.com) to
+  combine plots with `+`, `/` and
+  [`plot_layout()`](https://patchwork.data-imaginist.com/reference/plot_layout.html).
+
+- The PK calculation functions now stop with an error for inputs outside
+  their domain instead of returning `NaN`, `Inf` or wrong values:
+  non-positive clearances, volumes, `ka`, `dur`, `tinf`, `tau` or
+  `step`; negative `tlag`, `dose` or times; a `ka` equal to a
+  disposition rate constant (where the closed-form solution is
+  singular); and, for the steady-state functions, an infusion or
+  zero-order absorption (`tinf`, `dur`) longer than `tau`, which the
+  steady-state solutions do not cover.
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions now stop when vector inputs have
+  different lengths (other than 1) rather than recycling them.
+
+- [`read_nmcov()`](https://kestrel99.github.io/pmxTools/reference/read_nmcov.md)
+  now labels the rows and columns of the variance-covariance matrix with
+  the parameter names from the `.cov` file (`THETA1`, `SIGMA(1,1)`,
+  `OMEGA(2,1)`, …). Rows were previously numbered and column names were
+  altered (`SIGMA.1.1.`). As a result, the columns of
+  [`sample_uncert()`](https://kestrel99.github.io/pmxTools/reference/sample_uncert.md)
+  output are named after the parameters instead of `V1`, `V2`, …
+
+### Bug fixes
+
+- [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
+  now superposes additional doses by the time elapsed since each dose,
+  so irregular time grids, grids not starting at zero and `addl` doses
+  beyond the observed window give correct concentrations. Previously
+  doses were added by shifting rows, which was only correct for regular
+  grids aligned with `ii`.
+
+- `pk_curve(ss = TRUE)` now gives a steady-state curve (steady state
+  reached before the dose at time 0, as for `SS=1` in NONMEM, followed
+  by any `addl` doses and then washout). The argument was previously
+  ignored.
+  [`pk_curve()`](https://kestrel99.github.io/pmxTools/reference/pk_curve.md)
+  also validates `model`, `t`, `dose`, `ii`, `addl` and `ss`.
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions calculate `Cmax`, `Tmax`,
+  `Cmaxss`, `AUCtau` and their dose-normalized forms separately for each
+  parameter set when given vector inputs, returning one value per set.
+  Previously one value was returned from the pooled profiles.
+
+- `AUCtau` is now integrated over the whole dosing interval when `step`
+  does not divide `tau` exactly.
+
+- [`calc_sd_1cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_1cmt.md),
+  [`calc_sd_2cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_2cmt.md),
+  [`calc_sd_3cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_sd_3cmt.md),
+  [`calc_ss_1cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_1cmt.md),
+  [`calc_ss_2cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_2cmt.md)
+  and
+  [`calc_ss_3cmt()`](https://kestrel99.github.io/pmxTools/reference/calc_ss_3cmt.md)
+  are now implemented. They choose the regimen-specific function from
+  the parameters given (`tinf`, `dur`, `ka`, `tlag`); previously they
+  stopped with “Not yet implemented”.
+
+- [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
+  merges per-subject (`FIRSTONLY`) tables onto per-record tables
+  correctly when there are three or more table files, by `ID`, keeping
+  all per-record rows in their original order. It warns about subjects
+  missing from the `FIRSTONLY` tables and stops if there is no shared
+  `ID` column. Columns repeated across tables (such as `ID` and `TIME`)
+  are now kept once.
+
+- [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
+  reads tables with exactly three columns and NSIM \> 1 output
+  correctly; both previously lost the header row.
+  [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
+  and
+  [`read_nm_multi_table()`](https://kestrel99.github.io/pmxTools/reference/read_nm_multi_table.md)
+  no longer turn a one-row table into a one-column table.
+
+- [`read_nm()`](https://kestrel99.github.io/pmxTools/reference/read_nm.md)
+  now parses the XML document instead of requiring its last line to be
+  `</nm:output>`, so files with trailing blank lines are read.
+  Unparseable files still give a warning and `NULL`.
+
+- [`read_scm()`](https://kestrel99.github.io/pmxTools/reference/read_scm.md)
+  and
+  [`plot_scm()`](https://kestrel99.github.io/pmxTools/reference/plot_scm.md)
+  no longer pick up objects with the same names from the global
+  environment, and
+  [`rnm()`](https://kestrel99.github.io/pmxTools/reference/rnm.md) no
+  longer deletes `THETA`, `ETAD` or `EPSD` objects from the global
+  environment.
+
+- [`read_scm()`](https://kestrel99.github.io/pmxTools/reference/read_scm.md)
+  records the model directory of each step for any path style;
+  previously only Windows paths with an upper-case drive letter were
+  recognized and others were `NA`.
+
+- [`plot_scm()`](https://kestrel99.github.io/pmxTools/reference/plot_scm.md)
+  now draws SCMs that stopped after a single forward step.
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions now accept several output names
+  in `type`, as documented, returning a list of those outputs.
+
+- `read_nmtables(quiet = TRUE)` no longer reports table files that were
+  not found.
+
+- `ggplot2` is now imported selectively instead of in full.
+
 ## pmxTools 1.6
 
 CRAN release: 2026-10-07

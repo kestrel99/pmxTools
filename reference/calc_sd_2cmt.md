@@ -1,6 +1,10 @@
 # Calculate C(t) for a 2-compartment linear model
 
-Calculate C(t) for a 2-compartment linear model
+The dosing regimen is chosen from the parameters supplied: `tinf` gives
+an IV infusion, `dur` zero-order absorption and `ka` (in `...`)
+first-order absorption, each of the oral forms optionally with a lag
+time `tlag` (in `...`). With none of these an IV bolus is assumed. The
+matching regimen-specific function listed below is then called.
 
 ## Usage
 

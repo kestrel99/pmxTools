@@ -1,6 +1,10 @@
 # Provide concentration-time curves.
 
-Provide concentration-time curves.
+Concentrations after repeated dosing are obtained by superposition: each
+dose given at time \\n \cdot ii\\ (\\n = 0, \ldots, addl\\) contributes
+the single-dose concentration at the time elapsed since that dose, and
+doses not yet given contribute nothing. Observation times need not be
+regularly spaced or start at zero.
 
 ## Usage
 
@@ -12,7 +16,7 @@ pk_curve(
   dose = 600,
   ii = 24,
   addl = 0,
-  ss = F
+  ss = FALSE
 )
 ```
 
@@ -20,7 +24,8 @@ pk_curve(
 
 - t:
 
-  Observation time in h, specified as a vector.
+  Observation time in h, specified as a vector of non-negative values
+  relative to the first dose.
 
 - model:
 
@@ -46,7 +51,11 @@ pk_curve(
 
 - ss:
 
-  Assume steady state concentration (default `FALSE`).
+  Assume steady state concentration (default `FALSE`). When `TRUE`,
+  steady state is assumed to have been reached with dosing interval `ii`
+  before the dose at time 0 (as for `SS=1` in NONMEM), and the `addl`
+  additional doses are given on top of it. After the last dose the curve
+  declines as the drug washes out.
 
 ## Value
 
@@ -61,4 +70,9 @@ Justin Wilkins, <justin.wilkins@occams.com>
 ``` r
 plot(pk_curve(t=seq(0,72,by=0.1), model="3cmt_oral", ii=12, addl=5,
   params=list(CL=2.5, V1=25, V2=2, V3=5, Q2=0.5, Q3=0.25, ka=1)), type="l")
+
+
+# Steady state, followed by washout
+plot(pk_curve(t=seq(0,72,by=0.1), model="1cmt_oral", ii=12, ss=TRUE,
+  params=list(CL=2.5, V=25, ka=1)), type="l")
 ```
