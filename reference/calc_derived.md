@@ -108,8 +108,10 @@ calc_derived_3cpt(
 
 - step:
 
-  Time increment to use when estimating NCA parameters (time units, e.g.
-  h; defaults to 0.1)
+  Time increment of the grid searched for `Cmax`, `Tmax` and `Cmaxss`
+  (time units, e.g. h; defaults to 0.1). The end of an infusion and the
+  start and end of absorption are always included. `AUCtau` is
+  integrated adaptively and does not depend on `step`.
 
 - type:
 
@@ -219,7 +221,8 @@ and (if `tau` is specified) steady-state time courses.
 - `Cmaxss_dose_normalized`: Dose-normalized maximum concentration over
   the dosing interval at steady state
 
-- `step`: Time increment used when estimating NCA parameters.
+- `step`: Time increment of the grid searched for `Cmax`, `Tmax` and
+  `Cmaxss`.
 
 The input parameters with standardized names (`dose`, `V1`, `V2`, `V3`,
 `CL`, `Q2`, and `Q3`) are also returned in the list, and if provided,

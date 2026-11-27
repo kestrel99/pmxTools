@@ -87,8 +87,18 @@
   parameter set when given vector inputs, returning one value per set.
   Previously one value was returned from the pooled profiles.
 
-- `AUCtau` is now integrated over the whole dosing interval when `step`
-  does not divide `tau` exactly.
+- `AUCtau` is now integrated adaptively over the whole dosing interval,
+  split at the end of any infusion and the start and end of absorption,
+  so it no longer depends on `step`. The trapezoidal rule on the `step`
+  grid could underestimate it substantially (by 30% for a 0.05 h
+  infusion with the default `step`), and omitted the end of the interval
+  when `step` did not divide `tau`. `PKNCA` is therefore no longer a
+  dependency.
+
+- [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
+  and the `calc_derived_*()` functions give the flip-flop kinetics
+  warning once per call rather than once for each internal concentration
+  calculation.
 
 - `Cmax` and `Tmax` from
   [`calc_derived()`](https://kestrel99.github.io/pmxTools/reference/calc_derived.md)
@@ -98,9 +108,9 @@
   end before absorption started and report `Cmax = 0`. The search also
   checks the end of an infusion or of zero-order absorption, so a peak
   there is found exactly rather than at the nearest `step`; the
-  steady-state grid used for `Cmaxss` and `AUCtau` includes the same
-  points within the dosing interval. A zero dose gives `Cmax = 0` and
-  `Tmax = 0` directly.
+  steady-state grid used for `Cmaxss` includes the same points within
+  the dosing interval. A zero dose gives `Cmax = 0` and `Tmax = 0`
+  directly.
 
 - The steady-state lag-time functions
   (`calc_ss_*cmt_linear_oral_1_lag()` and
@@ -131,11 +141,12 @@
   there are, keeping all per-record rows in their original order. It
   warns about subjects missing from a `FIRSTONLY` table and stops if
   there is no shared `ID` column. Per-record tables are combined row by
-  row only after checking that their shared columns (such as `ID` and
-  `TIME`) agree to the precision of the less precise table, so tables
-  written with different `$TABLE` formats can still be combined, and
-  those columns are kept once. Previously tables could be combined in
-  the wrong row order without warning.
+  row only after checking that their shared columns agree, and those
+  columns are kept once. `ID` must match exactly; other shared columns
+  such as `TIME` must agree to the precision of the less precise table,
+  so tables written with different `$TABLE` formats can be combined as
+  long as that precision still tells every record apart. Previously
+  tables could be combined in the wrong row order without warning.
 
 - [`read_nmtables()`](https://kestrel99.github.io/pmxTools/reference/read_nmtables.md)
   reads tables with exactly three columns and NSIM \> 1 output

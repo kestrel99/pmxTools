@@ -150,7 +150,7 @@ are synonyms; use only one.</p></dd>
 
 
 <dt id="arg-step">step<a class="anchor" aria-label="anchor" href="#arg-step"></a></dt>
-<dd><p>Time increment to use when estimating NCA parameters (time units, e.g. h; defaults to 0.1)</p></dd>
+<dd><p>Time increment of the grid searched for <code>Cmax</code>, <code>Tmax</code> and <code>Cmaxss</code> (time units, e.g. h; defaults to 0.1). The end of an infusion and the start and end of absorption are always included. <code>AUCtau</code> is integrated adaptively and does not depend on <code>step</code>.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -215,7 +215,7 @@ be provided as well, based on simulation of single-dose and (if <code>tau</code>
 <li><p><code>AUCtau_dose_normalized</code>: Dose-normalized area under the concentration-time curve over the dosing interval at steady state</p></li>
 <li><p><code>Cmax_dose_normalized</code>: Dose-normalized maximum concentration after a single dose</p></li>
 <li><p><code>Cmaxss_dose_normalized</code>: Dose-normalized maximum concentration over the dosing interval at steady state</p></li>
-<li><p><code>step</code>: Time increment used when estimating NCA parameters.</p></li>
+<li><p><code>step</code>: Time increment of the grid searched for <code>Cmax</code>, <code>Tmax</code> and <code>Cmaxss</code>.</p></li>
 </ul><p>The input parameters with standardized names (<code>dose</code>, <code>V1</code>, <code>V2</code>,
 <code>V3</code>, <code>CL</code>, <code>Q2</code>, and <code>Q3</code>) are also returned in the
 list, and if provided, additional PK parameters of <code>ka</code>, <code>tlag</code>, <code>tinf</code> and <code>dur</code> are also
